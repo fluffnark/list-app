@@ -16,9 +16,12 @@ export function oauthRouter(
   store: Store,
   issuer: string,
   verifyPassword: (password: string) => boolean,
+  options: { resourceAliases?: string[]; browserOrigins?: string[] } = {},
 ) {
   const router = express.Router();
   const resource = issuer + "/mcp";
+  const resources = new Set([resource, ...(options.resourceAliases || [])]);
+  const consentPath = new URL(issuer).pathname.replace(/\/$/, "");
   router.use(express.urlencoded({ extended: false, limit: "16kb" }));
   router.use(
     "/oauth",
@@ -114,21 +117,17 @@ export function oauthRouter(
       };
       store.set("oauth-client:" + id, JSON.stringify(c));
       const { secret_hash, ...publicClient } = c;
-      res
-        .status(201)
-        .json({
-          ...publicClient,
-          ...(secret ? { client_secret: secret } : {}),
-          grant_types: ["authorization_code", "refresh_token"],
-          response_types: ["code"],
-        });
+      res.status(201).json({
+        ...publicClient,
+        ...(secret ? { client_secret: secret } : {}),
+        grant_types: ["authorization_code", "refresh_token"],
+        response_types: ["code"],
+      });
     } catch (e) {
-      res
-        .status(400)
-        .json({
-          error: "invalid_client_metadata",
-          error_description: e instanceof Error ? e.message : "Invalid client",
-        });
+      res.status(400).json({
+        error: "invalid_client_metadata",
+        error_description: e instanceof Error ? e.message : "Invalid client",
+      });
     }
   });
   router.get("/oauth/authorize", (req, res) => {
@@ -145,7 +144,7 @@ export function oauthRouter(
         String(q.state || "").length > 2048
       )
         throw new Error("Invalid authorization request");
-      if (q.resource && q.resource !== resource)
+      if (q.resource && !resources.has(String(q.resource)))
         throw new Error("Invalid resource");
       const scope = String(q.scope || "listflow.read")
         .split(" ")
@@ -163,7 +162,7 @@ export function oauthRouter(
           code_challenge: q.code_challenge,
           scope,
           state: q.state || "",
-          resource,
+          resource: q.resource || resource,
           nonce_hash: hash(nonce),
           expires: Date.now() + 600000,
         }),
@@ -171,22 +170,24 @@ export function oauthRouter(
       res.cookie("listflow_consent", nonce, {
         httpOnly: true,
         sameSite: "strict",
-        secure: issuer.startsWith("https:"),
+        secure:
+          issuer.startsWith("https:") &&
+          !options.browserOrigins?.includes(
+            `${req.protocol}://${req.get("host")}`,
+          ),
         path: new URL(issuer).pathname || "/",
         maxAge: 600000,
       });
       res
         .type("html")
         .send(
-          `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect to ListFlow</title><style>body{background:#111214;color:#ddd;font:15px system-ui;display:grid;place-items:center;min-height:95vh}main{max-width:430px;padding:32px;border:1px solid #39333f;border-radius:15px;background:#1c1a21}h1{font-size:24px}p{line-height:1.7;color:#a99db8}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:7px;margin:8px 0;background:#24202d;color:#eee;border:1px solid #50455f}button{background:#8275df;cursor:pointer}small{font-size:11px;color:#8f829d;overflow-wrap:anywhere}</style><main><h1>Connect ${escape(c.client_name)}?</h1><p>This assistant requests <strong>${scope.includes("listflow.write") ? "read and item-edit" : "read-only"}</strong> access to your private ListFlow workspace. Bulk and destructive changes still require your approval in ListFlow.</p><small>Redirect: ${escape(String(q.redirect_uri))}</small><form method="post" action="${escape(issuer)}/oauth/approve"><input type="hidden" name="pending" value="${pending}"><label>Workspace password<input type="password" name="password" autocomplete="current-password" required></label><button type="submit">Authorize assistant</button></form><a href="${escape(issuer)}/" style="color:#afa0e2">Cancel</a></main></html>`,
+          `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect to ListFlow</title><style>body{background:#111214;color:#ddd;font:15px system-ui;display:grid;place-items:center;min-height:95vh}main{max-width:430px;padding:32px;border:1px solid #39333f;border-radius:15px;background:#1c1a21}h1{font-size:24px}p{line-height:1.7;color:#a99db8}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:7px;margin:8px 0;background:#24202d;color:#eee;border:1px solid #50455f}button{background:#8275df;cursor:pointer}small{font-size:11px;color:#8f829d;overflow-wrap:anywhere}</style><main><h1>Connect ${escape(c.client_name)}?</h1><p>This assistant requests <strong>${scope.includes("listflow.write") ? "read and item-edit" : "read-only"}</strong> access to your private ListFlow workspace. Bulk and destructive changes still require your approval in ListFlow.</p><small>Redirect: ${escape(String(q.redirect_uri))}</small><form method="post" action="${escape(consentPath)}/oauth/approve"><input type="hidden" name="pending" value="${pending}"><label>Workspace password<input type="password" name="password" autocomplete="current-password" required></label><button type="submit">Authorize assistant</button></form><a href="${escape(issuer)}/" style="color:#afa0e2">Cancel</a></main></html>`,
         );
     } catch (e) {
-      res
-        .status(400)
-        .json({
-          error: "invalid_request",
-          error_description: e instanceof Error ? e.message : "Invalid request",
-        });
+      res.status(400).json({
+        error: "invalid_request",
+        error_description: e instanceof Error ? e.message : "Invalid request",
+      });
     }
   });
   router.post("/oauth/approve", (req, res) => {
@@ -252,15 +253,13 @@ export function oauthRouter(
         expires: Date.now() + 30 * 86400000,
       }),
     );
-    res
-      .header("Cache-Control", "no-store")
-      .json({
-        access_token: token,
-        token_type: "Bearer",
-        expires_in: 3600,
-        refresh_token: refresh,
-        scope: grant.scope.join(" "),
-      });
+    res.header("Cache-Control", "no-store").json({
+      access_token: token,
+      token_type: "Bearer",
+      expires_in: 3600,
+      refresh_token: refresh,
+      scope: grant.scope.join(" "),
+    });
   }
   router.post("/oauth/token", (req, res) => {
     const b = req.body;
@@ -277,7 +276,7 @@ export function oauthRouter(
       res.status(401).json({ error: "invalid_client" });
       return;
     }
-    if (b.resource && b.resource !== resource) {
+    if (b.resource && !resources.has(String(b.resource))) {
       res.status(400).json({ error: "invalid_target" });
       return;
     }
@@ -295,6 +294,10 @@ export function oauthRouter(
       return;
     }
     const grant = JSON.parse(saved);
+    if (b.resource && b.resource !== grant.resource) {
+      res.status(400).json({ error: "invalid_target" });
+      return;
+    }
     if (
       (!isCode &&
         !store.db

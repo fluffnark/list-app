@@ -123,6 +123,13 @@ router.use(
     (value) =>
       value.length <= 256 &&
       timingSafeEqual(scryptSync(value, salt, 64), passwordHash),
+    {
+      resourceAliases: (process.env.OAUTH_RESOURCE_ALIASES || "")
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
+      browserOrigins: lanOrigins,
+    },
   ),
 );
 router.use(

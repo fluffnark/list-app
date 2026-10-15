@@ -57,3 +57,10 @@ Executed production build, 38 unit/integration tests and 7 browser tests success
 ## Private MCP transport activation
 
 After the owner saved the runtime key and requested continuation, verified mode-0600 credentials, tunnel metadata with organization/workspace association, successful local doctor checks, HTTP 200 OAuth metadata and the expected unauthenticated MCP 401. Started the client, checked managed runtime healthy/ready status, then moved it to a boot-enabled restart-on-failure systemd service. The systemd runtime returned 200 from loopback /healthz and /readyz and completed OAuth discovery. A ChatGPT-account tool round trip has not been performed. No model API calls, billing enablement, plan upgrades or credit purchases were made; tunnel transport pricing remains unverified.
+
+
+## Tunnel OAuth audience fix
+
+Observed ChatGPT registration succeed but authorization fail with `Invalid resource`: ChatGPT supplies its exact tunnel resource identifier instead of the original Tailscale MCP URL. Added an explicitly configured resource alias, retained it in grants, and enforced resource equality during token exchange. Also corrected the LAN HTTP consent nonce cookie and same-origin form action.
+
+Production build passed; 39 unit/integration tests and 7 browser/API tests passed. New coverage completes LAN-origin consent and a PKCE token exchange with the tunnel audience, rejects another tunnel and a changed token audience, preserves Secure cookies for unapproved origins, and rejects authorization-code reuse. Production checks confirmed consent HTML and cookie mode on both HTTPS and LAN HTTP using the configured tunnel audience. A first diagnostic held a SQLite test-cleanup transaction across an HTTP request and failed due to its own write lock; rerunning with immediate cleanup commits passed.
