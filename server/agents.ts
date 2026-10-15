@@ -9,6 +9,15 @@ import {
   type Operation,
 } from "../shared/model";
 export const agentTools = [
+  [
+    "get_attachment",
+    "Read an image attached to a note or category",
+    {
+      type: "object",
+      properties: { id: { type: "string" } },
+      required: ["id"],
+    },
+  ],
   ["list_categories", "List categories", { type: "object", properties: {} }],
   ["list_lists", "List destinations", { type: "object", properties: {} }],
   [
@@ -140,6 +149,14 @@ export function callAgent(
   write: boolean,
 ) {
   const entities = store.entities();
+  if (name === "get_attachment") {
+    const id = z.string().uuid().parse(args.id);
+    const row = store.db
+      .prepare("SELECT value FROM attachments WHERE id=?")
+      .get(id) as { value: string } | undefined;
+    if (!row) throw new Error("Image not found");
+    return JSON.parse(row.value);
+  }
   const items = entities.filter(
     (x): x is Item => x.kind === "item" && !x.deleted_at,
   );

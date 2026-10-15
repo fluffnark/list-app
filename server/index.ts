@@ -15,6 +15,7 @@ import { Store } from "./store";
 import { SheetsProjection, seal } from "./sheets";
 import { oauthRouter } from "./oauth";
 import { agentTools, callAgent } from "./agents";
+import { attachmentRoutes } from "./attachments";
 const data = resolve(process.env.DATA_DIR || "data");
 mkdirSync(data, { recursive: true, mode: 0o700 });
 const secretPath = resolve(data, "secret");
@@ -49,7 +50,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:"],
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
         connectSrc: ["'self'"],
         objectSrc: ["'none'"],
         frameAncestors: ["'none'"],
@@ -142,7 +143,7 @@ router.use(
   }),
 );
 router.get("/api/health", (_req, res) =>
-  res.json({ ok: true, version: "0.2.0", time: new Date().toISOString() }),
+  res.json({ ok: true, version: "0.3.0", time: new Date().toISOString() }),
 );
 router.get("/api/config", (_req, res) =>
   res.json({
@@ -318,6 +319,7 @@ router.use(
     legacyHeaders: false,
   }),
 );
+attachmentRoutes(router, store, writer);
 router.get("/api/session", (req, res) =>
   res.json({
     signedIn: true,
@@ -419,9 +421,13 @@ router.get("/api/audit", admin, (req, res) =>
 );
 router.get("/api/export", admin, (_req, res) =>
   res.attachment("listflow-export.json").json({
-    schema: 1,
+    schema: 2,
     exported_at: new Date().toISOString(),
     entities: store.entities(),
+    attachments: store.db
+      .prepare("SELECT value FROM attachments")
+      .all()
+      .map((row: any) => JSON.parse(row.value)),
   }),
 );
 router.post("/api/tokens", admin, (req, res) => {
@@ -552,7 +558,7 @@ router.post("/mcp", (req, res) => {
           ? msg.params.protocolVersion
           : "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "listflow", version: "0.2.0" },
+        serverInfo: { name: "listflow", version: "0.3.0" },
       };
     else if (msg.method === "tools/list") result = { tools: agentTools };
     else if (msg.method === "ping") result = {};
@@ -564,7 +570,18 @@ router.post("/mcp", (req, res) => {
         identity.actor,
         identity.scopes.includes("write"),
       );
-      result = { content: [{ type: "text", text: JSON.stringify(output) }] };
+      result =
+        msg.params.name === "get_attachment"
+          ? {
+              content: [
+                {
+                  type: "image",
+                  mimeType: output.mime,
+                  data: output.data_url.split(",")[1],
+                },
+              ],
+            }
+          : { content: [{ type: "text", text: JSON.stringify(output) }] };
     } else {
       res.json({
         jsonrpc: "2.0",
@@ -594,7 +611,7 @@ router.get("/mcp", (_req, res) => res.set("Allow", "POST").sendStatus(405));
 router.get("/openapi.json", (_req, res) =>
   res.json({
     openapi: "3.1.0",
-    info: { title: "ListFlow assistant API", version: "0.2.0" },
+    info: { title: "ListFlow assistant API", version: "0.3.0" },
     servers: [{ url: origin + base }],
     security: [{ bearer: [] }],
     components: {

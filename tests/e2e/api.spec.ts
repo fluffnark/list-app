@@ -200,3 +200,73 @@ test("MCP discovery accepts request ID zero and only treats missing IDs as notif
   expect(notification.status()).toBe(202);
   expect(await notification.text()).toBe("");
 });
+
+test("image attachments require authentication, retry safely and cannot be overwritten", async ({
+  request,
+}) => {
+  const id = uuid();
+  const path = "/api/attachments/" + id;
+  expect((await request.get(path)).status()).toBe(401);
+  await request.post("/auth/login", {
+    data: { password: "listflow-test-password" },
+  });
+  const data_url =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZlS8AAAAASUVORK5CYII=";
+  const image = { id, name: "Test image.png", data_url };
+  const first = await request.put(path, { data: image });
+  expect(first.status()).toBe(200);
+  expect(await (await request.put(path, { data: image })).json()).toEqual(
+    await first.json(),
+  );
+  expect((await (await request.get(path)).json()).data_url).toBe(data_url);
+  const backup = await (await request.get("/api/export")).json();
+  expect(backup.schema).toBe(2);
+  expect(backup.attachments).toContainEqual(
+    expect.objectContaining({ id, data_url }),
+  );
+  const other = {
+    ...image,
+    data_url: data_url.replace("AAAAC0lEQVR42", "AAAAC0lEQVR43"),
+  };
+  expect((await request.put(path, { data: other })).status()).toBe(409);
+  expect((await (await request.get(path)).json()).data_url).toBe(data_url);
+  const badId = uuid();
+  expect(
+    (
+      await request.put("/api/attachments/" + badId, {
+        data: {
+          id: badId,
+          name: "Unsafe.svg",
+          data_url: "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=",
+        },
+      })
+    ).status(),
+  ).toBe(400);
+  const { token } = await (
+    await request.post("/api/tokens", {
+      data: { label: "Image reader", write: false },
+    })
+  ).json();
+  expect(
+    (
+      await request.put(path, {
+        headers: { Authorization: "Bearer " + token },
+        data: image,
+      })
+    ).status(),
+  ).toBe(403);
+  const read = await request.post("/mcp", {
+    headers: { Authorization: "Bearer " + token },
+    data: {
+      jsonrpc: "2.0",
+      id: 0,
+      method: "tools/call",
+      params: { name: "get_attachment", arguments: { id } },
+    },
+  });
+  expect((await read.json()).result.content[0]).toMatchObject({
+    type: "image",
+    mimeType: "image/png",
+    data: data_url.split(",")[1],
+  });
+});

@@ -61,6 +61,7 @@ import {
   markdown,
   apiRoot,
   refreshSnapshot,
+  collectAttachments,
   type Conflict,
 } from "./db";
 import {
@@ -81,6 +82,7 @@ import {
 } from "../shared/model";
 import { native } from "./native";
 import "./style.css";
+import { NoteEditor, CategoryIcon, CategoryIconPicker } from "./notes";
 const client = new QueryClient();
 let initialData: Entity[] = [];
 let initialPending = 0;
@@ -588,7 +590,10 @@ function App() {
           {navButton("lists", "All lists", Layers)}
           {categories.map((c) => (
             <div key={c.id}>
-              <div className="category-label">{c.name}</div>
+              <div className="category-label">
+                <CategoryIcon category={c} />
+                {c.name}
+              </div>
               {lists
                 .filter((x) => x.category_id === c.id)
                 .map((x) => navButton(x.id, x.name, Hash, count(x.id)))}
@@ -1318,6 +1323,7 @@ function ListGallery({
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [categoryName, setCategoryName] = useState("");
+  const [categoryIcon, setCategoryIcon] = useState("");
   async function addList(e: React.FormEvent) {
     e.preventDefault();
     try {
@@ -1463,12 +1469,14 @@ function ListGallery({
                 workspace_id: WORKSPACE,
                 kind: "category",
                 name: categoryName,
+                icon: categoryIcon.trim() || null,
                 sort_key: Date.now(),
                 archived_at: null,
                 version: 0,
                 updated_at: new Date().toISOString(),
               });
               setCategoryName("");
+              setCategoryIcon("");
             } catch (e) {
               onError(String(e));
             }
@@ -1481,11 +1489,24 @@ function ListGallery({
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
+          <input
+            aria-label="New category icon"
+            placeholder="Emoji icon"
+            maxLength={16}
+            value={categoryIcon}
+            onChange={(e) => setCategoryIcon(e.target.value)}
+          />
           <button className="secondary-button" type="submit">
             <FolderPlus size={15} />
             Create category
           </button>
         </form>
+        {categories.map((c) => (
+          <div className="category-management" key={c.id}>
+            <strong>{c.name}</strong>
+            <CategoryIconPicker category={c} onError={onError} />
+          </div>
+        ))}
       </div>
     </>
   );
@@ -1603,8 +1624,17 @@ function ItemDetail({
             aria-label="Item title"
             value={title}
             onChange={(e) => draft(e.target.value, body)}
-            rows={2}
+            rows={item.type === "note" ? 1 : 2}
           />
+          {item.type === "note" && (
+            <NoteEditor
+              key={item.id}
+              noteId={item.id}
+              value={body}
+              onChange={(value) => draft(title, value)}
+              onError={onError}
+            />
+          )}
           <div className="detail-status">
             <button
               className={`secondary-button ${item.status === "done" ? "completed" : ""}`}
@@ -1823,18 +1853,20 @@ function ItemDetail({
               Remind me at 9am on the due date
             </button>
           )}
-          <div className="detail-section">
-            <h3>
-              Description <span>Markdown supported</span>
-            </h3>
-            <textarea
-              className="description-editor"
-              aria-label="Description"
-              placeholder="A few details, a note to yourself…"
-              value={body}
-              onChange={(e) => draft(title, e.target.value)}
-            />
-          </div>
+          {item.type !== "note" && (
+            <div className="detail-section">
+              <h3>
+                Description <span>Markdown supported</span>
+              </h3>
+              <textarea
+                className="description-editor"
+                aria-label="Description"
+                placeholder="Description"
+                value={body}
+                onChange={(e) => draft(title, e.target.value)}
+              />
+            </div>
+          )}
           <div className="detail-section">
             <h3>
               Subtasks{" "}
@@ -2120,8 +2152,8 @@ function SettingsPanel({
             <p>Install ListFlow on your phone.</p>
             <a
               className="primary-button"
-              href={apiRoot() + "/downloads/listflow-v0.2.0.apk"}
-              download="listflow-v0.2.0.apk"
+              href={apiRoot() + "/downloads/listflow-v0.3.0.apk"}
+              download="listflow-v0.3.0.apk"
             >
               <Download size={18} />
               Download Android APK
@@ -2321,13 +2353,16 @@ function SettingsPanel({
                 className="secondary-button"
                 onClick={() =>
                   run(async () => {
+                    const entities = await db.entities.toArray();
+                    const attachments = await collectAttachments(entities);
                     download(
                       "listflow-export.json",
                       JSON.stringify(
                         {
-                          schema: 1,
+                          schema: 2,
                           exported_at: new Date().toISOString(),
-                          entities: await db.entities.toArray(),
+                          entities,
+                          attachments,
                           pending: await db.outbox.toArray(),
                           conflicts: await db.conflicts.toArray(),
                         },
@@ -2670,7 +2705,7 @@ function SettingsPanel({
             )}
           </div>
           <p className="settings-footnote">
-            ListFlow 0.2.0 · Built for a quieter day
+            ListFlow 0.3.0 · Built for a quieter day
           </p>
         </div>
       </div>

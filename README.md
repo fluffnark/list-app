@@ -32,7 +32,7 @@ The web shell is public; all synchronized user data, search, exports, and assist
 
 ## Android
 
-Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.2.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
+Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.3.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
 
 For cross-device sync:
 
@@ -100,3 +100,9 @@ See [actual validation results](docs/VALIDATION.md) and [decisions and deviation
 To recover: stop the service, preserve current data, restore a snapshot as `data/listflow.sqlite`, remove obsolete SQLite WAL/SHM files while stopped, retain the matching `secret`, and start the service. Clients with a cursor newer than a restored snapshot need a device rebootstrap; export their pending changes first. A rollback to a prior application release should preserve the same schema and data directory.
 
 Trash and audit are retained indefinitely in v0.1; the UI supports recovery and export, not permanent purge. Inexact Android reminder alarms currently need re-arming after reboot. Background sync is opportunistic and is not guaranteed while Android suspends the app.
+
+## Notes and category icons
+
+Notes have Edit/Preview modes with CommonMark and GitHub-flavored Markdown, including tables, checklists, links and code blocks. Add or paste images, draw with pen/color/undo controls, and export a ZIP containing Markdown and its images. Images and doodles are saved locally, then synchronized through authenticated attachment endpoints. Larger images are resized; the uploaded limit is 1 MiB per image. Cached images remain available offline. Raw HTML is displayed as text.
+
+In All Lists, create a category with an emoji or use Upload icon for a custom PNG/JPEG/WebP. Icons synchronize with the category. Settings provides the signed v0.3.0 Android download; older APK URLs remain available.

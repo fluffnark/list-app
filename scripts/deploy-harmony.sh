@@ -4,8 +4,8 @@ cd "$(dirname "$0")/.."
 APP_BASE=/listflow/ npm run build
 npm run build:server
 mkdir -p dist/downloads
-cp releases/listflow-v0.2.0.apk releases/listflow-v0.2.0.aab dist/downloads/
-sha256sum releases/listflow-v0.2.0.apk releases/listflow-v0.2.0.aab > releases/SHA256SUMS
+cp releases/listflow-v*.apk releases/listflow-v*.aab dist/downloads/
+sha256sum releases/listflow-v*.apk releases/listflow-v*.aab > releases/SHA256SUMS
 cp releases/SHA256SUMS dist/downloads/
 cp integrations/chatgpt/skills/listflow-notes/SKILL.md dist/downloads/listflow-notes-SKILL.md
 cp integrations/chatgpt/CONTEXT.txt dist/downloads/listflow-chatgpt-context.txt

@@ -114,20 +114,48 @@ test("signed-in queued item propagates to a second independent device", async ({
     await p.getByRole("button", { name: "Close settings" }).click();
   }
   const title = "Cross-device " + Date.now();
-  await capture(a, title);
+  await capture(a, "note: " + title);
+  await a.getByRole("button", { name: "Notes", exact: true }).click();
+  await a.getByText(title, { exact: true }).click();
+  await a.getByLabel("Attach images").setInputFiles({
+    name: "shared.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+      "base64",
+    ),
+  });
+  await expect(a.getByRole("textbox", { name: "Description" })).toHaveValue(
+    /attachment:/,
+  );
   await expect
     .poll(
       async () => {
         const response = await first.request.get(
           "/api/search?query=" + encodeURIComponent(title),
         );
-        return (await response.json()).total;
+        const result = await response.json();
+        return (
+          result.items?.some((item: any) =>
+            item.body_md?.includes("attachment:"),
+          ) ?? false
+        );
       },
       { timeout: 10000 },
     )
-    .toBe(1);
+    .toBe(true);
   await b.reload();
-  await expect(b.getByText(title, { exact: true })).toBeVisible();
+  await b.getByRole("button", { name: "Notes", exact: true }).click();
+  await b.getByText(title, { exact: true }).click();
+  await b.getByRole("button", { name: "Preview", exact: true }).click();
+  await expect(b.getByRole("img", { name: "shared.png" })).toBeVisible();
+  await expect
+    .poll(() =>
+      b
+        .getByRole("img", { name: "shared.png" })
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBe(1);
   await first.close();
   await second.close();
 });
@@ -187,4 +215,134 @@ test("mobile opens navigation and recent notes with large controls; desktop keep
   ).toBe(true);
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.getByRole("heading", { name: "Today." })).toBeVisible();
+});
+
+test("mobile rich notes preserve Markdown, images and drawings offline; categories accept icons", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await page.reload();
+  await context.setOffline(true);
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "What’s on your mind?" })
+    .fill("Rich offline note");
+  await page
+    .locator(".capture-modal")
+    .getByRole("button", { name: "Add item" })
+    .click();
+  await page.getByText("Rich offline note", { exact: true }).click();
+  const source = page.getByRole("textbox", { name: "Description" });
+  await source.fill(
+    "## Rich heading\n\n| A | B |\n| - | - |\n| one | two |\n\n- [x] Checked\n\n```js\nconst x = 1;\n```\n\n<script>window.badMarkdown = true</script>\n\n[Unsafe](javascript:alert(1))",
+  );
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+    "base64",
+  );
+  await page
+    .getByLabel("Attach images")
+    .setInputFiles({ name: "test.png", mimeType: "image/png", buffer: png });
+  await expect(source).toHaveValue(/attachment:/);
+  await page.getByRole("button", { name: "Draw", exact: true }).click();
+  const canvas = page.getByLabel("Drawing canvas");
+  const bounds = (await canvas.boundingBox())!;
+  await page.mouse.move(bounds.x + 15, bounds.y + 15);
+  await page.mouse.down();
+  await page.mouse.move(bounds.x + 70, bounds.y + 50, { steps: 5 });
+  await page.mouse.up();
+  await page.getByRole("button", { name: "Save drawing", exact: true }).click();
+  await expect(source).toHaveValue(/!\[Drawing\]/);
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Rich heading" }),
+  ).toBeVisible();
+  await expect(page.locator(".markdown-body table")).toBeVisible();
+  await expect(page.locator(".markdown-body pre")).toContainText("const x = 1");
+  await expect(
+    page.locator(".markdown-body input[type=checkbox]"),
+  ).toBeChecked();
+  await expect(page.locator(".markdown-body img")).toHaveCount(2);
+  await expect
+    .poll(() =>
+      page
+        .locator(".markdown-body img")
+        .evaluateAll((images) =>
+          images.every((img) => (img as HTMLImageElement).naturalWidth > 0),
+        ),
+    )
+    .toBe(true);
+  expect(
+    await page.evaluate(() => (window as any).badMarkdown),
+  ).toBeUndefined();
+  await expect(page.getByRole("link", { name: "Unsafe" })).not.toHaveAttribute(
+    "href",
+    /javascript:/,
+  );
+  const downloadPromise = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export Markdown with images" })
+    .click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("listflow-note.zip");
+  await page.waitForTimeout(650);
+  await page.getByRole("button", { name: "Close details" }).click();
+  await page.reload();
+  await page.getByText("Rich offline note", { exact: true }).click();
+  await expect(source).toHaveValue(/!\[Drawing\]/);
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await expect(page.locator(".markdown-body img")).toHaveCount(2);
+  await expect
+    .poll(() =>
+      page
+        .locator(".markdown-body img")
+        .evaluateAll((images) =>
+          images.every((img) => (img as HTMLImageElement).naturalWidth > 0),
+        ),
+    )
+    .toBe(true);
+  await page.screenshot({
+    path: "docs/screenshots/mobile-rich-note.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: "Close details" }).click();
+  await page
+    .locator(".bottom-nav")
+    .getByRole("button", { name: "Lists", exact: true })
+    .click();
+  await page.getByLabel("Category name", { exact: true }).fill("Sketches");
+  await page.getByLabel("New category icon").fill("🎨");
+  await page
+    .getByRole("button", { name: "Create category", exact: true })
+    .click();
+  const category = page
+    .locator(".category-management")
+    .filter({ hasText: "Sketches" });
+  await expect(category.locator(".category-icon-emoji")).toHaveText("🎨");
+  await page
+    .getByLabel("Upload icon for Sketches")
+    .setInputFiles({ name: "icon.png", mimeType: "image/png", buffer: png });
+  await expect(
+    category.getByRole("img", { name: "Sketches icon" }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 320, height: 720 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.reload();
+  await page
+    .locator(".bottom-nav")
+    .getByRole("button", { name: "Lists", exact: true })
+    .click();
+  await expect(
+    category.getByRole("img", { name: "Sketches icon" }),
+  ).toBeVisible();
+  await context.setOffline(false);
 });

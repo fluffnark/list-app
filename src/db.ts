@@ -35,7 +35,7 @@ class LocalDB extends Dexie {
 export const db = new LocalDB();
 export const deviceId = localStorage.getItem("listflow-device") || uuid();
 localStorage.setItem("listflow-device", deviceId);
-async function checkpoint() {
+export async function checkpoint() {
   if (!native) return;
   const tables = ["remote", "entities", "outbox", "meta", "conflicts"] as const;
   const snapshot: Record<string, unknown> = {};
@@ -189,6 +189,17 @@ export async function syncNow(force = false) {
         },
       );
     }
+    for (const asset of await db.meta
+      .where("key")
+      .startsWith("attachment:")
+      .toArray()) {
+      if (asset.value.uploaded) continue;
+      await api("/api/attachments/" + asset.value.id, {
+        method: "PUT",
+        body: JSON.stringify(asset.value),
+      });
+      await saveAttachmentRecord({ ...asset.value, uploaded: true });
+    }
     const pending = await db.outbox
       .orderBy("client_created_at")
       .limit(100)
@@ -322,4 +333,44 @@ export function download(
 }
 export function markdown(item: Item) {
   return `---\nlistflow_id: ${item.id}\nstatus: ${item.status}\n---\n\n# ${item.title}\n\n${item.body_md}\n\n[ListFlow](listflow://item/${item.id})\n`;
+}
+
+export interface Attachment {
+  id: string;
+  name: string;
+  data_url: string;
+  uploaded: boolean;
+}
+export async function saveAttachmentRecord(value: Attachment) {
+  await db.transaction(
+    "rw",
+    [db.meta, db.entities, db.remote, db.outbox, db.conflicts],
+    async () => {
+      await db.meta.put({ key: "attachment:" + value.id, value });
+      await checkpoint();
+    },
+  );
+}
+export async function getAttachment(id: string): Promise<Attachment> {
+  const cached = await db.meta.get("attachment:" + id);
+  if (cached) return cached.value;
+  const remote = await api("/api/attachments/" + id);
+  const result = { ...remote, uploaded: true };
+  await saveAttachmentRecord(result);
+  return result;
+}
+export function attachmentIds(text: string) {
+  return [...new Set(text.match(/attachment:[0-9a-f-]{36}/gi) || [])].map((x) =>
+    x.slice(11),
+  );
+}
+export async function collectAttachments(entities: Entity[]) {
+  const ids = new Set<string>();
+  for (const entity of entities) {
+    if (entity.kind === "item")
+      for (const id of attachmentIds(entity.body_md)) ids.add(id);
+    if (entity.kind === "category" && entity.icon?.startsWith("attachment:"))
+      ids.add(entity.icon.slice(11));
+  }
+  return Promise.all([...ids].map(getAttachment));
 }

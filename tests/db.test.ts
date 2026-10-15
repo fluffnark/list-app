@@ -136,3 +136,40 @@ it("retains both text versions when a queued edit conflicts on reconnect", async
   });
   server.db.close();
 });
+
+it("keeps offline image bytes through reload and uploads them before note operations", async () => {
+  const data_url = "data:image/png;base64,iVBORw0KGgo=";
+  const id = uuid();
+  await local.saveAttachmentRecord({
+    id,
+    name: "Offline.png",
+    data_url,
+    uploaded: false,
+  });
+  const note = newItem("Image note", {
+    type: "note",
+    body_md: `![Offline](attachment:${id})`,
+  });
+  await local.create(note);
+  await local.db.close();
+  await local.db.open();
+  expect((await local.getAttachment(id)).data_url).toBe(data_url);
+  const previous = globalThis.fetch;
+  const calls: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string, options: any) => {
+      calls.push(url);
+      if (url.endsWith("/api/attachments/" + id)) return Response.json({ id });
+      return previous(url, options);
+    }),
+  );
+  await local.syncNow(true);
+  expect(calls.findIndex((x) => x.includes("/api/attachments/"))).toBeLessThan(
+    calls.findIndex((x) => x.includes("/api/operations:batch")),
+  );
+  expect((await local.getAttachment(id)).uploaded).toBe(true);
+  expect(server.entities().find((x) => x.id === note.id)).toMatchObject({
+    body_md: note.body_md,
+  });
+});

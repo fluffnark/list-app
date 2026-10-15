@@ -20,6 +20,9 @@ export class Store {
  CREATE TABLE IF NOT EXISTS credentials(hash TEXT PRIMARY KEY,kind TEXT NOT NULL,scopes TEXT NOT NULL,expires INTEGER NOT NULL,label TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS proposals(id TEXT PRIMARY KEY,value TEXT NOT NULL,expires INTEGER NOT NULL);`);
+    this.db.exec(
+      "CREATE TABLE IF NOT EXISTS attachments(id TEXT PRIMARY KEY,value TEXT NOT NULL)",
+    );
     if (!this.entities().length)
       for (const e of initialEntities())
         this.db

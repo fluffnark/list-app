@@ -84,3 +84,11 @@ Traced failed ChatGPT callbacks to an OAuth forwarding startup race: the gateway
 ## MCP discovery after successful OAuth
 
 Confirmed the real ChatGPT flow issued a read/write OAuth credential and then failed tool discovery because a valid JSON-RPC request ID of zero was treated as a notification. Missing IDs now identify notifications; ID zero returns a normal JSON result. Notifications return an empty 202 body. Production build and 9 browser/API tests passed, including new ID-zero initialization/tool-list coverage. A production authenticated probe passed initialization, tool listing and notification acknowledgment. OAuth readiness also passed after deployment. ChatGPT-side tool use remains pending user retry.
+
+## v0.3.0 rich notes and category icons
+
+Production build and 40 unit/integration tests passed. All 11 Playwright browser/API tests passed, including authenticated/idempotent/immutable image uploads, SVG and read-only-write rejection, complete export, MCP image responses, cross-device image retrieval, Markdown link/HTML safety, offline note/image/drawing recovery, ZIP download, category emoji/custom-image persistence, and mobile overflow checks. One earlier browser run raced a simultaneous Vite rebuild and could not load the initial bundle; the complete suite passed with a stable build. The category reload test was corrected to navigate from the intended mobile Home landing before asserting its management controls.
+
+Signed v0.3.0 APK/AAB builds succeeded and APK signature verification passed. API 36 emulator tests passed bundled launch, offline capture, native SQLite checkpoint, force-stop recovery, Markdown/drawing restoration after deliberately clearing IndexedDB, native share target and Shopping deep link. Physical devices, large image library performance, endurance, and live Google Sheets remain untested.
+
+Production v0.3.0 verification passed owner login, exact APK download SHA-256, authenticated image upload, live Markdown/image rendering, offline image reload, and MCP tool discovery with request ID zero including get_attachment. The synthetic test note was moved to Trash and its owner session revoked. Both gateway and tunnel readiness passed after deployment. Actual ChatGPT account discovery still requires a client refresh/retry; server-side probes do not establish account-side success.

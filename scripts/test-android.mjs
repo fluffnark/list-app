@@ -40,9 +40,54 @@ try {
   await expect(
     page.locator(".task-title").filter({ hasText: title }),
   ).toBeVisible();
+  const noteTitle = "Android drawing " + Date.now();
+  await page.getByRole("button", { name: "Quick capture" }).click();
+  await page
+    .getByRole("textbox", { name: "What’s on your mind?" })
+    .fill("note: " + noteTitle);
+  await page
+    .locator(".capture-modal")
+    .getByRole("button", { name: "Add item" })
+    .click();
+  await page
+    .locator(".bottom-nav")
+    .getByRole("button", { name: "Notes", exact: true })
+    .click();
+  await page.getByText(noteTitle, { exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Description" })
+    .fill("## Native drawing");
+  await page.getByRole("button", { name: "Draw", exact: true }).click();
+  const canvasBounds = await page.getByLabel("Drawing canvas").boundingBox();
+  await page.mouse.move(canvasBounds.x + 20, canvasBounds.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(canvasBounds.x + 80, canvasBounds.y + 50, { steps: 5 });
+  await page.mouse.up();
+  await page.getByRole("button", { name: "Save drawing", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    /attachment:/,
+  );
+  await page.waitForTimeout(800);
+  await page.getByRole("button", { name: "Close details" }).click();
+  await page
+    .locator(".bottom-nav")
+    .getByRole("button", { name: "Home", exact: true })
+    .click();
+  await page
+    .locator(".home-navigation")
+    .getByRole("button", { name: /Inbox/ })
+    .click();
   const checkpoint = await page.evaluate(async () =>
     JSON.parse((await window.Capacitor.Plugins.ListFlowStorage.read()).state),
   );
+  if (
+    !checkpoint.meta.some(
+      (x) =>
+        x.key.startsWith("attachment:") &&
+        x.value.data_url.startsWith("data:image/png"),
+    )
+  )
+    throw new Error("SQLite checkpoint did not contain the drawing");
   if (!checkpoint.outbox.some((x) => x.patch.title === title))
     throw new Error("SQLite checkpoint did not contain queued operation");
   await device.shell("am force-stop " + pkg);
@@ -89,6 +134,27 @@ try {
   await expect(
     page.locator(".task-title").filter({ hasText: title }),
   ).toBeVisible();
+  await page
+    .locator(".bottom-nav")
+    .getByRole("button", { name: "Notes", exact: true })
+    .click();
+  await page.getByText(noteTitle, { exact: true }).click();
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Native drawing" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: "Drawing", exact: true }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      page
+        .getByRole("img", { name: "Drawing", exact: true })
+        .evaluate((image) => image.naturalWidth),
+    )
+    .toBe(960);
+  await page.screenshot({ path: "docs/screenshots/android-rich-note.png" });
+  await page.getByRole("button", { name: "Close details" }).click();
   await device.shell(
     `am start -n ${pkg}/.MainActivity -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT 'Shared Android thought'`,
   );
@@ -108,7 +174,7 @@ try {
   await device.shell("svc wifi enable");
   await device.shell("svc data enable");
   console.log(
-    "PASS: Android bundled launch, offline capture, native SQLite queued checkpoint, force-stop recovery, share target, shopping deep link.",
+    "PASS: Android bundled launch, offline capture, native SQLite queued checkpoint, force-stop recovery, Markdown and drawing recovery after IndexedDB deletion, share target, shopping deep link.",
   );
 } finally {
   await device.shell("svc wifi enable");

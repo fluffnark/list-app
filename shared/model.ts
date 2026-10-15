@@ -69,6 +69,7 @@ export const categorySchema = z.object({
   workspace_id: z.literal(WORKSPACE),
   kind: z.literal("category"),
   name: z.string().trim().min(1).max(100),
+  icon: z.string().max(100).nullable().optional(),
   sort_key: z.number(),
   archived_at: nullableText,
   version: z.number().int().nonnegative(),
