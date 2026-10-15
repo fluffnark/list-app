@@ -1,0 +1,23 @@
+[Unit]
+Description=ListFlow private OpenAI MCP tunnel
+After=network-online.target listflow.service tailscaled.service
+Wants=network-online.target
+Requires=listflow.service
+
+[Service]
+Type=simple
+User=harmony
+Group=harmony
+WorkingDirectory=/home/harmony
+ExecStart=/home/harmony/.local/bin/tunnel-client run --profile listflow
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/harmony/.local/state/tunnel-client
+
+[Install]
+WantedBy=multi-user.target

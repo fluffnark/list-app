@@ -52,3 +52,8 @@ Production follow-up: Harmony private HTTPS login, capture, durable sync, deskto
 Enabled `http://harmony.local:4443/` with a redirect to `/listflow/`, through a Caddy listener bound to Harmony’s two private IPv4 LAN addresses. The Tailscale listener on the same port continues to serve HTTPS. Added an exact LAN-origin allowlist and HTTP cookie handling; HTTPS cookies remain Secure. Added cryptographically random UUID fallback for non-secure browser contexts.
 
 Executed production build, 38 unit/integration tests and 7 browser tests successfully. A production Chromium check through an SSH SOCKS route verified actual non-secure-context LAN launch, login, HTTP-only session cookie persistence, note capture, durable sync, reload, test-note cleanup, rejected unapproved origins, and Secure cookies on the HTTPS endpoint. The LAN test is `scripts/test-lan.mjs`. Public Funnel remains disabled for ListFlow. PWA service-worker/offline shell installation requires HTTPS; separate origins keep separate local working copies.
+
+
+## Private MCP transport activation
+
+After the owner saved the runtime key and requested continuation, verified mode-0600 credentials, tunnel metadata with organization/workspace association, successful local doctor checks, HTTP 200 OAuth metadata and the expected unauthenticated MCP 401. Started the client, checked managed runtime healthy/ready status, then moved it to a boot-enabled restart-on-failure systemd service. The systemd runtime returned 200 from loopback /healthz and /readyz and completed OAuth discovery. A ChatGPT-account tool round trip has not been performed. No model API calls, billing enablement, plan upgrades or credit purchases were made; tunnel transport pricing remains unverified.
