@@ -21,3 +21,10 @@
 Mobile launches into notes/navigation regardless of the previous route; desktop keeps its remembered route. Mobile Home and Notes replace Today/Inbox in bottom navigation, while destination tiles retain direct access. Global capture remains general-purpose; dedicated note capture sets the note type.
 
 Use the existing operations API for live assistant writes. Google Sheets cell edits are not an import protocol. Prefer the account-supported outbound OpenAI MCP tunnel to public ingress; activation remains pending account credentials/association. A skill supplies workflow context and does not create a connection or enforce a narrower authorization scope.
+
+
+## 2026-10-14 — Explicit LAN HTTP opt-in and tunnel cost constraint
+
+Owner requested LAN HTTP in addition to private HTTPS. Caddy binds port 4443 on the two LAN IPv4 addresses, redirects root to /listflow/, and proxies the loopback backend. Only explicit LAN origins receive non-Secure session cookies; HTTPS sessions retain Secure. Plain HTTP does not support installable/offline service-worker caching, and browser data remains isolated by origin.
+
+Owner supplied a private MCP tunnel ID and required zero additional cost. Installed and configured the local client without activating it. Public docs do not provide an explicit free-price guarantee; runtime activation and billing/account checks remain pending rather than assuming absence of a listed price means free.

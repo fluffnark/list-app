@@ -36,6 +36,10 @@ const passwordHash = scryptSync(password, salt, 64);
 const projection = new SheetsProjection(store, secret);
 const base = (process.env.APP_BASE || "").replace(/\/$/, "");
 const origin = process.env.PUBLIC_ORIGIN || "http://localhost:4318";
+const lanOrigins = (process.env.LAN_HTTP_ORIGINS || "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
 const app = express();
 app.set("trust proxy", "loopback");
 app.use(
@@ -49,6 +53,7 @@ app.use(
         connectSrc: ["'self'"],
         objectSrc: ["'none'"],
         frameAncestors: ["'none'"],
+        upgradeInsecureRequests: null,
       },
     },
     crossOriginEmbedderPolicy: false,
@@ -64,7 +69,7 @@ const cookie = (req: express.Request, name: string) => {
     .find((x) => x.startsWith(name + "="));
   return part?.slice(name.length + 1);
 };
-function session(res: express.Response) {
+function session(req: express.Request, res: express.Response) {
   const token = randomBytes(32).toString("base64url");
   store.db
     .prepare("INSERT INTO credentials VALUES (?,?,?,?,?)")
@@ -77,7 +82,9 @@ function session(res: express.Response) {
     );
   res.cookie("listflow_session", token, {
     httpOnly: true,
-    secure: origin.startsWith("https:"),
+    secure:
+      origin.startsWith("https:") &&
+      !lanOrigins.includes(`${req.protocol}://${req.get("host")}`),
     sameSite: "strict",
     path: base || "/",
     maxAge: 30 * 86400000,
@@ -87,6 +94,7 @@ router.use((req, res, next) => {
   const requestOrigin = req.headers.origin;
   const allowed = [
     origin,
+    ...lanOrigins,
     ...(
       process.env.NATIVE_ORIGINS || "https://localhost,http://localhost"
     ).split(","),
@@ -149,7 +157,7 @@ router.post("/auth/login", (req, res) => {
     res.status(401).json({ error: "Incorrect password" });
     return;
   }
-  session(res);
+  session(req, res);
   res.json({ ok: true });
 });
 router.get("/auth/google", (req, res) => {
@@ -225,7 +233,7 @@ router.get("/auth/google/callback", async (req, res) => {
       throw new Error("This Google account is not the workspace owner");
     if (tokens.refresh_token)
       store.set("google_refresh", seal(tokens.refresh_token, secret));
-    session(res);
+    session(req, res);
     res.redirect(base + "/");
   } catch (e) {
     res

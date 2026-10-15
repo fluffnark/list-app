@@ -1,0 +1,7 @@
+
+# ListFlow LAN HTTP; bind only private LAN addresses, not public IPv6 or Tailscale.
+http://:4443 {
+    bind 192.168.1.44 192.168.1.253
+    redir / /listflow/ 302
+    reverse_proxy 127.0.0.1:4318
+}

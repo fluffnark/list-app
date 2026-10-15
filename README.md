@@ -20,7 +20,7 @@ The server generates a workspace password at `data/admin-password` on first laun
 
 https://harmony.great-kettle.ts.net:4443/listflow/
 
-The service is Tailscale-only on a dedicated HTTPS origin (port 4443). Connect your browser and phone to Harmony’s tailnet first. Public Funnel is intentionally disabled for ListFlow. The separate origin isolates its browser access from the other apps on Harmony.
+The service offers private Tailscale HTTPS on port 4443 and, by explicit owner request, LAN HTTP at `http://harmony.local:4443/` (redirects to `/listflow/`). Public Funnel is disabled for ListFlow. The LAN proxy binds only `192.168.1.44` and `192.168.1.253`; its Caddy snippet is in `deploy/listflow-lan.caddy`. Update these bindings and `LAN_HTTP_ORIGINS` if DHCP addresses change. HTTP traffic is unencrypted; use Tailscale HTTPS for encrypted access and installable/offline PWA support. Browser storage is separate for each origin, so sign in and sync before switching between them.
 
 Retrieve the owner password without placing it in Git:
 

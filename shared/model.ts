@@ -3,7 +3,17 @@ import { DateTime } from "luxon";
 export const WORKSPACE = "personal";
 export const INBOX = "00000000-0000-4000-8000-000000000001";
 export const SHOPPING = "00000000-0000-4000-8000-000000000002";
-export const uuid = () => crypto.randomUUID();
+export const uuid = () => {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  // getRandomValues is also available on LAN HTTP, where randomUUID is absent.
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+};
 const nullableText = z.string().max(100000).nullable();
 export const recurrenceSchema = z.object({
   frequency: z.enum(["daily", "weekly", "monthly"]),

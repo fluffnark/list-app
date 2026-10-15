@@ -1,6 +1,6 @@
 # Connect an assistant
 
-The deployment is Tailscale-only. Direct clients must be on Harmony’s tailnet. Cloud-hosted ChatGPT can use an explicitly configured OpenAI Secure MCP Tunnel; it cannot directly reach the private URL. Keep public Funnel disabled for ListFlow.
+The encrypted deployment uses private Tailscale HTTPS. The owner also enabled a LAN-only HTTP browser endpoint; use HTTPS for assistant connections. Direct HTTPS clients must be on Harmony’s tailnet. Cloud-hosted ChatGPT can use an explicitly configured OpenAI Secure MCP Tunnel; it cannot directly reach the private URL. Keep public Funnel disabled for ListFlow.
 
 The deployment serves:
 
@@ -40,3 +40,8 @@ The current assistant OAuth grant permits workspace-wide read/edit, not an enfor
 [ChatGPT’s Google Drive app](https://help.openai.com/en/articles/10929079-google-drive-app-and-setup-in-chatgpt) supports Sheets access and permitted write actions. This does not establish a ListFlow connection. ListFlow’s current Sheets integration projects the operation ledger into a spreadsheet; it detects external changes but does not import cell edits. Use Sheets for reading exported context only until a validated operation-import path exists. Directly editing Items or OperationLog would bypass conflict handling and can be replaced during projection repair.
 
 At the time this guide was updated, Harmony reported Google OAuth unconfigured (`/api/config` returned `google: false`), so no live Sheets connection was verified. The secure tunnel is also not yet configured in the account. Browser/computer-use surfaces were unavailable to this coding session.
+
+
+Tunnel setup update: the owner supplied a tunnel ID, retained only in Harmony’s local configuration. As of this check, the official tunnel guide and API pricing page did not state an explicit zero-price guarantee. Do not activate the client until the account’s terms confirm no additional charge. Runtime credentials and ChatGPT-account connection are still pending; no inference API calls or billing changes were made.
+
+Harmony preparation completed: installed the official ARM64 tunnel-client v0.0.16 after verifying its SHA-256 against GitHub release metadata; initialized the `listflow` OAuth/DCR profile in `~/.config/tunnel-client/listflow.yaml` with the supplied tunnel ID and private HTTPS MCP URL. The profile is mode 0600. No polling daemon was started, no runtime key was supplied, and no model/API inference request was made. Computer-use account verification remains unavailable (`CUA_REPL_ENABLED_SURFACES is required`).

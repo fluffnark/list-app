@@ -45,3 +45,10 @@ No ChatGPT-account installation or live notes tool call is claimed. Harmony repo
 Android follow-up: emulator offline/SQLite recovery, share target and deep link checks passed. Native read/write gateway integration passed with a fresh disposable app state and debug-only HTTP test configuration; production Capacitor configuration was restored to `allowMixedContent: false`. Initial sync reruns reused a cursor from another temporary test database and failed; the integration test now resets app data only on an emulator and refuses physical-device resets.
 
 Production follow-up: Harmony private HTTPS login, capture, durable sync, desktop/mobile rendering and OAuth discovery passed on v0.2.0. Tailscale Serve inspection confirmed no Funnel grant for ListFlow port 4443.
+
+
+## Owner-requested LAN HTTP
+
+Enabled `http://harmony.local:4443/` with a redirect to `/listflow/`, through a Caddy listener bound to Harmony’s two private IPv4 LAN addresses. The Tailscale listener on the same port continues to serve HTTPS. Added an exact LAN-origin allowlist and HTTP cookie handling; HTTPS cookies remain Secure. Added cryptographically random UUID fallback for non-secure browser contexts.
+
+Executed production build, 38 unit/integration tests and 7 browser tests successfully. A production Chromium check through an SSH SOCKS route verified actual non-secure-context LAN launch, login, HTTP-only session cookie persistence, note capture, durable sync, reload, test-note cleanup, rejected unapproved origins, and Secure cookies on the HTTPS endpoint. The LAN test is `scripts/test-lan.mjs`. Public Funnel remains disabled for ListFlow. PWA service-worker/offline shell installation requires HTTPS; separate origins keep separate local working copies.
