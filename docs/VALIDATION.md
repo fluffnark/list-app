@@ -64,3 +64,8 @@ After the owner saved the runtime key and requested continuation, verified mode-
 Observed ChatGPT registration succeed but authorization fail with `Invalid resource`: ChatGPT supplies its exact tunnel resource identifier instead of the original Tailscale MCP URL. Added an explicitly configured resource alias, retained it in grants, and enforced resource equality during token exchange. Also corrected the LAN HTTP consent nonce cookie and same-origin form action.
 
 Production build passed; 39 unit/integration tests and 7 browser/API tests passed. New coverage completes LAN-origin consent and a PKCE token exchange with the tunnel audience, rejects another tunnel and a changed token audience, preserves Secure cookies for unapproved origins, and rejects authorization-code reuse. Production checks confirmed consent HTML and cookie mode on both HTTPS and LAN HTTP using the configured tunnel audience. A first diagnostic held a SQLite test-cleanup transaction across an HTTP request and failed due to its own write lock; rerunning with immediate cleanup commits passed.
+
+
+## APK download in Settings
+
+Moved the signed Android APK download from the bottom recovery controls into its own Android app card at the top of Settings. The link names the current v0.2.0 APK and includes a download filename. Production browser verification at a 390px mobile viewport confirmed the card/link is immediately visible and downloaded bytes match the signed release SHA-256. Production build passed.

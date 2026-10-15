@@ -2116,6 +2116,18 @@ function SettingsPanel({
         </div>
         <div className="settings-content">
           <div className="settings-card">
+            <h3>Android app</h3>
+            <p>Install ListFlow on your phone.</p>
+            <a
+              className="primary-button"
+              href={apiRoot() + "/downloads/listflow-v0.2.0.apk"}
+              download="listflow-v0.2.0.apk"
+            >
+              <Download size={18} />
+              Download Android APK
+            </a>
+          </div>
+          <div className="settings-card">
             <h3>Your workspace</h3>
             <p>
               {session
@@ -2632,12 +2644,6 @@ function SettingsPanel({
               >
                 Refresh server snapshot
               </button>
-              <a
-                className="text-button"
-                href={apiRoot() + "/downloads/listflow-v0.2.0.apk"}
-              >
-                Download Android APK <Download size={14} />
-              </a>
             </div>
             <p className="tiny muted">
               Trash and audit records are retained indefinitely in this release.
