@@ -82,6 +82,7 @@ import {
 } from "../shared/model";
 import { native } from "./native";
 import "./style.css";
+import { ThemePicker } from "./themes";
 import { NoteEditor, CategoryIcon, CategoryIconPicker } from "./notes";
 const client = new QueryClient();
 let initialData: Entity[] = [];
@@ -2147,13 +2148,14 @@ function SettingsPanel({
           </button>
         </div>
         <div className="settings-content">
+          <ThemePicker />
           <div className="settings-card">
             <h3>Android app</h3>
             <p>Install ListFlow on your phone.</p>
             <a
               className="primary-button"
-              href={apiRoot() + "/downloads/listflow-v0.3.0.apk"}
-              download="listflow-v0.3.0.apk"
+              href={apiRoot() + "/downloads/listflow-v0.4.0.apk"}
+              download="listflow-v0.4.0.apk"
             >
               <Download size={18} />
               Download Android APK
@@ -2705,7 +2707,7 @@ function SettingsPanel({
             )}
           </div>
           <p className="settings-footnote">
-            ListFlow 0.3.0 · Built for a quieter day
+            ListFlow 0.4.0 · Built for a quieter day
           </p>
         </div>
       </div>

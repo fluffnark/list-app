@@ -346,3 +346,94 @@ test("mobile rich notes preserve Markdown, images and drawings offline; categori
   ).toBeVisible();
   await context.setOffline(false);
 });
+
+test("themes apply across the app, persist offline and support light mode and keyboard selection", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await page.reload();
+  await page.getByRole("button", { name: "Open account settings" }).click();
+  await expect(
+    page.getByRole("radio", { name: "Catppuccin Mocha", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("radio", { name: "Catppuccin Mocha", exact: true })
+    .click();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "catppuccin",
+  );
+  expect(
+    await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).getPropertyValue("--bg")),
+  ).toBe("#1e1e2e");
+  await page.getByLabel("Search themes").fill("Tycho");
+  await page.getByRole("radio", { name: "Tycho", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
+  await page
+    .locator(".settings-modal")
+    .screenshot({ path: "docs/screenshots/theme-tycho-mobile.png" });
+  await page.getByRole("button", { name: "Close settings" }).click();
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
+  await page.getByRole("button", { name: "Open account settings" }).click();
+  await page.getByLabel("Search themes").fill("Dracula");
+  await page.getByRole("radio", { name: "Dracula", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "community-dracula",
+  );
+  await page.getByLabel("Search themes").fill("Catppuccin");
+  await page.getByLabel("Theme mode").selectOption("light");
+  await page
+    .getByRole("radio", { name: "Catppuccin Latte", exact: true })
+    .click();
+  await page.setViewportSize({ width: 320, height: 720 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  expect(
+    await page
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).colorScheme),
+  ).toBe("light");
+  await page
+    .locator(".settings-modal")
+    .screenshot({ path: "docs/screenshots/theme-latte-mobile.png" });
+  await page.getByLabel("Theme mode").selectOption("all");
+  await page.getByLabel("Search themes").fill("no such theme xyz");
+  await expect(page.getByRole("status")).toHaveText(
+    "No themes match your search.",
+  );
+  await page.getByLabel("Search themes").fill("Tycho");
+  await page.getByRole("radio", { name: "Tycho", exact: true }).focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(
+    page.getByRole("radio", { name: "Tycho", exact: true }),
+  ).toBeChecked();
+  await context.setOffline(false);
+  const second = await context.newPage();
+  await second.goto("/");
+  await expect(second.locator("html")).toHaveAttribute("data-theme", "tycho");
+  await page.getByLabel("Search themes").fill("ListFlow");
+  await page.getByRole("radio", { name: "ListFlow", exact: true }).click();
+  await expect(second.locator("html")).toHaveAttribute(
+    "data-theme",
+    "listflow",
+  );
+  await second.close();
+  await page.evaluate(() =>
+    localStorage.setItem("listflow-theme", "missing-theme"),
+  );
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "listflow");
+});

@@ -42,6 +42,9 @@ try {
     page.getByRole("heading", { name: "Your space." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Open account settings" }).click();
+  await page.getByLabel("Search themes").fill("Tycho");
+  await page.getByRole("radio", { name: "Tycho", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
   const password = execFileSync(
     "ssh",
     [
@@ -61,7 +64,7 @@ try {
   ).toBeVisible();
   // Check the exact deployed artifact without opening other workspace records.
   const href = await page
-    .locator('a[download="listflow-v0.3.0.apk"]')
+    .locator('a[download="listflow-v0.4.0.apk"]')
     .getAttribute("href");
   const artifact = await context.request.get(new URL(href, url).href);
   expect(artifact.ok()).toBe(true);
@@ -71,7 +74,7 @@ try {
       .digest("hex"),
   ).toBe(
     createHash("sha256")
-      .update(readFileSync("releases/listflow-v0.3.0.apk"))
+      .update(readFileSync("releases/listflow-v0.4.0.apk"))
       .digest("hex"),
   );
   await page.getByRole("button", { name: "Close settings" }).click();
@@ -136,6 +139,7 @@ try {
   await page.getByRole("button", { name: "Close details" }).click();
   await context.setOffline(true);
   await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
   await page.getByText(title, { exact: true }).click();
   await page.getByRole("button", { name: "Preview", exact: true }).click();
   await expect
@@ -155,7 +159,7 @@ try {
     true,
   );
   console.log(
-    "PASS: production login, v0.3.0 APK checksum, authenticated image upload, Markdown render, offline image reload, MCP ID-zero discovery.",
+    "PASS: production login, persistent Tycho theme, v0.4.0 APK checksum, authenticated image upload, Markdown render, offline image reload, MCP ID-zero discovery.",
   );
 } finally {
   await context.setOffline(false);

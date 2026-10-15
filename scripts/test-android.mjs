@@ -28,6 +28,12 @@ try {
     .locator(".home-navigation")
     .getByRole("button", { name: /Inbox/ })
     .click();
+  await page.getByRole("button", { name: "Open account settings" }).click();
+  await page.getByLabel("Search themes").fill("Tycho");
+  await page.getByRole("radio", { name: "Tycho", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
+  await page.screenshot({ path: "docs/screenshots/android-theme-tycho.png" });
+  await page.getByRole("button", { name: "Close settings" }).click();
   await device.shell("svc wifi disable");
   await device.shell("svc data disable");
   await page.getByRole("button", { name: "Quick capture" }).click();
@@ -92,6 +98,7 @@ try {
     throw new Error("SQLite checkpoint did not contain queued operation");
   await device.shell("am force-stop " + pkg);
   page = await start();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
   await expect(
     page.getByRole("heading", { name: "Your space." }),
   ).toBeVisible();
@@ -124,6 +131,7 @@ try {
   });
   await device.shell("am force-stop " + pkg);
   page = await start();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
   await expect(
     page.getByRole("heading", { name: "Your space." }),
   ).toBeVisible();
@@ -174,7 +182,7 @@ try {
   await device.shell("svc wifi enable");
   await device.shell("svc data enable");
   console.log(
-    "PASS: Android bundled launch, offline capture, native SQLite queued checkpoint, force-stop recovery, Markdown and drawing recovery after IndexedDB deletion, share target, shopping deep link.",
+    "PASS: Android bundled launch, offline capture, native SQLite queued checkpoint, force-stop recovery, persistent theme, Markdown and drawing recovery after IndexedDB deletion, share target, shopping deep link.",
   );
 } finally {
   await device.shell("svc wifi enable");

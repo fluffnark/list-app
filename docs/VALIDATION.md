@@ -92,3 +92,11 @@ Production build and 40 unit/integration tests passed. All 11 Playwright browser
 Signed v0.3.0 APK/AAB builds succeeded and APK signature verification passed. API 36 emulator tests passed bundled launch, offline capture, native SQLite checkpoint, force-stop recovery, Markdown/drawing restoration after deliberately clearing IndexedDB, native share target and Shopping deep link. Physical devices, large image library performance, endurance, and live Google Sheets remain untested.
 
 Production v0.3.0 verification passed owner login, exact APK download SHA-256, authenticated image upload, live Markdown/image rendering, offline image reload, and MCP tool discovery with request ID zero including get_attachment. The synthetic test note was moved to Trash and its owner session revoked. Both gateway and tunnel readiness passed after deployment. Actual ChatGPT account discovery still requires a client refresh/retry; server-side probes do not establish account-side success.
+
+## v0.4.0 themes
+
+Executed production build, 41 unit/integration tests and all 12 Playwright browser/API tests successfully. Palette validation covers unique stable IDs, all 192 palettes, valid color values and text/accent-button contrast calculations. Browser coverage verifies Catppuccin, Dracula and Tycho application, mobile 320px light-theme overflow, offline persistence, empty search, keyboard selection, cross-tab updates and unknown-ID fallback. Inspected mobile Tycho, Catppuccin Latte and native Android screenshots.
+
+Signed APK/AAB builds and APK signature verification passed. Android API 36 emulator verified Tycho survives force-stop/relaunch alongside offline capture, SQLite restoration after IndexedDB deletion, drawings, sharing and deep links. The first installation attempt was made while the emulator was still booting; installation and the complete device test passed once boot completed. Physical-device appearance/performance is not claimed tested.
+
+Harmony v0.4.0 deployment passed owner login, persistent Tycho selection including offline reload, exact APK SHA-256, authenticated image upload/rendering, Markdown and MCP request-ID-zero discovery. The synthetic note was moved to Trash and its test session revoked. Gateway/tunnel readiness passed after deployment.

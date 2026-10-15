@@ -32,7 +32,7 @@ The web shell is public; all synchronized user data, search, exports, and assist
 
 ## Android
 
-Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.3.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
+Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.4.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
 
 For cross-device sync:
 
@@ -105,4 +105,8 @@ Trash and audit are retained indefinitely in v0.1; the UI supports recovery and 
 
 Notes have Edit/Preview modes with CommonMark and GitHub-flavored Markdown, including tables, checklists, links and code blocks. Add or paste images, draw with pen/color/undo controls, and export a ZIP containing Markdown and its images. Images and doodles are saved locally, then synchronized through authenticated attachment endpoints. Larger images are resized; the uploaded limit is 1 MiB per image. Cached images remain available offline. Raw HTML is displayed as text.
 
-In All Lists, create a category with an emoji or use Upload icon for a custom PNG/JPEG/WebP. Icons synchronize with the category. Settings provides the signed v0.3.0 Android download; older APK URLs remain available.
+In All Lists, create a category with an emoji or use Upload icon for a custom PNG/JPEG/WebP. Icons synchronize with the category. Settings provides the signed v0.4.0 Android download; older APK URLs remain available.
+
+## Appearance
+
+Settings → Appearance includes 192 offline themes: Catppuccin Mocha/Latte, Dracula, Tycho, Omarchy stock themes and community palettes. Search or filter light/dark, then tap a preview to apply. Your choice stays on this device and updates other open tabs. Select ListFlow to restore the original theme. [Palette sources and details](docs/THEMES.md).

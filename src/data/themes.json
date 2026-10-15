@@ -1,0 +1,3440 @@
+[
+  {
+    "id": "catppuccin-latte",
+    "name": "Catppuccin Latte",
+    "group": "Featured",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/catppuccin-latte",
+    "mode": "light",
+    "colors": {
+      "background": "#eff1f5",
+      "foreground": "#4c4f69",
+      "accent": "#1e66f5",
+      "red": "#d20f39",
+      "green": "#40a02b",
+      "yellow": "#df8e1d",
+      "blue": "#1e66f5",
+      "magenta": "#ea76cb",
+      "cyan": "#179299"
+    }
+  },
+  {
+    "id": "catppuccin",
+    "name": "Catppuccin Mocha",
+    "group": "Featured",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/catppuccin",
+    "mode": "dark",
+    "colors": {
+      "background": "#1e1e2e",
+      "foreground": "#cdd6f4",
+      "accent": "#89b4fa",
+      "red": "#f38ba8",
+      "green": "#a6e3a1",
+      "yellow": "#f9e2af",
+      "blue": "#89b4fa",
+      "magenta": "#f5c2e7",
+      "cyan": "#94e2d5"
+    }
+  },
+  {
+    "id": "community-dracula",
+    "name": "Dracula",
+    "group": "Featured",
+    "source": "https://github.com/catlee/omarchy-dracula-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#282a36",
+      "foreground": "#f8f8f2",
+      "accent": "#8be9fd",
+      "red": "#ff5555",
+      "green": "#50fa7b",
+      "yellow": "#f1fa8c",
+      "blue": "#bd93f9",
+      "magenta": "#ff79c6",
+      "cyan": "#8be9fd"
+    }
+  },
+  {
+    "id": "tycho",
+    "name": "Tycho",
+    "group": "Featured",
+    "source": "https://github.com/leonardobetti/omarchy-tycho",
+    "mode": "dark",
+    "colors": {
+      "background": "#1e2125",
+      "foreground": "#f0e9ec",
+      "accent": "#9b826b",
+      "red": "#976870",
+      "green": "#b4756b",
+      "yellow": "#c17a6a",
+      "blue": "#9b826b",
+      "magenta": "#b48162",
+      "cyan": "#706b82"
+    }
+  },
+  {
+    "id": "ethereal",
+    "name": "Ethereal",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/ethereal",
+    "mode": "dark",
+    "colors": {
+      "background": "#060b1e",
+      "foreground": "#ffcead",
+      "accent": "#7d82d9",
+      "red": "#ed5b5a",
+      "green": "#92a593",
+      "yellow": "#e9bb4f",
+      "blue": "#7d82d9",
+      "magenta": "#c89dc1",
+      "cyan": "#a3bfd1"
+    }
+  },
+  {
+    "id": "everforest",
+    "name": "Everforest",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/everforest",
+    "mode": "dark",
+    "colors": {
+      "background": "#2d353b",
+      "foreground": "#d3c6aa",
+      "accent": "#7fbbb3",
+      "red": "#e67e80",
+      "green": "#a7c080",
+      "yellow": "#dbbc7f",
+      "blue": "#7fbbb3",
+      "magenta": "#d699b6",
+      "cyan": "#83c092"
+    }
+  },
+  {
+    "id": "flexoki-light",
+    "name": "Flexoki Light",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/flexoki-light",
+    "mode": "light",
+    "colors": {
+      "background": "#fffcf0",
+      "foreground": "#100f0f",
+      "accent": "#205ea6",
+      "red": "#d14d41",
+      "green": "#879a39",
+      "yellow": "#d0a215",
+      "blue": "#205ea6",
+      "magenta": "#ce5d97",
+      "cyan": "#3aa99f"
+    }
+  },
+  {
+    "id": "gruvbox",
+    "name": "Gruvbox",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/gruvbox",
+    "mode": "dark",
+    "colors": {
+      "background": "#282828",
+      "foreground": "#d4be98",
+      "accent": "#7daea3",
+      "red": "#ea6962",
+      "green": "#a9b665",
+      "yellow": "#d8a657",
+      "blue": "#7daea3",
+      "magenta": "#d3869b",
+      "cyan": "#89b482"
+    }
+  },
+  {
+    "id": "hackerman",
+    "name": "Hackerman",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/hackerman",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0c16",
+      "foreground": "#ddf7ff",
+      "accent": "#82fb9c",
+      "red": "#50f872",
+      "green": "#4fe88f",
+      "yellow": "#50f7d4",
+      "blue": "#829dd4",
+      "magenta": "#86a7df",
+      "cyan": "#7cf8f7"
+    }
+  },
+  {
+    "id": "kanagawa",
+    "name": "Kanagawa",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/kanagawa",
+    "mode": "dark",
+    "colors": {
+      "background": "#1f1f28",
+      "foreground": "#dcd7ba",
+      "accent": "#dcd7ba",
+      "red": "#c34043",
+      "green": "#76946a",
+      "yellow": "#c0a36e",
+      "blue": "#7e9cd8",
+      "magenta": "#957fb8",
+      "cyan": "#6a9589"
+    }
+  },
+  {
+    "id": "last-horizon",
+    "name": "Last Horizon",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/last-horizon",
+    "mode": "dark",
+    "colors": {
+      "background": "#0c0b0c",
+      "foreground": "#fafcfb",
+      "accent": "#b59790",
+      "red": "#c38b7b",
+      "green": "#87a9b0",
+      "yellow": "#6b5e73",
+      "blue": "#b59790",
+      "magenta": "#c4d8e2",
+      "cyan": "#a5a0b6"
+    }
+  },
+  {
+    "id": "lumon",
+    "name": "Lumon",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/lumon",
+    "mode": "dark",
+    "colors": {
+      "background": "#16242d",
+      "foreground": "#d6e2ee",
+      "accent": "#8bc9eb",
+      "red": "#4d86b0",
+      "green": "#5e95bc",
+      "yellow": "#6fa4c9",
+      "blue": "#6fb8e3",
+      "magenta": "#8bc9eb",
+      "cyan": "#b4e4f6"
+    }
+  },
+  {
+    "id": "lupine",
+    "name": "Lupine",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/lupine",
+    "mode": "light",
+    "colors": {
+      "background": "#fafafa",
+      "foreground": "#212121",
+      "accent": "#3264eb",
+      "red": "#c900c4",
+      "green": "#4a2fd0",
+      "yellow": "#026fde",
+      "blue": "#3264eb",
+      "magenta": "#8a4ad7",
+      "cyan": "#0c67de"
+    }
+  },
+  {
+    "id": "matte-black",
+    "name": "Matte Black",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/matte-black",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#bebebe",
+      "accent": "#e68e0d",
+      "red": "#d35f5f",
+      "green": "#ffc107",
+      "yellow": "#b91c1c",
+      "blue": "#e68e0d",
+      "magenta": "#d35f5f",
+      "cyan": "#bebebe"
+    }
+  },
+  {
+    "id": "miasma",
+    "name": "Miasma",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/miasma",
+    "mode": "dark",
+    "colors": {
+      "background": "#222222",
+      "foreground": "#c2c2b0",
+      "accent": "#78824b",
+      "red": "#685742",
+      "green": "#5f875f",
+      "yellow": "#b36d43",
+      "blue": "#78824b",
+      "magenta": "#bb7744",
+      "cyan": "#c9a554"
+    }
+  },
+  {
+    "id": "nord",
+    "name": "Nord",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/nord",
+    "mode": "dark",
+    "colors": {
+      "background": "#2e3440",
+      "foreground": "#d8dee9",
+      "accent": "#81a1c1",
+      "red": "#bf616a",
+      "green": "#a3be8c",
+      "yellow": "#ebcb8b",
+      "blue": "#81a1c1",
+      "magenta": "#b48ead",
+      "cyan": "#88c0d0"
+    }
+  },
+  {
+    "id": "osaka-jade",
+    "name": "Osaka Jade",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/osaka-jade",
+    "mode": "dark",
+    "colors": {
+      "background": "#111c18",
+      "foreground": "#c1c497",
+      "accent": "#509475",
+      "red": "#ff5345",
+      "green": "#549e6a",
+      "yellow": "#459451",
+      "blue": "#509475",
+      "magenta": "#d2689c",
+      "cyan": "#2dd5b7"
+    }
+  },
+  {
+    "id": "retro-82",
+    "name": "Retro 82",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/retro-82",
+    "mode": "dark",
+    "colors": {
+      "background": "#05182e",
+      "foreground": "#f6dcac",
+      "accent": "#faa968",
+      "red": "#f85525",
+      "green": "#028391",
+      "yellow": "#e97b3c",
+      "blue": "#3f8f8a",
+      "magenta": "#3f8f8a",
+      "cyan": "#8cbfb8"
+    }
+  },
+  {
+    "id": "ristretto",
+    "name": "Ristretto",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/ristretto",
+    "mode": "dark",
+    "colors": {
+      "background": "#2c2525",
+      "foreground": "#e6d9db",
+      "accent": "#f38d70",
+      "red": "#fd6883",
+      "green": "#adda78",
+      "yellow": "#f9cc6c",
+      "blue": "#f38d70",
+      "magenta": "#a8a9eb",
+      "cyan": "#85dacc"
+    }
+  },
+  {
+    "id": "rose-pine",
+    "name": "Rose Pine",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/rose-pine",
+    "mode": "light",
+    "colors": {
+      "background": "#faf4ed",
+      "foreground": "#575279",
+      "accent": "#56949f",
+      "red": "#b4637a",
+      "green": "#286983",
+      "yellow": "#ea9d34",
+      "blue": "#56949f",
+      "magenta": "#907aa9",
+      "cyan": "#d7827e"
+    }
+  },
+  {
+    "id": "solitude",
+    "name": "Solitude",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/solitude",
+    "mode": "dark",
+    "colors": {
+      "background": "#101315",
+      "foreground": "#cacccc",
+      "accent": "#798186",
+      "red": "#565d60",
+      "green": "#9fa5a9",
+      "yellow": "#d9dbdc",
+      "blue": "#798186",
+      "magenta": "#aeaeae",
+      "cyan": "#707070"
+    }
+  },
+  {
+    "id": "tokyo-night",
+    "name": "Tokyo Night",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/tokyo-night",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a1b26",
+      "foreground": "#a9b1d6",
+      "accent": "#7aa2f7",
+      "red": "#f7768e",
+      "green": "#9ece6a",
+      "yellow": "#e0af68",
+      "blue": "#7aa2f7",
+      "magenta": "#ad8ee6",
+      "cyan": "#449dab"
+    }
+  },
+  {
+    "id": "vantablack",
+    "name": "Vantablack",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/vantablack",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#ffffff",
+      "accent": "#8d8d8d",
+      "red": "#a4a4a4",
+      "green": "#b6b6b6",
+      "yellow": "#cecece",
+      "blue": "#8d8d8d",
+      "magenta": "#9b9b9b",
+      "cyan": "#b0b0b0"
+    }
+  },
+  {
+    "id": "white",
+    "name": "White",
+    "group": "Omarchy",
+    "source": "https://github.com/omacom/omarchy/tree/quattro/themes/white",
+    "mode": "light",
+    "colors": {
+      "background": "#ffffff",
+      "foreground": "#000000",
+      "accent": "#6e6e6e",
+      "red": "#2a2a2a",
+      "green": "#3a3a3a",
+      "yellow": "#4a4a4a",
+      "blue": "#1a1a1a",
+      "magenta": "#2e2e2e",
+      "cyan": "#3e3e3e"
+    }
+  },
+  {
+    "id": "community-01",
+    "name": "01",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-01-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#201430",
+      "foreground": "#e1d6f8",
+      "accent": "#ab92fc",
+      "red": "#bf2d2d",
+      "green": "#87ff5f",
+      "yellow": "#e6bb85",
+      "blue": "#ab92fc",
+      "magenta": "#ce67f0",
+      "cyan": "#a4d2ec"
+    }
+  },
+  {
+    "id": "community-aegean-sunset",
+    "name": "Aegean Sunset",
+    "group": "Omarchy community",
+    "source": "https://github.com/vespovios/omarchy-aegean-sunset-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#303f4a",
+      "foreground": "#d6d3c9",
+      "accent": "#9db8cd",
+      "red": "#cc9a90",
+      "green": "#a9b59b",
+      "yellow": "#d5bd8b",
+      "blue": "#9db8cd",
+      "magenta": "#b8a6bf",
+      "cyan": "#9dbfc0"
+    }
+  },
+  {
+    "id": "community-aetheria",
+    "name": "Aetheria",
+    "group": "Omarchy community",
+    "source": "https://github.com/JJDizz1L/aetheria",
+    "mode": "dark",
+    "colors": {
+      "background": "#0e091d",
+      "foreground": "#14b9b5",
+      "accent": "#be3f50",
+      "red": "#be3f50",
+      "green": "#be3f50",
+      "yellow": "#be3f50",
+      "blue": "#be3f50",
+      "magenta": "#be3f50",
+      "cyan": "#be3f50"
+    }
+  },
+  {
+    "id": "community-aonagi",
+    "name": "Aonagi",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-aonagi-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#302270",
+      "foreground": "#86f3f5",
+      "accent": "#898efa",
+      "red": "#ff50cf",
+      "green": "#96f47c",
+      "yellow": "#f3f370",
+      "blue": "#898efa",
+      "magenta": "#d084e7",
+      "cyan": "#75c4f4"
+    }
+  },
+  {
+    "id": "community-arc-blueberry",
+    "name": "Arc Blueberry",
+    "group": "Omarchy community",
+    "source": "https://github.com/vale-c/omarchy-arc-blueberry",
+    "mode": "dark",
+    "colors": {
+      "background": "#111422",
+      "foreground": "#bcc1dc",
+      "accent": "#8eb0e6",
+      "red": "#e35535",
+      "green": "#3cec85",
+      "yellow": "#eacd61",
+      "blue": "#69c3ff",
+      "magenta": "#f38cec",
+      "cyan": "#22ecdb"
+    }
+  },
+  {
+    "id": "community-archwave",
+    "name": "Archwave",
+    "group": "Omarchy community",
+    "source": "https://github.com/davidguttman/archwave",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a0d2e",
+      "foreground": "#d4a5ff",
+      "accent": "#8b9aff",
+      "red": "#ff6ec7",
+      "green": "#5ffbf1",
+      "yellow": "#f9f871",
+      "blue": "#8b9aff",
+      "magenta": "#f4a5ff",
+      "cyan": "#5ffbf1"
+    }
+  },
+  {
+    "id": "community-ash",
+    "name": "Ash",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-ash-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#e0e0e0",
+      "accent": "#626262",
+      "red": "#8a8a8a",
+      "green": "#767676",
+      "yellow": "#9e9e9e",
+      "blue": "#626262",
+      "magenta": "#8a8a8a",
+      "cyan": "#767676"
+    }
+  },
+  {
+    "id": "community-atelier",
+    "name": "Atelier",
+    "group": "Omarchy community",
+    "source": "https://github.com/atif-1402/omarchy-atelier-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#22221b",
+      "foreground": "#dcd9d6",
+      "accent": "#36a166",
+      "red": "#36a166",
+      "green": "#36a166",
+      "yellow": "#36a166",
+      "blue": "#36a166",
+      "magenta": "#36a166",
+      "cyan": "#36a166"
+    }
+  },
+  {
+    "id": "community-aura",
+    "name": "Aura",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-aura-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#282a36",
+      "foreground": "#f8f8f2",
+      "accent": "#8be9fd",
+      "red": "#ffafcc",
+      "green": "#8be9fd",
+      "yellow": "#cbc3e3",
+      "blue": "#8be9fd",
+      "magenta": "#ffc8dd",
+      "cyan": "#8be9fd"
+    }
+  },
+  {
+    "id": "community-awakening",
+    "name": "Awakening",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-awakening-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#141010",
+      "foreground": "#dacbe6",
+      "accent": "#1d52a1",
+      "red": "#c92b50",
+      "green": "#449392",
+      "yellow": "#ffff00",
+      "blue": "#2976d1",
+      "magenta": "#976add",
+      "cyan": "#449392"
+    }
+  },
+  {
+    "id": "community-ayaka",
+    "name": "Ayaka",
+    "group": "Omarchy community",
+    "source": "https://github.com/abhijeet-swami/omarchy-ayaka-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#e6e6e6",
+      "accent": "#6699ff",
+      "red": "#e65c5c",
+      "green": "#66cc66",
+      "yellow": "#ffcc66",
+      "blue": "#6699ff",
+      "magenta": "#cc66cc",
+      "cyan": "#66cccc"
+    }
+  },
+  {
+    "id": "community-azure-glow",
+    "name": "Azure Glow",
+    "group": "Omarchy community",
+    "source": "https://github.com/Hydradevx/omarchy-azure-glow-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0f1a",
+      "foreground": "#a8dfff",
+      "accent": "#00aaff",
+      "red": "#0099cc",
+      "green": "#00e0b8",
+      "yellow": "#33ccff",
+      "blue": "#00aaff",
+      "magenta": "#3399ff",
+      "cyan": "#66e0ff"
+    }
+  },
+  {
+    "id": "community-banish",
+    "name": "Banish",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-banish-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0c0b0d",
+      "foreground": "#d8d1cc",
+      "accent": "#ff2fb3",
+      "red": "#ff4a78",
+      "green": "#f2f2ea",
+      "yellow": "#8f57ff",
+      "blue": "#6c70e0",
+      "magenta": "#bd5cff",
+      "cyan": "#53b1ca"
+    }
+  },
+  {
+    "id": "community-batman",
+    "name": "Batman",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-batman-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1b1d1e",
+      "foreground": "#a7a8a3",
+      "accent": "#fcef0c",
+      "red": "#e6db43",
+      "green": "#c8be46",
+      "yellow": "#f3fd21",
+      "blue": "#737074",
+      "magenta": "#737271",
+      "cyan": "#615f5e"
+    }
+  },
+  {
+    "id": "community-batou",
+    "name": "Batou",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-batou-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#a4a4a4",
+      "accent": "#605d5b",
+      "red": "#e19e74",
+      "green": "#a5a297",
+      "yellow": "#c6c4b0",
+      "blue": "#605d5b",
+      "magenta": "#8a8575",
+      "cyan": "#c2bbb0"
+    }
+  },
+  {
+    "id": "community-biscuit-de-mar-dark",
+    "name": "Biscuit de Mar Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-biscuit-de-mar-dark-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a1515",
+      "foreground": "#dcc9bc",
+      "accent": "#ae3f82",
+      "red": "#f07342",
+      "green": "#768f80",
+      "yellow": "#959a6b",
+      "blue": "#614f76",
+      "magenta": "#7b3d79",
+      "cyan": "#756d94"
+    }
+  },
+  {
+    "id": "community-black_arch",
+    "name": "Black Arch",
+    "group": "Omarchy community",
+    "source": "https://github.com/ankur311sudo/black_arch",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#ffffff",
+      "accent": "#989898",
+      "red": "#989898",
+      "green": "#989898",
+      "yellow": "#989898",
+      "blue": "#989898",
+      "magenta": "#989898",
+      "cyan": "#989898"
+    }
+  },
+  {
+    "id": "community-blackgold",
+    "name": "Black Gold",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-blackgold-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0d0d0d",
+      "foreground": "#ebdbb2",
+      "accent": "#6e6a58",
+      "red": "#d35f5f",
+      "green": "#a3850e",
+      "yellow": "#4d574e",
+      "blue": "#6e6a58",
+      "magenta": "#bfa75d",
+      "cyan": "#7a6a2c"
+    }
+  },
+  {
+    "id": "community-black-sand",
+    "name": "Black Sand",
+    "group": "Omarchy community",
+    "source": "https://github.com/pkovzz/omarchy-black-sand-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#14181e",
+      "foreground": "#ced6e0",
+      "accent": "#ced6e0",
+      "red": "#bd8489",
+      "green": "#89b39b",
+      "yellow": "#c3b798",
+      "blue": "#8ea7c2",
+      "magenta": "#bc9bbf",
+      "cyan": "#8fb5bd"
+    }
+  },
+  {
+    "id": "community-blackturq",
+    "name": "Black Turq",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-blackturq-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0a0a",
+      "foreground": "#c8dcdc",
+      "accent": "#adf0e9",
+      "red": "#d35f5f",
+      "green": "#8fecd5",
+      "yellow": "#a9d1d7",
+      "blue": "#adf0e9",
+      "magenta": "#485362",
+      "cyan": "#5a676b"
+    }
+  },
+  {
+    "id": "community-blackmoney",
+    "name": "BlackMoney",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-blackmoney-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0c0c0c",
+      "foreground": "#d8d4b4",
+      "accent": "#d8d4b4",
+      "red": "#dd5670",
+      "green": "#2a593f",
+      "yellow": "#525b54",
+      "blue": "#d8d4b4",
+      "magenta": "#689e80",
+      "cyan": "#88c6a3"
+    }
+  },
+  {
+    "id": "community-blade-runner",
+    "name": "Blade Runner",
+    "group": "Omarchy community",
+    "source": "https://github.com/BVisagie/omarchy-blade-runner-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0e13",
+      "foreground": "#c3bba9",
+      "accent": "#e08a3a",
+      "red": "#e05a45",
+      "green": "#8daf7e",
+      "yellow": "#d8ae5a",
+      "blue": "#7093c8",
+      "magenta": "#c8745c",
+      "cyan": "#5ec0cc"
+    }
+  },
+  {
+    "id": "community-blood-and-bone",
+    "name": "Blood and Bone",
+    "group": "Omarchy community",
+    "source": "https://github.com/c8h10n4o2-b/omarchy-blood-and-bone-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121416",
+      "foreground": "#e6dfcf",
+      "accent": "#b8444b",
+      "red": "#cf6669",
+      "green": "#9fa98a",
+      "yellow": "#c5aa77",
+      "blue": "#97a8b8",
+      "magenta": "#b99aa7",
+      "cyan": "#93aeaa"
+    }
+  },
+  {
+    "id": "community-bluedotrb",
+    "name": "bluedotrb",
+    "group": "Omarchy community",
+    "source": "https://github.com/dotsilva/omarchy-bluedotrb-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#161616",
+      "foreground": "#f2f4f8",
+      "accent": "#4242b1",
+      "red": "#4242b1",
+      "green": "#4242b1",
+      "yellow": "#4242b1",
+      "blue": "#4242b1",
+      "magenta": "#4242b1",
+      "cyan": "#4242b1"
+    }
+  },
+  {
+    "id": "community-breaking-bad",
+    "name": "Breaking Bad",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-breaking-bad-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#022f31",
+      "foreground": "#ffe26a",
+      "accent": "#52ada8",
+      "red": "#e32535",
+      "green": "#2f8652",
+      "yellow": "#f8c120",
+      "blue": "#52ada8",
+      "magenta": "#e8872e",
+      "cyan": "#329f85"
+    }
+  },
+  {
+    "id": "community-cthulhu-colour-out-of-space",
+    "name": "Call of Cthulhu: Colour Out of Space",
+    "group": "Omarchy community",
+    "source": "https://github.com/sonderbydk/omarchy-cthulhu-colour-out-of-space-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0e0a14",
+      "foreground": "#c5b9d6",
+      "accent": "#a97cf5",
+      "red": "#e0566a",
+      "green": "#7ee06a",
+      "yellow": "#d4c15a",
+      "blue": "#6f8ff0",
+      "magenta": "#a97cf5",
+      "cyan": "#5fd6c9"
+    }
+  },
+  {
+    "id": "community-cthulhu-deep-one",
+    "name": "Call of Cthulhu: Deep One",
+    "group": "Omarchy community",
+    "source": "https://github.com/sonderbydk/omarchy-cthulhu-deep-one-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a1210",
+      "foreground": "#b5c9b8",
+      "accent": "#43d68c",
+      "red": "#d94f5c",
+      "green": "#43d68c",
+      "yellow": "#c9b458",
+      "blue": "#4f9fd1",
+      "magenta": "#a06ee8",
+      "cyan": "#3ec9c0"
+    }
+  },
+  {
+    "id": "community-cthulhu-rlyeh",
+    "name": "Call of Cthulhu: R'lyeh",
+    "group": "Omarchy community",
+    "source": "https://github.com/sonderbydk/omarchy-cthulhu-rlyeh-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#070d14",
+      "foreground": "#b4c4d4",
+      "accent": "#3fb6d9",
+      "red": "#d95560",
+      "green": "#4fc98a",
+      "yellow": "#c8b35a",
+      "blue": "#3fb6d9",
+      "magenta": "#8f7fe0",
+      "cyan": "#4fd6d0"
+    }
+  },
+  {
+    "id": "community-caroline-skyline",
+    "name": "Caroline Skyline",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-caroline-skyline-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1c1213",
+      "foreground": "#e3a68c",
+      "accent": "#684c59",
+      "red": "#684c59",
+      "green": "#684c59",
+      "yellow": "#684c59",
+      "blue": "#684c59",
+      "magenta": "#684c59",
+      "cyan": "#684c59"
+    }
+  },
+  {
+    "id": "community-castle-on-a-lake",
+    "name": "Castle on a Lake",
+    "group": "Omarchy community",
+    "source": "https://github.com/shmall03/omarchy-castle-on-a-lake-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#060606",
+      "foreground": "#f0d4e4",
+      "accent": "#9b6b9f",
+      "red": "#a06048",
+      "green": "#80a070",
+      "yellow": "#d4b060",
+      "blue": "#5870a8",
+      "magenta": "#8060a0",
+      "cyan": "#6090a0"
+    }
+  },
+  {
+    "id": "community-catppuccin-dark",
+    "name": "Catppuccin Mocha Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/Luquatic/omarchy-catppuccin-dark",
+    "mode": "dark",
+    "colors": {
+      "background": "#010101",
+      "foreground": "#cdd6f4",
+      "accent": "#89b4fa",
+      "red": "#89b4fa",
+      "green": "#89b4fa",
+      "yellow": "#89b4fa",
+      "blue": "#89b4fa",
+      "magenta": "#89b4fa",
+      "cyan": "#89b4fa"
+    }
+  },
+  {
+    "id": "community-cincinnati",
+    "name": "Cincinnati",
+    "group": "Omarchy community",
+    "source": "https://github.com/jkwuc89/omarchy-cincinnati-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101b25",
+      "foreground": "#dfe6e4",
+      "accent": "#3a82db",
+      "red": "#9c6b63",
+      "green": "#5a6b45",
+      "yellow": "#c9b77e",
+      "blue": "#2e72ca",
+      "magenta": "#a98f95",
+      "cyan": "#5b96b8"
+    }
+  },
+  {
+    "id": "community-city-783",
+    "name": "City-783",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-city-783-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#181a1f",
+      "foreground": "#b9bec6",
+      "accent": "#ad2222",
+      "red": "#e53939",
+      "green": "#dce0e6",
+      "yellow": "#9e1a1a",
+      "blue": "#ad2222",
+      "magenta": "#c3c8d0",
+      "cyan": "#8f949c"
+    }
+  },
+  {
+    "id": "community-cobalt2",
+    "name": "Cobalt2",
+    "group": "Omarchy community",
+    "source": "https://github.com/hoblin/omarchy-cobalt2-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#122738",
+      "foreground": "#ffffff",
+      "accent": "#ffc600",
+      "red": "#ff628c",
+      "green": "#3ad900",
+      "yellow": "#ffc600",
+      "blue": "#0088ff",
+      "magenta": "#fb94ff",
+      "cyan": "#80fcff"
+    }
+  },
+  {
+    "id": "community-coffee",
+    "name": "Coffee",
+    "group": "Omarchy community",
+    "source": "https://github.com/megabyte0x/omarchy-coffee-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1d150f",
+      "foreground": "#f0e2d0",
+      "accent": "#e0a15c",
+      "red": "#d78a6f",
+      "green": "#cdb878",
+      "yellow": "#ffda92",
+      "blue": "#cf90a2",
+      "magenta": "#ec8f89",
+      "cyan": "#e8c07f"
+    }
+  },
+  {
+    "id": "community-coffee-latte",
+    "name": "Coffee Latte",
+    "group": "Omarchy community",
+    "source": "https://github.com/megabyte0x/omarchy-coffee-latte-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#e8e3c3",
+      "foreground": "#2d1a1d",
+      "accent": "#8e2d53",
+      "red": "#a4405e",
+      "green": "#345600",
+      "yellow": "#636600",
+      "blue": "#8e2d53",
+      "magenta": "#7a003b",
+      "cyan": "#4f6b00"
+    }
+  },
+  {
+    "id": "community-commit",
+    "name": "Commit",
+    "group": "Omarchy community",
+    "source": "https://github.com/c0ze/omarchy-commit-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0f14",
+      "foreground": "#7cffb2",
+      "accent": "#5af78e",
+      "red": "#ff5c57",
+      "green": "#5af78e",
+      "yellow": "#f3f99d",
+      "blue": "#57c7ff",
+      "magenta": "#ff6ac1",
+      "cyan": "#9aedfe"
+    }
+  },
+  {
+    "id": "community-cpunk",
+    "name": "CpUnk",
+    "group": "Omarchy community",
+    "source": "https://github.com/stannorbvb-cmd/cpunk",
+    "mode": "dark",
+    "colors": {
+      "background": "#040303",
+      "foreground": "#ffffff",
+      "accent": "#aaacac",
+      "red": "#aaacac",
+      "green": "#aaacac",
+      "yellow": "#aaacac",
+      "blue": "#aaacac",
+      "magenta": "#aaacac",
+      "cyan": "#aaacac"
+    }
+  },
+  {
+    "id": "community-crimson-gold",
+    "name": "Crimson Gold",
+    "group": "Omarchy community",
+    "source": "https://github.com/knappkevin/omarchy-crimson-gold-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#300808",
+      "foreground": "#d8b22d",
+      "accent": "#9f831c",
+      "red": "#ee3333",
+      "green": "#ffdd55",
+      "yellow": "#b91c1c",
+      "blue": "#e68e0d",
+      "magenta": "#d35f5f",
+      "cyan": "#ee0000"
+    }
+  },
+  {
+    "id": "community-deckard",
+    "name": "Deckard",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-deckard-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#001e49",
+      "foreground": "#eef1d7",
+      "accent": "#1fb1a5",
+      "red": "#1fb1a5",
+      "green": "#1fb1a5",
+      "yellow": "#1fb1a5",
+      "blue": "#1fb1a5",
+      "magenta": "#1fb1a5",
+      "cyan": "#1fb1a5"
+    }
+  },
+  {
+    "id": "community-demon",
+    "name": "Demon",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-demon-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f0f0f",
+      "foreground": "#e0d4c2",
+      "accent": "#5c624b",
+      "red": "#bb1c1c",
+      "green": "#586259",
+      "yellow": "#e24c00",
+      "blue": "#5c624b",
+      "magenta": "#655e56",
+      "cyan": "#7a7d80"
+    }
+  },
+  {
+    "id": "community-dispatch",
+    "name": "Dispatch",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-dispatch-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#141d23",
+      "foreground": "#b69f80",
+      "accent": "#e6c93a",
+      "red": "#d61f20",
+      "green": "#63bba5",
+      "yellow": "#e6c93a",
+      "blue": "#7c49e0",
+      "magenta": "#c44b8f",
+      "cyan": "#93c5b3"
+    }
+  },
+  {
+    "id": "community-dos-moos",
+    "name": "Dos Moos",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-dos-moos-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#131516",
+      "foreground": "#f8ebe3",
+      "accent": "#819890",
+      "red": "#f0334a",
+      "green": "#819890",
+      "yellow": "#f4e276",
+      "blue": "#a5b5ab",
+      "magenta": "#72856c",
+      "cyan": "#6d877d"
+    }
+  },
+  {
+    "id": "community-dune",
+    "name": "Dune",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-dune-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#120d0a",
+      "foreground": "#d1b38a",
+      "accent": "#c86a24",
+      "red": "#8e2f22",
+      "green": "#7f6a46",
+      "yellow": "#b88a42",
+      "blue": "#c86a24",
+      "magenta": "#3c8f95",
+      "cyan": "#8a5e3b"
+    }
+  },
+  {
+    "id": "community-dune-messiah",
+    "name": "Dune Messiah",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-dune-messiah-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#dcd8d6",
+      "foreground": "#47362b",
+      "accent": "#8c4f2a",
+      "red": "#7a3827",
+      "green": "#6f5a36",
+      "yellow": "#7f531d",
+      "blue": "#8c4f2a",
+      "magenta": "#6e4633",
+      "cyan": "#355f68"
+    }
+  },
+  {
+    "id": "community-omarchy",
+    "name": "Eldritch",
+    "group": "Omarchy community",
+    "source": "https://github.com/eldritch-theme/omarchy",
+    "mode": "dark",
+    "colors": {
+      "background": "#212337",
+      "foreground": "#ebfafa",
+      "accent": "#9071f4",
+      "red": "#f9515d",
+      "green": "#37f499",
+      "yellow": "#e9f941",
+      "blue": "#9071f4",
+      "magenta": "#f265b5",
+      "cyan": "#04d1f9"
+    }
+  },
+  {
+    "id": "community-elysian",
+    "name": "Elysian",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-elysian-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#010401",
+      "foreground": "#fdfffd",
+      "accent": "#62e2a4",
+      "red": "#bf5a7c",
+      "green": "#70cf6c",
+      "yellow": "#dfec63",
+      "blue": "#62e2a4",
+      "magenta": "#e0eb7a",
+      "cyan": "#9ed8dd"
+    }
+  },
+  {
+    "id": "community-event-horizon",
+    "name": "Event Horizon",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-event-horizon-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1c1e26",
+      "foreground": "#cbced0",
+      "accent": "#26bbd9",
+      "red": "#e95678",
+      "green": "#29d398",
+      "yellow": "#fac29a",
+      "blue": "#26bbd9",
+      "magenta": "#ee64ac",
+      "cyan": "#59e1e3"
+    }
+  },
+  {
+    "id": "community-evergarden",
+    "name": "Evergarden",
+    "group": "Omarchy community",
+    "source": "https://github.com/celsobenedetti/omarchy-evergarden",
+    "mode": "dark",
+    "colors": {
+      "background": "#232a2e",
+      "foreground": "#adc9bc",
+      "accent": "#b3e6db",
+      "red": "#b3e6db",
+      "green": "#b3e6db",
+      "yellow": "#b3e6db",
+      "blue": "#b3e6db",
+      "magenta": "#b3e6db",
+      "cyan": "#b3e6db"
+    }
+  },
+  {
+    "id": "community-evergreen",
+    "name": "Evergreen",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-evergreen-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101913",
+      "foreground": "#a1af9c",
+      "accent": "#4a9a68",
+      "red": "#c87a5c",
+      "green": "#6aae52",
+      "yellow": "#c4a64e",
+      "blue": "#4a9a68",
+      "magenta": "#8a7856",
+      "cyan": "#52987a"
+    }
+  },
+  {
+    "id": "community-theme-familiar",
+    "name": "Familiar",
+    "group": "Omarchy community",
+    "source": "https://github.com/tcballard/omarchy-theme-familiar",
+    "mode": "light",
+    "colors": {
+      "background": "#f5f6f8",
+      "foreground": "#202124",
+      "accent": "#0067b8",
+      "red": "#b42318",
+      "green": "#146c36",
+      "yellow": "#805b00",
+      "blue": "#0067b8",
+      "magenta": "#89338f",
+      "cyan": "#006877"
+    }
+  },
+  {
+    "id": "community-felix",
+    "name": "Felix",
+    "group": "Omarchy community",
+    "source": "https://github.com/TyRichards/omarchy-felix-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101315",
+      "foreground": "#cacccc",
+      "accent": "#798186",
+      "red": "#565d60",
+      "green": "#9fa5a9",
+      "yellow": "#d9dbdc",
+      "blue": "#798186",
+      "magenta": "#aeaeae",
+      "cyan": "#707070"
+    }
+  },
+  {
+    "id": "community-fiery-ocean",
+    "name": "Fiery Ocean",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-fiery-ocean-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#002130",
+      "foreground": "#fdf0d5",
+      "accent": "#669bbc",
+      "red": "#e63946",
+      "green": "#2a9d8f",
+      "yellow": "#fca311",
+      "blue": "#669bbc",
+      "magenta": "#e63946",
+      "cyan": "#90e0ef"
+    }
+  },
+  {
+    "id": "community-fireside",
+    "name": "Fireside",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-fireside-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a1220",
+      "foreground": "#f0f2f5",
+      "accent": "#b8b8b6",
+      "red": "#e06b58",
+      "green": "#889889",
+      "yellow": "#b8b5a2",
+      "blue": "#b8b8b6",
+      "magenta": "#e48b7a",
+      "cyan": "#d0cac7"
+    }
+  },
+  {
+    "id": "community-firesky",
+    "name": "Firesky",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-firesky-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f0f0f",
+      "foreground": "#e0d8d0",
+      "accent": "#2a7a80",
+      "red": "#e6441a",
+      "green": "#1a6b6e",
+      "yellow": "#e68040",
+      "blue": "#2a7a80",
+      "magenta": "#c4753d",
+      "cyan": "#40b8b4"
+    }
+  },
+  {
+    "id": "community-firmitas-utilitas-venustas",
+    "name": "Firmitas Utilitas Venustas",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-firmitas-utilitas-venustas-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0c1928",
+      "foreground": "#afaaa2",
+      "accent": "#d4bda2",
+      "red": "#64728d",
+      "green": "#cea462",
+      "yellow": "#8e6f47",
+      "blue": "#d4bda2",
+      "magenta": "#e3bf79",
+      "cyan": "#b49d80"
+    }
+  },
+  {
+    "id": "community-flat-dracula",
+    "name": "Flat Dracula",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-flat-dracula-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#282a36",
+      "foreground": "#f8f8f2",
+      "accent": "#bd93f9",
+      "red": "#ff5555",
+      "green": "#50fa7b",
+      "yellow": "#f1fa8c",
+      "blue": "#bd93f9",
+      "magenta": "#ff79c6",
+      "cyan": "#8be9fd"
+    }
+  },
+  {
+    "id": "community-flexoki-dark",
+    "name": "Flexoki Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/euandeas/omarchy-flexoki-dark-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#100f0f",
+      "foreground": "#cecdc3",
+      "accent": "#4385be",
+      "red": "#4385be",
+      "green": "#4385be",
+      "yellow": "#4385be",
+      "blue": "#4385be",
+      "magenta": "#4385be",
+      "cyan": "#4385be"
+    }
+  },
+  {
+    "id": "community-florida-man",
+    "name": "Florida Man",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-florida-man-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#303446",
+      "foreground": "#b5bfe2",
+      "accent": "#8caaee",
+      "red": "#e78284",
+      "green": "#a6d189",
+      "yellow": "#e5c890",
+      "blue": "#8caaee",
+      "magenta": "#ca9ee6",
+      "cyan": "#81c8be"
+    }
+  },
+  {
+    "id": "community-forest-green",
+    "name": "Forest Green",
+    "group": "Omarchy community",
+    "source": "https://github.com/abhijeet-swami/omarchy-forest-green-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f1a14",
+      "foreground": "#a8e6a1",
+      "accent": "#5fa9a8",
+      "red": "#e06c75",
+      "green": "#6bbf7a",
+      "yellow": "#d7ba7d",
+      "blue": "#5fa9a8",
+      "magenta": "#c678dd",
+      "cyan": "#56b6c2"
+    }
+  },
+  {
+    "id": "community-frost",
+    "name": "Frost",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-frost-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0f1c",
+      "foreground": "#d4d5d9",
+      "accent": "#9bb0c2",
+      "red": "#869aac",
+      "green": "#95a8b8",
+      "yellow": "#9fadb8",
+      "blue": "#9bb0c2",
+      "magenta": "#a8b9c6",
+      "cyan": "#b8c7d0"
+    }
+  },
+  {
+    "id": "community-fuchsblau",
+    "name": "fuchsblau",
+    "group": "Omarchy community",
+    "source": "https://github.com/fuchsblau/omarchy-fuchsblau-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a2234",
+      "foreground": "#cdd6ee",
+      "accent": "#4dd6c8",
+      "red": "#e89a8a",
+      "green": "#86c79c",
+      "yellow": "#f0a060",
+      "blue": "#88aede",
+      "magenta": "#c79dc9",
+      "cyan": "#4dd6c8"
+    }
+  },
+  {
+    "id": "community-futurism",
+    "name": "Futurism",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-futurism-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a1428",
+      "foreground": "#f0f8ff",
+      "accent": "#ff40a3",
+      "red": "#ff40a3",
+      "green": "#00bfff",
+      "yellow": "#5076b2",
+      "blue": "#f0f8ff",
+      "magenta": "#ff40a3",
+      "cyan": "#f0f8ff"
+    }
+  },
+  {
+    "id": "community-futurist",
+    "name": "Futurist",
+    "group": "Omarchy community",
+    "source": "https://github.com/benwillems/omarchy-futurist-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a1624",
+      "foreground": "#dceaf2",
+      "accent": "#3ec8d4",
+      "red": "#e07a62",
+      "green": "#6bcf7a",
+      "yellow": "#f0b84a",
+      "blue": "#3a8fb0",
+      "magenta": "#d06ae0",
+      "cyan": "#3ec8d4"
+    }
+  },
+  {
+    "id": "community-gand",
+    "name": "Gand",
+    "group": "Omarchy community",
+    "source": "https://github.com/c0ze/omarchy-gand-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#3a332a",
+      "foreground": "#f5ecd9",
+      "accent": "#d6a06b",
+      "red": "#ed806b",
+      "green": "#83baa1",
+      "yellow": "#dab46b",
+      "blue": "#74accf",
+      "magenta": "#c494b9",
+      "cyan": "#7dbebf"
+    }
+  },
+  {
+    "id": "community-ghost-pastel",
+    "name": "Ghost Pastel",
+    "group": "Omarchy community",
+    "source": "https://github.com/row-huh/omarchy-ghost-pastel-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#070506",
+      "foreground": "#ffffff",
+      "accent": "#979fec",
+      "red": "#979fec",
+      "green": "#979fec",
+      "yellow": "#979fec",
+      "blue": "#979fec",
+      "magenta": "#979fec",
+      "cyan": "#979fec"
+    }
+  },
+  {
+    "id": "community-ghosts-i",
+    "name": "Ghosts I",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-ghosts-i-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1b0f0c",
+      "foreground": "#d8c8b4",
+      "accent": "#c19359",
+      "red": "#8f2f2f",
+      "green": "#466b61",
+      "yellow": "#c19359",
+      "blue": "#5a4432",
+      "magenta": "#8d623b",
+      "cyan": "#ab7f53"
+    }
+  },
+  {
+    "id": "community-gold-rush",
+    "name": "Gold Rush",
+    "group": "Omarchy community",
+    "source": "https://github.com/tahayvr/omarchy-gold-rush-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#d9d9d9",
+      "accent": "#c9a227",
+      "red": "#c9a227",
+      "green": "#c9a227",
+      "yellow": "#c9a227",
+      "blue": "#c9a227",
+      "magenta": "#c9a227",
+      "cyan": "#c9a227"
+    }
+  },
+  {
+    "id": "community-golden-brown",
+    "name": "Golden Brown",
+    "group": "Omarchy community",
+    "source": "https://github.com/atif-1402/omarchy-golden-brown-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f0b05",
+      "foreground": "#c3a983",
+      "accent": "#c3a983",
+      "red": "#c3a983",
+      "green": "#c3a983",
+      "yellow": "#c3a983",
+      "blue": "#c3a983",
+      "magenta": "#c3a983",
+      "cyan": "#c3a983"
+    }
+  },
+  {
+    "id": "community-greek-noir",
+    "name": "Greek Noir",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-greek-noir-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#171717",
+      "foreground": "#ccd0cf",
+      "accent": "#f25623",
+      "red": "#aeab94",
+      "green": "#f25623",
+      "yellow": "#757864",
+      "blue": "#88a57d",
+      "magenta": "#f56e0f",
+      "cyan": "#7b837b"
+    }
+  },
+  {
+    "id": "community-grimdark-solarized",
+    "name": "Grimdark Solarized",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-grimdark-solarized-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#002d38",
+      "foreground": "#8faaab",
+      "accent": "#2b90d8",
+      "red": "#2b90d8",
+      "green": "#2b90d8",
+      "yellow": "#2b90d8",
+      "blue": "#2b90d8",
+      "magenta": "#2b90d8",
+      "cyan": "#2b90d8"
+    }
+  },
+  {
+    "id": "community-gruvbox-material",
+    "name": "Gruvbox Material",
+    "group": "Omarchy community",
+    "source": "https://github.com/curbol/omarchy-gruvbox-material",
+    "mode": "dark",
+    "colors": {
+      "background": "#282828",
+      "foreground": "#d4be98",
+      "accent": "#e78a4e",
+      "red": "#ea6962",
+      "green": "#a9b665",
+      "yellow": "#d8a657",
+      "blue": "#7daea3",
+      "magenta": "#d3869b",
+      "cyan": "#89b482"
+    }
+  },
+  {
+    "id": "community-harbor",
+    "name": "Harbor",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-harbor-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#dfe4c4",
+      "foreground": "#1c2d28",
+      "accent": "#5e81ac",
+      "red": "#b14752",
+      "green": "#556753",
+      "yellow": "#dc8164",
+      "blue": "#4c6c94",
+      "magenta": "#8a5b81",
+      "cyan": "#3d727d"
+    }
+  },
+  {
+    "id": "community-harbordark",
+    "name": "Harbor Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-harbordark-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1b1b1b",
+      "foreground": "#efebdc",
+      "accent": "#e75a50",
+      "red": "#f44336",
+      "green": "#e75a50",
+      "yellow": "#a99b7a",
+      "blue": "#e58980",
+      "magenta": "#77838a",
+      "cyan": "#6d6d6d"
+    }
+  },
+  {
+    "id": "community-hermarchy",
+    "name": "Hermarchy",
+    "group": "Omarchy community",
+    "source": "https://github.com/archer-clawbot/omarchy-hermarchy-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#08090a",
+      "foreground": "#f1f1ec",
+      "accent": "#61d6ff",
+      "red": "#e46e6e",
+      "green": "#86d993",
+      "yellow": "#e2c275",
+      "blue": "#74a8c7",
+      "magenta": "#b7a1c7",
+      "cyan": "#61d6ff"
+    }
+  },
+  {
+    "id": "community-hex",
+    "name": "Hex",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-hex-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#241b30",
+      "foreground": "#f2f2e3",
+      "accent": "#6e29ad",
+      "red": "#6e29ad",
+      "green": "#6e29ad",
+      "yellow": "#6e29ad",
+      "blue": "#6e29ad",
+      "magenta": "#6e29ad",
+      "cyan": "#6e29ad"
+    }
+  },
+  {
+    "id": "community-hinterlands",
+    "name": "Hinterlands",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-hinterlands-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#222222",
+      "foreground": "#ffffff",
+      "accent": "#686868",
+      "red": "#686868",
+      "green": "#686868",
+      "yellow": "#686868",
+      "blue": "#686868",
+      "magenta": "#686868",
+      "cyan": "#686868"
+    }
+  },
+  {
+    "id": "community-hollow-knight",
+    "name": "Hollow Knight",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-hollow-knight-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#002b36",
+      "foreground": "#fbf1c7",
+      "accent": "#2a6f88",
+      "red": "#e76f51",
+      "green": "#2a9d8f",
+      "yellow": "#e9c46a",
+      "blue": "#2a6f88",
+      "magenta": "#f4a261",
+      "cyan": "#2a9d8f"
+    }
+  },
+  {
+    "id": "community-inkypinky",
+    "name": "Inky Pinky",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-inkypinky-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#13131d",
+      "foreground": "#c8c8c8",
+      "accent": "#7c7ca8",
+      "red": "#ea90a8",
+      "green": "#a6b2c7",
+      "yellow": "#d18ba2",
+      "blue": "#7c7ca8",
+      "magenta": "#9f859f",
+      "cyan": "#919ab7"
+    }
+  },
+  {
+    "id": "community-kanagawa-dragon",
+    "name": "Kanagawa Dragon",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-kanagawa-dragon-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#181616",
+      "foreground": "#c5c9c5",
+      "accent": "#658594",
+      "red": "#c4746e",
+      "green": "#8a9a7b",
+      "yellow": "#c4b28a",
+      "blue": "#8ba4b0",
+      "magenta": "#a292a3",
+      "cyan": "#8ea4a2"
+    }
+  },
+  {
+    "id": "community-kanagawa-lotus",
+    "name": "Kanagawa Lotus",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-kanagawa-lotus-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#f1e9d2",
+      "foreground": "#545464",
+      "accent": "#4d699b",
+      "red": "#c84053",
+      "green": "#6f894e",
+      "yellow": "#77713f",
+      "blue": "#4d699b",
+      "magenta": "#b35b79",
+      "cyan": "#597b75"
+    }
+  },
+  {
+    "id": "community-kanso",
+    "name": "Kanso",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-kanso-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#090e13",
+      "foreground": "#c5c9c7",
+      "accent": "#8ba4b0",
+      "red": "#c4746e",
+      "green": "#8a9a7b",
+      "yellow": "#c4b28a",
+      "blue": "#8ba4b0",
+      "magenta": "#a292a3",
+      "cyan": "#8ea4a2"
+    }
+  },
+  {
+    "id": "community-killer-klownz",
+    "name": "Killer Klownz",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-killer-klownz-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0a10",
+      "foreground": "#3cfaff",
+      "accent": "#4b6cff",
+      "red": "#4b6cff",
+      "green": "#4b6cff",
+      "yellow": "#4b6cff",
+      "blue": "#4b6cff",
+      "magenta": "#4b6cff",
+      "cyan": "#4b6cff"
+    }
+  },
+  {
+    "id": "community-kings",
+    "name": "Kings",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-kings-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#261e12",
+      "foreground": "#d9c27a",
+      "accent": "#c8a03c",
+      "red": "#a33d4e",
+      "green": "#2f7f88",
+      "yellow": "#c8a03c",
+      "blue": "#7550a3",
+      "magenta": "#2e6fb8",
+      "cyan": "#5d7d3a"
+    }
+  },
+  {
+    "id": "community-lamplight",
+    "name": "Lamplight",
+    "group": "Omarchy community",
+    "source": "https://github.com/thisisgm/omarchy-lamplight-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#151515",
+      "foreground": "#e7e7e7",
+      "accent": "#d97757",
+      "red": "#d76563",
+      "green": "#78bd74",
+      "yellow": "#c68f32",
+      "blue": "#648ad8",
+      "magenta": "#be80ca",
+      "cyan": "#1fb5bc"
+    }
+  },
+  {
+    "id": "community-last-call",
+    "name": "Last Call",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-last-call-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b1d20",
+      "foreground": "#94b3b5",
+      "accent": "#00c6c2",
+      "red": "#ed634c",
+      "green": "#58ad73",
+      "yellow": "#b79a54",
+      "blue": "#668ca9",
+      "magenta": "#9c8499",
+      "cyan": "#00c6c2"
+    }
+  },
+  {
+    "id": "community-lawson-night",
+    "name": "Lawson Night",
+    "group": "Omarchy community",
+    "source": "https://github.com/phuclh/omarchy-lawson-night-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1e1e2e",
+      "foreground": "#cdd6f4",
+      "accent": "#89b4fa",
+      "red": "#f38ba8",
+      "green": "#a6e3a1",
+      "yellow": "#f9e2af",
+      "blue": "#89b4fa",
+      "magenta": "#cba6f7",
+      "cyan": "#94e2d5"
+    }
+  },
+  {
+    "id": "community-mapquest",
+    "name": "Map Quest",
+    "group": "Omarchy community",
+    "source": "https://github.com/ItsABigIgloo/omarchy-mapquest-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#ecd3a1",
+      "foreground": "#3c4747",
+      "accent": "#1c2121",
+      "red": "#4f351e",
+      "green": "#3a443d",
+      "yellow": "#826e48",
+      "blue": "#1c2121",
+      "magenta": "#764e27",
+      "cyan": "#7b826d"
+    }
+  },
+  {
+    "id": "community-matrix",
+    "name": "Matrix",
+    "group": "Omarchy community",
+    "source": "https://github.com/BVisagie/omarchy-matrix-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#080c09",
+      "foreground": "#8bc98c",
+      "accent": "#3cbf5c",
+      "red": "#d15d57",
+      "green": "#2d9a48",
+      "yellow": "#b8ba48",
+      "blue": "#3d8f68",
+      "magenta": "#708b6d",
+      "cyan": "#4bb56a"
+    }
+  },
+  {
+    "id": "community-matrix-trilogy",
+    "name": "Matrix Trilogy",
+    "group": "Omarchy community",
+    "source": "https://github.com/codeclawd/omarchy-matrix-trilogy-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#c8ffd4",
+      "accent": "#00ff41",
+      "red": "#39ff6a",
+      "green": "#00ff41",
+      "yellow": "#7dff8f",
+      "blue": "#2fdc7a",
+      "magenta": "#6bffa0",
+      "cyan": "#5cffb0"
+    }
+  },
+  {
+    "id": "community-mechanoonna",
+    "name": "Mechanoonna",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-mechanoonna-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1c1b19",
+      "foreground": "#f0e4c5",
+      "accent": "#d4bd99",
+      "red": "#c5564a",
+      "green": "#a89984",
+      "yellow": "#ebdbb2",
+      "blue": "#908d88",
+      "magenta": "#afa499",
+      "cyan": "#d4bd99"
+    }
+  },
+  {
+    "id": "community-medusa",
+    "name": "Medusa",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-medusa-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#051305",
+      "foreground": "#b7d2b2",
+      "accent": "#8d8dc9",
+      "red": "#d08b7e",
+      "green": "#82bb7c",
+      "yellow": "#bcc278",
+      "blue": "#8d8dc9",
+      "magenta": "#cd98cd",
+      "cyan": "#a7d2a2"
+    }
+  },
+  {
+    "id": "community-midnight",
+    "name": "Midnight",
+    "group": "Omarchy community",
+    "source": "https://github.com/JaxonWright/omarchy-midnight-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#efefef",
+      "accent": "#407e70",
+      "red": "#d35f5f",
+      "green": "#8a9a7b",
+      "yellow": "#ffc107",
+      "blue": "#8a9fbe",
+      "magenta": "#c1a1c1",
+      "cyan": "#88aabb"
+    }
+  },
+  {
+    "id": "community-minecraft",
+    "name": "Minecraft",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-minecraft-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1d1911",
+      "foreground": "#e2d9c5",
+      "accent": "#9ece6a",
+      "red": "#e0533a",
+      "green": "#9ece6a",
+      "yellow": "#ecc63f",
+      "blue": "#7a9fe0",
+      "magenta": "#bd86da",
+      "cyan": "#54c8bd"
+    }
+  },
+  {
+    "id": "community-mini-jcw",
+    "name": "Mini Jcw",
+    "group": "Omarchy community",
+    "source": "https://github.com/davydotcom/omarchy-mini-jcw-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0b0d",
+      "foreground": "#d8d8da",
+      "accent": "#c8102e",
+      "red": "#c8102e",
+      "green": "#2f6b4f",
+      "yellow": "#c9a227",
+      "blue": "#3a4658",
+      "magenta": "#9a2438",
+      "cyan": "#8a9aa8"
+    }
+  },
+  {
+    "id": "community-monolith",
+    "name": "Monolith",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-monolith-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#232136",
+      "foreground": "#e0def4",
+      "accent": "#9ccfd8",
+      "red": "#eb6f92",
+      "green": "#3e8fb0",
+      "yellow": "#f6c177",
+      "blue": "#9ccfd8",
+      "magenta": "#c4a7e7",
+      "cyan": "#ea9a97"
+    }
+  },
+  {
+    "id": "community-moodpeak",
+    "name": "Moodpeak",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-moodpeak-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#181c22",
+      "foreground": "#e0e6ed",
+      "accent": "#4ecdc4",
+      "red": "#ff7b92",
+      "green": "#4ecdc4",
+      "yellow": "#82eeff",
+      "blue": "#6a85ff",
+      "magenta": "#b388eb",
+      "cyan": "#c9aff0"
+    }
+  },
+  {
+    "id": "community-naysayer",
+    "name": "Naysayer",
+    "group": "Omarchy community",
+    "source": "https://github.com/brianblakely/omarchy-naysayer-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#072626",
+      "foreground": "#d3b58d",
+      "accent": "#add8e6",
+      "red": "#800000",
+      "green": "#90ee90",
+      "yellow": "#8fbc8f",
+      "blue": "#add8e6",
+      "magenta": "#c8d4ec",
+      "cyan": "#add8e6"
+    }
+  },
+  {
+    "id": "community-neon-dusk",
+    "name": "Neon Dusk",
+    "group": "Omarchy community",
+    "source": "https://github.com/daniel-felipe/omarchy-neon-dusk-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#16122a",
+      "foreground": "#cfc7e8",
+      "accent": "#e85faf",
+      "red": "#f2596c",
+      "green": "#4be09a",
+      "yellow": "#eec06a",
+      "blue": "#7b8ff2",
+      "magenta": "#c77df5",
+      "cyan": "#5cc8f5"
+    }
+  },
+  {
+    "id": "community-neptune-blue",
+    "name": "Neptune Blue",
+    "group": "Omarchy community",
+    "source": "https://github.com/davydotcom/omarchy-neptune-blue-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b1012",
+      "foreground": "#c8d0d4",
+      "accent": "#6a8f9a",
+      "red": "#c45a4a",
+      "green": "#4a7a68",
+      "yellow": "#c4a86a",
+      "blue": "#6a8f9a",
+      "magenta": "#5a6a88",
+      "cyan": "#7aadc0"
+    }
+  },
+  {
+    "id": "community-nes",
+    "name": "NES",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-nes-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101010",
+      "foreground": "#cecfc9",
+      "accent": "#9a9d9a",
+      "red": "#d93f37",
+      "green": "#9a9d9a",
+      "yellow": "#9a9d9a",
+      "blue": "#9a9d9a",
+      "magenta": "#d93f37",
+      "cyan": "#9a9d9a"
+    }
+  },
+  {
+    "id": "community-noir",
+    "name": "Noir",
+    "group": "Omarchy community",
+    "source": "https://github.com/tahadx/omarchy-noir-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#c1c1c1",
+      "accent": "#8a9a7b",
+      "red": "#8a9a7b",
+      "green": "#c1c1c1",
+      "yellow": "#888888",
+      "blue": "#aaaaaa",
+      "magenta": "#999999",
+      "cyan": "#aa9988"
+    }
+  },
+  {
+    "id": "community-nujabes",
+    "name": "Nujabes",
+    "group": "Omarchy community",
+    "source": "https://github.com/HalmyLyseas/omarchy-nujabes-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0d0a11",
+      "foreground": "#e3dcda",
+      "accent": "#b26ac6",
+      "red": "#c56e6f",
+      "green": "#9aa06b",
+      "yellow": "#e0c25a",
+      "blue": "#6d4fd0",
+      "magenta": "#dc7fcc",
+      "cyan": "#7fa8b0"
+    }
+  },
+  {
+    "id": "community-ochre",
+    "name": "Ochre",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-ochre-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1c1714",
+      "foreground": "#e6cfa8",
+      "accent": "#e07a3c",
+      "red": "#c2412a",
+      "green": "#8a9a47",
+      "yellow": "#d99a3a",
+      "blue": "#6a8a8e",
+      "magenta": "#b86a5e",
+      "cyan": "#a8a052"
+    }
+  },
+  {
+    "id": "community-oligarchy",
+    "name": "Oligarchy",
+    "group": "Omarchy community",
+    "source": "https://github.com/EF-Code/omarchy-oligarchy-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b1020",
+      "foreground": "#e8eef6",
+      "accent": "#c6f36b",
+      "red": "#ff6b6b",
+      "green": "#9fe870",
+      "yellow": "#f4c95d",
+      "blue": "#4ba3c7",
+      "magenta": "#b78cff",
+      "cyan": "#55d8ff"
+    }
+  },
+  {
+    "id": "community-omaled",
+    "name": "OmaLED",
+    "group": "Omarchy community",
+    "source": "https://github.com/brianblakely/omarchy-omaled-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#e66063",
+      "accent": "#860111",
+      "red": "#dd2c2f",
+      "green": "#bd1f21",
+      "yellow": "#e66063",
+      "blue": "#ac1c1e",
+      "magenta": "#f1a7a9",
+      "cyan": "#ec8385"
+    }
+  },
+  {
+    "id": "community-one-dark",
+    "name": "One Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/joaopinto15/omarchy-one-dark-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#282c34",
+      "foreground": "#abb2bf",
+      "accent": "#61afef",
+      "red": "#e06c75",
+      "green": "#98c379",
+      "yellow": "#e5c07b",
+      "blue": "#61afef",
+      "magenta": "#c678dd",
+      "cyan": "#56b6c2"
+    }
+  },
+  {
+    "id": "community-one-dark-pro",
+    "name": "One Dark Pro",
+    "group": "Omarchy community",
+    "source": "https://github.com/sc0ttman/omarchy-one-dark-pro-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#282c34",
+      "foreground": "#abb2bf",
+      "accent": "#61afef",
+      "red": "#e06c75",
+      "green": "#98c379",
+      "yellow": "#e5c07b",
+      "blue": "#61afef",
+      "magenta": "#c678dd",
+      "cyan": "#56b6c2"
+    }
+  },
+  {
+    "id": "community-oxocarbon",
+    "name": "Oxo Carbon",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-oxocarbon-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#161616",
+      "foreground": "#f2f4f8",
+      "accent": "#33b1ff",
+      "red": "#3ddbd9",
+      "green": "#33b1ff",
+      "yellow": "#ee5396",
+      "blue": "#42be65",
+      "magenta": "#be95ff",
+      "cyan": "#ff7eb6"
+    }
+  },
+  {
+    "id": "community-pagan",
+    "name": "Pagan",
+    "group": "Omarchy community",
+    "source": "https://github.com/c0ze/omarchy-pagan-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0a0a",
+      "foreground": "#f2f2f2",
+      "accent": "#25aff4",
+      "red": "#de443e",
+      "green": "#63aa87",
+      "yellow": "#c9ae6d",
+      "blue": "#25aff4",
+      "magenta": "#ae83bd",
+      "cyan": "#47cfeb"
+    }
+  },
+  {
+    "id": "community-pandora",
+    "name": "Pandora",
+    "group": "Omarchy community",
+    "source": "https://github.com/imbypass/omarchy-pandora-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0a0c",
+      "foreground": "#b2b5b3",
+      "accent": "#7aa2f7",
+      "red": "#f7768e",
+      "green": "#9ece6a",
+      "yellow": "#e0af68",
+      "blue": "#7aa2f7",
+      "magenta": "#bb9af7",
+      "cyan": "#4abaaf"
+    }
+  },
+  {
+    "id": "community-periphery",
+    "name": "Periphery",
+    "group": "Omarchy community",
+    "source": "https://github.com/r-bart/omarchy-periphery-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#060f12",
+      "foreground": "#a9c0bf",
+      "accent": "#7fc9c4",
+      "red": "#d4644a",
+      "green": "#7fae8e",
+      "yellow": "#c9a06a",
+      "blue": "#6f9cb5",
+      "magenta": "#b587a0",
+      "cyan": "#7fc9c4"
+    }
+  },
+  {
+    "id": "community-phosphor-os",
+    "name": "Phosphor Os",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-phosphor-os-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f191c",
+      "foreground": "#507350",
+      "accent": "#11ff25",
+      "red": "#11ff25",
+      "green": "#11ff25",
+      "yellow": "#11ff25",
+      "blue": "#11ff25",
+      "magenta": "#11ff25",
+      "cyan": "#11ff25"
+    }
+  },
+  {
+    "id": "community-pink-fluffy-unicorn",
+    "name": "Pink Fluffy Unicorn",
+    "group": "Omarchy community",
+    "source": "https://github.com/jellespijker/omarchy-pink-fluffy-unicorn-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#fff0f7",
+      "foreground": "#4a1942",
+      "accent": "#c91c75",
+      "red": "#c4184a",
+      "green": "#1a7346",
+      "yellow": "#8a5a00",
+      "blue": "#5b72e8",
+      "magenta": "#b02fa0",
+      "cyan": "#0a737f"
+    }
+  },
+  {
+    "id": "community-pinup",
+    "name": "Pinup",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-pinup-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#eee1c3",
+      "foreground": "#190403",
+      "accent": "#004584",
+      "red": "#6b2e06",
+      "green": "#465900",
+      "yellow": "#61620d",
+      "blue": "#004584",
+      "magenta": "#6d2e52",
+      "cyan": "#00656a"
+    }
+  },
+  {
+    "id": "community-purplewave",
+    "name": "Purplewave",
+    "group": "Omarchy community",
+    "source": "https://github.com/dotsilva/omarchy-purplewave-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#d7accd",
+      "accent": "#d7accd",
+      "red": "#d7accd",
+      "green": "#d7accd",
+      "yellow": "#d7accd",
+      "blue": "#d7accd",
+      "magenta": "#d7accd",
+      "cyan": "#d7accd"
+    }
+  },
+  {
+    "id": "community-quattrocento-light",
+    "name": "Quattrocento Light",
+    "group": "Omarchy community",
+    "source": "https://github.com/r-bart/omarchy-quattrocento-light-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#f0e6d3",
+      "foreground": "#33291b",
+      "accent": "#8a4a2c",
+      "red": "#a32d2a",
+      "green": "#3f6b4a",
+      "yellow": "#7d5a10",
+      "blue": "#3f5378",
+      "magenta": "#8c3a58",
+      "cyan": "#3a6367"
+    }
+  },
+  {
+    "id": "community-rainynight",
+    "name": "Rainy Night",
+    "group": "Omarchy community",
+    "source": "https://github.com/atif-1402/omarchy-rainynight-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1e1e2e",
+      "foreground": "#cdd6f4",
+      "accent": "#89b4fa",
+      "red": "#89b4fa",
+      "green": "#89b4fa",
+      "yellow": "#89b4fa",
+      "blue": "#89b4fa",
+      "magenta": "#89b4fa",
+      "cyan": "#89b4fa"
+    }
+  },
+  {
+    "id": "community-red-monarch",
+    "name": "Red Monarch",
+    "group": "Omarchy community",
+    "source": "https://github.com/kamatealif/omarchy-red-monarch-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#191414",
+      "foreground": "#ffeaf2",
+      "accent": "#f1396d",
+      "red": "#f1396d",
+      "green": "#f1396d",
+      "yellow": "#f1396d",
+      "blue": "#f1396d",
+      "magenta": "#f1396d",
+      "cyan": "#f1396d"
+    }
+  },
+  {
+    "id": "community-red-pill",
+    "name": "Red Pill",
+    "group": "Omarchy community",
+    "source": "https://github.com/ferlemes/omarchy-red-pill-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#050b07",
+      "foreground": "#c8f5d4",
+      "accent": "#f7931a",
+      "red": "#ff4d2e",
+      "green": "#00d94a",
+      "yellow": "#f7c948",
+      "blue": "#3f6f9e",
+      "magenta": "#a16fb0",
+      "cyan": "#2fd6a8"
+    }
+  },
+  {
+    "id": "community-reverie",
+    "name": "Reverie",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-reverie-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101c38",
+      "foreground": "#d8e0f2",
+      "accent": "#587ea8",
+      "red": "#e56b6f",
+      "green": "#6ca994",
+      "yellow": "#f4a261",
+      "blue": "#587ea8",
+      "magenta": "#b479a3",
+      "cyan": "#6dc2c5"
+    }
+  },
+  {
+    "id": "community-ristretto-light",
+    "name": "Ristretto Light",
+    "group": "Omarchy community",
+    "source": "https://github.com/brokkoli71/omarchy-ristretto-light-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#fdf6ee",
+      "foreground": "#22211d",
+      "accent": "#85b34c",
+      "red": "#85b34c",
+      "green": "#85b34c",
+      "yellow": "#85b34c",
+      "blue": "#85b34c",
+      "magenta": "#85b34c",
+      "cyan": "#85b34c"
+    }
+  },
+  {
+    "id": "community-robzee84",
+    "name": "RobZee84",
+    "group": "Omarchy community",
+    "source": "https://github.com/robzolkos/omarchy-robzee84-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#ffffff",
+      "accent": "#ff7edb",
+      "red": "#ff7edb",
+      "green": "#ff7edb",
+      "yellow": "#ff7edb",
+      "blue": "#ff7edb",
+      "magenta": "#ff7edb",
+      "cyan": "#ff7edb"
+    }
+  },
+  {
+    "id": "community-roseofdune",
+    "name": "Rose of Dune",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-roseofdune-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#f5e6d3",
+      "foreground": "#35302a",
+      "accent": "#76634c",
+      "red": "#a02b16",
+      "green": "#9e4f5b",
+      "yellow": "#644535",
+      "blue": "#76634c",
+      "magenta": "#78292e",
+      "cyan": "#713a56"
+    }
+  },
+  {
+    "id": "community-rose-pine-dark",
+    "name": "Rose Pine Dark",
+    "group": "Omarchy community",
+    "source": "https://github.com/guilhermetk/omarchy-rose-pine-dark",
+    "mode": "dark",
+    "colors": {
+      "background": "#191724",
+      "foreground": "#e0def4",
+      "accent": "#ebbcba",
+      "red": "#eb6f92",
+      "green": "#31748f",
+      "yellow": "#f6c177",
+      "blue": "#9ccfd8",
+      "magenta": "#c4a7e7",
+      "cyan": "#ebbcba"
+    }
+  },
+  {
+    "id": "community-rose-pine-moon",
+    "name": "Rose Pine Moon",
+    "group": "Omarchy community",
+    "source": "https://github.com/Memnoc/omarchy-rose-pine-moon-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#232136",
+      "foreground": "#e0def4",
+      "accent": "#9ccfd8",
+      "red": "#eb6f92",
+      "green": "#3e8fb0",
+      "yellow": "#f6c177",
+      "blue": "#9ccfd8",
+      "magenta": "#c4a7e7",
+      "cyan": "#ea9a97"
+    }
+  },
+  {
+    "id": "community-ryu",
+    "name": "Ryu",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-ryu-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#050505",
+      "foreground": "#d6d0c5",
+      "accent": "#525e5a",
+      "red": "#da614e",
+      "green": "#8b9388",
+      "yellow": "#51605b",
+      "blue": "#75897f",
+      "magenta": "#c2a46d",
+      "cyan": "#717c7c"
+    }
+  },
+  {
+    "id": "community-saga",
+    "name": "Saga",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-saga-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#05080a",
+      "foreground": "#fff6ff",
+      "accent": "#b2fff3",
+      "red": "#ff9fbc",
+      "green": "#baf7b5",
+      "yellow": "#fff6c3",
+      "blue": "#b2fff3",
+      "magenta": "#dfbaff",
+      "cyan": "#ffc79b"
+    }
+  },
+  {
+    "id": "community-sakura",
+    "name": "Sakura",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-sakura-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0d0509",
+      "foreground": "#f0eaed",
+      "accent": "#d9a56c",
+      "red": "#e85f6f",
+      "green": "#f29b9a",
+      "yellow": "#d4a882",
+      "blue": "#d9a56c",
+      "magenta": "#d1b399",
+      "cyan": "#e8c099"
+    }
+  },
+  {
+    "id": "community-sakura-mochi",
+    "name": "Sakura Mochi",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-sakura-mochi-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0d11",
+      "foreground": "#f0b7ca",
+      "accent": "#f23888",
+      "red": "#f23888",
+      "green": "#5aa15d",
+      "yellow": "#d7be96",
+      "blue": "#67dd82",
+      "magenta": "#f0b7ca",
+      "cyan": "#6f9485"
+    }
+  },
+  {
+    "id": "community-sapphire",
+    "name": "Sapphire",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-sapphire-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#060d1f",
+      "foreground": "#e0f7fa",
+      "accent": "#f7c3c6",
+      "red": "#e95c4b",
+      "green": "#6488ea",
+      "yellow": "#d5edeb",
+      "blue": "#f7c3c6",
+      "magenta": "#85cec4",
+      "cyan": "#fff6d2"
+    }
+  },
+  {
+    "id": "community-scooby-doo",
+    "name": "Scooby Doo",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-scooby-doo-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#2c1a12",
+      "foreground": "#f9cd71",
+      "accent": "#45b193",
+      "red": "#e75057",
+      "green": "#a8bb0a",
+      "yellow": "#ffa63e",
+      "blue": "#45b193",
+      "magenta": "#a873dc",
+      "cyan": "#8af3d1"
+    }
+  },
+  {
+    "id": "community-sequoia-light",
+    "name": "Sequoia Light",
+    "group": "Omarchy community",
+    "source": "https://github.com/hellwigio/omarchy-sequoia-light-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#f5f5f7",
+      "foreground": "#1d1d1f",
+      "accent": "#007aff",
+      "red": "#ff3b30",
+      "green": "#34c759",
+      "yellow": "#ffcc00",
+      "blue": "#007aff",
+      "magenta": "#af52de",
+      "cyan": "#32ade6"
+    }
+  },
+  {
+    "id": "community-serenity",
+    "name": "Serenity",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-serenity-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#232e37",
+      "foreground": "#f0ead6",
+      "accent": "#a69f96",
+      "red": "#e17f47",
+      "green": "#7e8b56",
+      "yellow": "#f0ead6",
+      "blue": "#a69f96",
+      "magenta": "#c080c0",
+      "cyan": "#80c0c0"
+    }
+  },
+  {
+    "id": "community-shadesofjade",
+    "name": "Shades of Jade",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-shadesofjade-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#00110b",
+      "foreground": "#e6f6f0",
+      "accent": "#d1ffb0",
+      "red": "#ff3370",
+      "green": "#00a86b",
+      "yellow": "#d1ffb0",
+      "blue": "#ff6600",
+      "magenta": "#8fc85c",
+      "cyan": "#80d4b5"
+    }
+  },
+  {
+    "id": "community-snow",
+    "name": "Snow",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-snow-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#ffffff",
+      "foreground": "#0a0a0a",
+      "accent": "#0a0a0a",
+      "red": "#0a0a0a",
+      "green": "#0a0a0a",
+      "yellow": "#0a0a0a",
+      "blue": "#0a0a0a",
+      "magenta": "#0a0a0a",
+      "cyan": "#0a0a0a"
+    }
+  },
+  {
+    "id": "community-snow_black",
+    "name": "Snow Black",
+    "group": "Omarchy community",
+    "source": "https://github.com/ankur311sudo/snow_black",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#ffffff",
+      "accent": "#888888",
+      "red": "#888888",
+      "green": "#888888",
+      "yellow": "#888888",
+      "blue": "#888888",
+      "magenta": "#888888",
+      "cyan": "#888888"
+    }
+  },
+  {
+    "id": "community-soho",
+    "name": "Soho",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-soho-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a1721",
+      "foreground": "#d0cbd8",
+      "accent": "#e89bc1",
+      "red": "#e87b97",
+      "green": "#7cc9a0",
+      "yellow": "#d9b464",
+      "blue": "#7ba5dd",
+      "magenta": "#c48ad5",
+      "cyan": "#57bfb5"
+    }
+  },
+  {
+    "id": "community-south-jutland-coffee-table",
+    "name": "South Jutland Coffee Table",
+    "group": "Omarchy community",
+    "source": "https://github.com/imothar/omarchy-south-jutland-coffee-table-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a1210",
+      "foreground": "#f2e7d5",
+      "accent": "#c98a52",
+      "red": "#a53d3d",
+      "green": "#7f8c6b",
+      "yellow": "#d2a45f",
+      "blue": "#7f9298",
+      "magenta": "#a96e73",
+      "cyan": "#8fa7a3"
+    }
+  },
+  {
+    "id": "community-space-monkey",
+    "name": "Space Monkey",
+    "group": "Omarchy community",
+    "source": "https://github.com/TyRichards/omarchy-space-monkey-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1c0e00",
+      "foreground": "#e7aa5a",
+      "accent": "#bd4924",
+      "red": "#fd6883",
+      "green": "#df782d",
+      "yellow": "#f9cc6c",
+      "blue": "#66a891",
+      "magenta": "#a8a9eb",
+      "cyan": "#bd4924"
+    }
+  },
+  {
+    "id": "community-starry-night",
+    "name": "Starry Night",
+    "group": "Omarchy community",
+    "source": "https://github.com/juangalt/omarchy-starry-night-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000519",
+      "foreground": "#d1dad3",
+      "accent": "#baba00",
+      "red": "#a2b238",
+      "green": "#56ca9c",
+      "yellow": "#a2b23d",
+      "blue": "#3873c8",
+      "magenta": "#3673ca",
+      "cyan": "#008697"
+    }
+  },
+  {
+    "id": "community-starsend",
+    "name": "Starsend",
+    "group": "Omarchy community",
+    "source": "https://github.com/r-bart/omarchy-starsend-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#05090a",
+      "foreground": "#c3d2d0",
+      "accent": "#f0913f",
+      "red": "#d2705c",
+      "green": "#86a68f",
+      "yellow": "#c9a878",
+      "blue": "#8299aa",
+      "magenta": "#b58c99",
+      "cyan": "#7ba6a3"
+    }
+  },
+  {
+    "id": "community-sunset-drive",
+    "name": "Sunset Drive",
+    "group": "Omarchy community",
+    "source": "https://github.com/tahayvr/omarchy-sunset-drive-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f0f19",
+      "foreground": "#ededfe",
+      "accent": "#33a1ff",
+      "red": "#33a1ff",
+      "green": "#33a1ff",
+      "yellow": "#33a1ff",
+      "blue": "#33a1ff",
+      "magenta": "#33a1ff",
+      "cyan": "#33a1ff"
+    }
+  },
+  {
+    "id": "community-temerald",
+    "name": "Temerald",
+    "group": "Omarchy community",
+    "source": "https://github.com/Ahmad-Mtr/omarchy-temerald-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121111",
+      "foreground": "#dcfce7",
+      "accent": "#93c5fd",
+      "red": "#d35f5f",
+      "green": "#4ade7f",
+      "yellow": "#d4953b",
+      "blue": "#93c5fd",
+      "magenta": "#a78bfa",
+      "cyan": "#86efab"
+    }
+  },
+  {
+    "id": "community-terminus",
+    "name": "Terminus",
+    "group": "Omarchy community",
+    "source": "https://github.com/r-bart/omarchy-terminus-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0c1626",
+      "foreground": "#d8cbb4",
+      "accent": "#d9a862",
+      "red": "#db684c",
+      "green": "#93b56f",
+      "yellow": "#d9a862",
+      "blue": "#6e93bb",
+      "magenta": "#ab7fa8",
+      "cyan": "#7fa8ab"
+    }
+  },
+  {
+    "id": "community-the-black-pharaoh",
+    "name": "The Black Pharaoh",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-the-black-pharaoh-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#232227",
+      "foreground": "#b7a98d",
+      "accent": "#6296a0",
+      "red": "#b17f6d",
+      "green": "#898b77",
+      "yellow": "#b4a36f",
+      "blue": "#8f9696",
+      "magenta": "#a58a86",
+      "cyan": "#6296a0"
+    }
+  },
+  {
+    "id": "community-thegreek",
+    "name": "The Greek",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-thegreek-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#d0d0c8",
+      "foreground": "#242424",
+      "accent": "#de6a41",
+      "red": "#db0030",
+      "green": "#2e3125",
+      "yellow": "#51573b",
+      "blue": "#de6a41",
+      "magenta": "#43432b",
+      "cyan": "#6b1f2f"
+    }
+  },
+  {
+    "id": "community-the-loop",
+    "name": "The Loop",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-the-loop-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#1a2238",
+      "foreground": "#afb6c5",
+      "accent": "#d4be68",
+      "red": "#cf9276",
+      "green": "#5f99a4",
+      "yellow": "#d4be68",
+      "blue": "#7f8fe0",
+      "magenta": "#9586cf",
+      "cyan": "#77b7c8"
+    }
+  },
+  {
+    "id": "community-the-navigator",
+    "name": "The Navigator",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-the-navigator-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#232220",
+      "foreground": "#a9a49f",
+      "accent": "#d1b187",
+      "red": "#cb704f",
+      "green": "#8a8d4c",
+      "yellow": "#bfaa48",
+      "blue": "#d1b187",
+      "magenta": "#b08c52",
+      "cyan": "#61928b"
+    }
+  },
+  {
+    "id": "community-tokyoled",
+    "name": "Tokyo Night OLED",
+    "group": "Omarchy community",
+    "source": "https://github.com/Justin-De-Sio/omarchy-tokyoled-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#a9b1d6",
+      "accent": "#7aa2f7",
+      "red": "#7aa2f7",
+      "green": "#7aa2f7",
+      "yellow": "#7aa2f7",
+      "blue": "#7aa2f7",
+      "magenta": "#7aa2f7",
+      "cyan": "#7aa2f7"
+    }
+  },
+  {
+    "id": "community-turbonite",
+    "name": "Turbonite",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-turbonite-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0b0c0c",
+      "foreground": "#eae9e3",
+      "accent": "#ed9a1d",
+      "red": "#f24331",
+      "green": "#6e6a64",
+      "yellow": "#ed9a1d",
+      "blue": "#847b4e",
+      "magenta": "#a7a483",
+      "cyan": "#ebd698"
+    }
+  },
+  {
+    "id": "community-van-gogh",
+    "name": "Van Gogh",
+    "group": "Omarchy community",
+    "source": "https://github.com/Nirmal314/omarchy-van-gogh-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a192f",
+      "foreground": "#f2e2a4",
+      "accent": "#e6b422",
+      "red": "#d9822b",
+      "green": "#7fb3d5",
+      "yellow": "#f2e2a4",
+      "blue": "#4a78a8",
+      "magenta": "#d9822b",
+      "cyan": "#9fd3c7"
+    }
+  },
+  {
+    "id": "community-vault",
+    "name": "Vault",
+    "group": "Omarchy community",
+    "source": "https://github.com/r-bart/omarchy-vault-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#191510",
+      "foreground": "#d3c0a8",
+      "accent": "#e09355",
+      "red": "#db6c4f",
+      "green": "#9cba64",
+      "yellow": "#d9ab5e",
+      "blue": "#79a5cc",
+      "magenta": "#cd8ba4",
+      "cyan": "#63b8a6"
+    }
+  },
+  {
+    "id": "community-velvetnight",
+    "name": "Velvet Night",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-velvetnight-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a101f",
+      "foreground": "#ffffff",
+      "accent": "#9099a5",
+      "red": "#982a4b",
+      "green": "#5c637a",
+      "yellow": "#e5af1b",
+      "blue": "#9099a5",
+      "magenta": "#e2687c",
+      "cyan": "#c24f40"
+    }
+  },
+  {
+    "id": "community-venice-from-above-omarchy",
+    "name": "Venice from Above",
+    "group": "Omarchy community",
+    "source": "https://github.com/mattbbia/venice-from-above-omarchy",
+    "mode": "light",
+    "colors": {
+      "background": "#f5f2e9",
+      "foreground": "#492924",
+      "accent": "#72684b",
+      "red": "#706548",
+      "green": "#6f6644",
+      "yellow": "#6f6645",
+      "blue": "#72684b",
+      "magenta": "#796e51",
+      "cyan": "#726947"
+    }
+  },
+  {
+    "id": "community-vesper",
+    "name": "Vesper",
+    "group": "Omarchy community",
+    "source": "https://github.com/thmoee/omarchy-vesper-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#101010",
+      "foreground": "#ffffff",
+      "accent": "#aca1cf",
+      "red": "#f5a191",
+      "green": "#90b99f",
+      "yellow": "#e6b99d",
+      "blue": "#aca1cf",
+      "magenta": "#e29eca",
+      "cyan": "#ea83a5"
+    }
+  },
+  {
+    "id": "community-vhs80",
+    "name": "VHS 80",
+    "group": "Omarchy community",
+    "source": "https://github.com/tahayvr/omarchy-vhs80-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#121212",
+      "foreground": "#d4d4d4",
+      "accent": "#862020",
+      "red": "#862020",
+      "green": "#862020",
+      "yellow": "#862020",
+      "blue": "#862020",
+      "magenta": "#862020",
+      "cyan": "#862020"
+    }
+  },
+  {
+    "id": "community-vulkanite",
+    "name": "Vulkanite",
+    "group": "Omarchy community",
+    "source": "https://github.com/kyerpotts/omarchy-vulkanite-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0f1416",
+      "foreground": "#dce5e9",
+      "accent": "#8fe0fa",
+      "red": "#e05f64",
+      "green": "#8be086",
+      "yellow": "#e0af68",
+      "blue": "#76c7e3",
+      "magenta": "#9083b9",
+      "cyan": "#37868b"
+    }
+  },
+  {
+    "id": "community-waffle-cat",
+    "name": "Waffle Cat",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-waffle-cat-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#292025",
+      "foreground": "#fff4d8",
+      "accent": "#c87d2a",
+      "red": "#cf7358",
+      "green": "#9fad68",
+      "yellow": "#c8964b",
+      "blue": "#c87d2a",
+      "magenta": "#c98c97",
+      "cyan": "#9eb8b2"
+    }
+  },
+  {
+    "id": "community-watchmen",
+    "name": "Watchmen",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-watchmen-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#2c2d37",
+      "foreground": "#ceb8b0",
+      "accent": "#2488cb",
+      "red": "#c13e46",
+      "green": "#adc4b3",
+      "yellow": "#d2833b",
+      "blue": "#2488cb",
+      "magenta": "#9287b0",
+      "cyan": "#238e9e"
+    }
+  },
+  {
+    "id": "community-weyland-yutani",
+    "name": "Weyland Yutani",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-weyland-yutani-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#0a0c0a",
+      "foreground": "#c9c3b2",
+      "accent": "#d8c638",
+      "red": "#c45e2b",
+      "green": "#45a86f",
+      "yellow": "#d8c638",
+      "blue": "#3d8c75",
+      "magenta": "#a89013",
+      "cyan": "#56b997"
+    }
+  },
+  {
+    "id": "community-whitegold",
+    "name": "White Gold",
+    "group": "Omarchy community",
+    "source": "https://github.com/HANCORE-linux/omarchy-whitegold-theme",
+    "mode": "light",
+    "colors": {
+      "background": "#dedbc8",
+      "foreground": "#0c0c14",
+      "accent": "#005c32",
+      "red": "#4b0304",
+      "green": "#725c0a",
+      "yellow": "#2e311a",
+      "blue": "#005c32",
+      "magenta": "#762b2f",
+      "cyan": "#3b3b3b"
+    }
+  },
+  {
+    "id": "community-windows-dark-mode",
+    "name": "Windows Dark Mode",
+    "group": "Omarchy community",
+    "source": "https://github.com/oldjobobo/omarchy-windows-dark-mode-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#181818",
+      "foreground": "#ffffff",
+      "accent": "#0078d4",
+      "red": "#f85149",
+      "green": "#2ea043",
+      "yellow": "#bb8009",
+      "blue": "#0078d4",
+      "magenta": "#c586c0",
+      "cyan": "#4daafc"
+    }
+  },
+  {
+    "id": "community-winslow",
+    "name": "Winslow",
+    "group": "Omarchy community",
+    "source": "https://github.com/chipkoziara/omarchy-winslow-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#13201b",
+      "foreground": "#d6c9b1",
+      "accent": "#9ba4bb",
+      "red": "#85795f",
+      "green": "#6f806d",
+      "yellow": "#9d917a",
+      "blue": "#9ba4bb",
+      "magenta": "#857961",
+      "cyan": "#83a2a3"
+    }
+  },
+  {
+    "id": "community-wood",
+    "name": "Wood",
+    "group": "Omarchy community",
+    "source": "https://github.com/bjarneo/omarchy-wood-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#000000",
+      "foreground": "#e0e0e0",
+      "accent": "#dda15e",
+      "red": "#e2ecbf",
+      "green": "#86964f",
+      "yellow": "#e2ecbf",
+      "blue": "#dda15e",
+      "magenta": "#e2ecbf",
+      "cyan": "#86964f"
+    }
+  },
+  {
+    "id": "community-x-1632",
+    "name": "X 1632",
+    "group": "Omarchy community",
+    "source": "https://github.com/OldJobobo/omarchy-x-1632-theme",
+    "mode": "dark",
+    "colors": {
+      "background": "#2f3138",
+      "foreground": "#c7c6c1",
+      "accent": "#4a5a70",
+      "red": "#4a5a70",
+      "green": "#4a5a70",
+      "yellow": "#4a5a70",
+      "blue": "#4a5a70",
+      "magenta": "#4a5a70",
+      "cyan": "#4a5a70"
+    }
+  },
+  {
+    "id": "community-theme-year-linux-desktop",
+    "name": "Year of the Linux Desktop",
+    "group": "Omarchy community",
+    "source": "https://github.com/tcballard/omarchy-theme-year-linux-desktop",
+    "mode": "dark",
+    "colors": {
+      "background": "#171313",
+      "foreground": "#eee0cd",
+      "accent": "#d9b66f",
+      "red": "#ed8274",
+      "green": "#a6bf8e",
+      "yellow": "#e6c477",
+      "blue": "#9cafcf",
+      "magenta": "#cfa0ba",
+      "cyan": "#8ebfbb"
+    }
+  }
+]
