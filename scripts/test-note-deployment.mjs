@@ -13,8 +13,8 @@ const context = await browser.newContext({
   viewport: { width: 390, height: 844 },
 });
 const page = await context.newPage();
-const noteId = randomUUID(),
-  imageId = randomUUID();
+let noteId = randomUUID();
+const imageId = randomUUID();
 const title = "Rich-note deployment check " + Date.now();
 let version;
 const operation = (type, patch, base_version = 0) => ({
@@ -64,7 +64,7 @@ try {
   ).toBeVisible();
   // Check the exact deployed artifact without opening other workspace records.
   const href = await page
-    .locator('a[download="listflow-v0.4.0.apk"]')
+    .locator('a[download="listflow-v0.4.1.apk"]')
     .getAttribute("href");
   const artifact = await context.request.get(new URL(href, url).href);
   expect(artifact.ok()).toBe(true);
@@ -74,7 +74,7 @@ try {
       .digest("hex"),
   ).toBe(
     createHash("sha256")
-      .update(readFileSync("releases/listflow-v0.4.0.apk"))
+      .update(readFileSync("releases/listflow-v0.4.1.apk"))
       .digest("hex"),
   );
   await page.getByRole("button", { name: "Close settings" }).click();
@@ -91,37 +91,40 @@ try {
       })
     ).ok(),
   ).toBe(true);
-  const now = new Date().toISOString();
-  const note = {
-    id: noteId,
-    workspace_id: "personal",
-    kind: "item",
-    type: "note",
-    title,
-    body_md:
-      "## Live Markdown\n\n![Deployment image](attachment:" + imageId + ")",
-    parent_item_id: null,
-    list_id: "00000000-0000-4000-8000-000000000001",
-    category_id: null,
-    status: "active",
-    priority: "none",
-    due_at: null,
-    scheduled_for: null,
-    completed_at: null,
-    sort_key: Date.now(),
-    created_at: now,
-    updated_at: now,
-    deleted_at: null,
-    version: 0,
-    actor_id: "owner",
-    container: false,
-    recurrence: null,
-    metadata_json: {},
-  };
-  const result = await submit(operation("create", note));
-  version = result.changes.find((x) => x.id === noteId).version;
+  const body =
+    "## Live Markdown\n\n![Deployment image](attachment:" + imageId + ")";
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await page.getByRole("textbox", { name: "Note title" }).fill(title);
+  await page.getByRole("textbox", { name: "Note content" }).fill(body);
+  await page
+    .locator(".capture-modal")
+    .getByRole("button", { name: "Add item" })
+    .click();
+  await expect
+    .poll(
+      async () => {
+        const response = await context.request.get(
+          url + "/api/search?query=" + encodeURIComponent(title),
+        );
+        const item = (await response.json()).items.find(
+          (x) => x.title === title,
+        );
+        if (!item) return false;
+        noteId = item.id;
+        version = item.version;
+        return item.body_md === body;
+      },
+      { timeout: 15000 },
+    )
+    .toBe(true);
   await page.reload();
   await page.getByText(title, { exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Item title" })).toHaveValue(
+    title,
+  );
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    body,
+  );
   await page.getByRole("button", { name: "Preview", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Live Markdown" }),
@@ -141,6 +144,12 @@ try {
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "tycho");
   await page.getByText(title, { exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Item title" })).toHaveValue(
+    title,
+  );
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    body,
+  );
   await page.getByRole("button", { name: "Preview", exact: true }).click();
   await expect
     .poll(() =>
@@ -159,7 +168,7 @@ try {
     true,
   );
   console.log(
-    "PASS: production login, persistent Tycho theme, v0.4.0 APK checksum, authenticated image upload, Markdown render, offline image reload, MCP ID-zero discovery.",
+    "PASS: production login, separate note title/content capture, persistent Tycho theme, v0.4.1 APK checksum, authenticated image upload, Markdown render, offline image reload, MCP ID-zero discovery.",
   );
 } finally {
   await context.setOffline(false);

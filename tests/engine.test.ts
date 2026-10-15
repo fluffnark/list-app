@@ -61,6 +61,19 @@ describe("capture", () => {
     expect(e.title).toBe("some unclassified thought");
     expect(e.list_id).toBe(INBOX);
   });
+  it("splits captured notes into title and Markdown without interpreting the body as task instructions", () => {
+    const body = "## Plans\n\n- review tomorrow\n- breadcrumbs for shopping\n";
+    const note = capture("note: My plans\r\n" + body);
+    expect(note.title).toBe("My plans");
+    expect(note.body_md).toBe(body);
+    expect(note.type).toBe("note");
+    expect(note.list_id).toBe(INBOX);
+    expect(note.scheduled_for).toBeNull();
+    expect(capture("note: Thoughts tomorrow").title).toBe("Thoughts tomorrow");
+    const long = "x".repeat(700);
+    expect(capture("note: " + long).body_md).toBe(long);
+    expect(capture("note: " + long).title).toHaveLength(500);
+  });
   it("suggests shopping and dates without requiring them", () => {
     expect(capture("breadcrumbs for shopping").list_id).toBe(SHOPPING);
     expect(capture("review PR tomorrow").scheduled_for).toBe(

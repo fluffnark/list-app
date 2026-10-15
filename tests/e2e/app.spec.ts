@@ -188,7 +188,7 @@ test("mobile opens navigation and recent notes with large controls; desktop keep
   ).toBeVisible();
   await page.getByRole("button", { name: "Write a note", exact: true }).click();
   await page
-    .getByRole("textbox", { name: "What’s on your mind?" })
+    .getByRole("textbox", { name: "Note title" })
     .fill("Mobile landing note");
   await page
     .locator(".capture-modal")
@@ -230,7 +230,7 @@ test("mobile rich notes preserve Markdown, images and drawings offline; categori
   await context.setOffline(true);
   await page.getByRole("button", { name: "Write a note", exact: true }).click();
   await page
-    .getByRole("textbox", { name: "What’s on your mind?" })
+    .getByRole("textbox", { name: "Note title" })
     .fill("Rich offline note");
   await page
     .locator(".capture-modal")
@@ -436,4 +436,64 @@ test("themes apply across the app, persist offline and support light mode and ke
   );
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "listflow");
+});
+
+test("note capture separates title and Markdown, preserves drafts offline and uses Enter for content", async ({
+  page,
+  context,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await page.reload();
+  await context.setOffline(true);
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Note title" })
+    .fill("A separate title");
+  const content = page.getByRole("textbox", { name: "Note content" });
+  await content.fill("## Content");
+  await content.press("End");
+  await content.press("Enter");
+  await content.type("This belongs in the body tomorrow");
+  await expect(page.locator(".capture-modal")).toBeVisible();
+  await expect(content).toHaveValue(
+    "## Content\nThis belongs in the body tomorrow",
+  );
+  await page.getByRole("button", { name: "Close capture" }).click();
+  await page.reload();
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Note title" })).toHaveValue(
+    "A separate title",
+  );
+  await expect(content).toHaveValue(
+    "## Content\nThis belongs in the body tomorrow",
+  );
+  await content.press("Control+Enter");
+  await expect(page.locator(".capture-modal")).toHaveCount(0);
+  await page.getByText("A separate title", { exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Item title" })).toHaveValue(
+    "A separate title",
+  );
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    "## Content\nThis belongs in the body tomorrow",
+  );
+  await page.getByRole("button", { name: "Close details" }).click();
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Note title" })).toHaveValue(
+    "",
+  );
+  await expect(content).toHaveValue("");
+  await content.fill("A content-only note");
+  await page
+    .locator(".capture-modal")
+    .getByRole("button", { name: "Add item" })
+    .click();
+  await page.getByText("Untitled note", { exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    "A content-only note",
+  );
+  await context.setOffline(false);
 });

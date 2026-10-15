@@ -100,3 +100,11 @@ Executed production build, 41 unit/integration tests and all 12 Playwright brows
 Signed APK/AAB builds and APK signature verification passed. Android API 36 emulator verified Tycho survives force-stop/relaunch alongside offline capture, SQLite restoration after IndexedDB deletion, drawings, sharing and deep links. The first installation attempt was made while the emulator was still booting; installation and the complete device test passed once boot completed. Physical-device appearance/performance is not claimed tested.
 
 Harmony v0.4.0 deployment passed owner login, persistent Tycho selection including offline reload, exact APK SHA-256, authenticated image upload/rendering, Markdown and MCP request-ID-zero discovery. The synthetic note was moved to Trash and its test session revoked. Gateway/tunnel readiness passed after deployment.
+
+## v0.4.1 separate note title/content
+
+Production build, 42 unit/integration tests and all 14 browser/API tests passed. New coverage validates multiline note-prefix capture, literal date/shopping prose, preservation of long first lines, separate title/content draft recovery offline, content Enter behavior, Ctrl+Enter save and body-only notes. The standard MCP SDK completes initialize/listTools/ping and a recoverable tool error against staging. A production SDK probe also passed discovery of all 13 tools and ping without reading note content; its temporary owner session was revoked.
+
+Signed APK/AAB build and APK signature verification passed. Android API 36 emulator passed separate title/content capture and correct stored fields, theme persistence, offline capture, SQLite recovery, drawing recovery, sharing and deep links. Native note-capture screenshot was inspected. Physical-device testing is still outstanding.
+
+Harmony v0.4.1 verification passed actual separate-field note capture through the UI and durable sync, exact stored title/content after reload, offline image rendering, Tycho persistence, APK checksum and ID-zero tool discovery. The synthetic note was moved to Trash and its session revoked. The v0.4.1 standard SDK production probe again passed all 13 tool schemas and ping. Tunnel/gateway readiness passed. This does not claim a successful ChatGPT account connection; a fresh ChatGPT refresh/retry remains pending.

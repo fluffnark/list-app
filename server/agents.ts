@@ -29,7 +29,7 @@ export const agentTools = [
         query: { type: "string" },
         list_id: { type: "string" },
         status: { type: "string" },
-        type: { enum: ["task", "shopping", "note"] },
+        type: { type: "string", enum: ["task", "shopping", "note"] },
         offset: { type: "integer" },
         limit: { type: "integer" },
       },
@@ -51,7 +51,7 @@ export const agentTools = [
       type: "object",
       properties: {
         title: { type: "string" },
-        type: { enum: ["task", "shopping", "note"] },
+        type: { type: "string", enum: ["task", "shopping", "note"] },
         body_md: { type: "string" },
         list_id: { type: "string" },
         idempotency_key: { type: "string" },
@@ -140,6 +140,22 @@ export const agentTools = [
   name,
   description,
   inputSchema,
+  title: String(name)
+    .replaceAll("_", " ")
+    .replace(/^./, (x) => x.toUpperCase()),
+  annotations: {
+    readOnlyHint: [
+      "get_attachment",
+      "list_categories",
+      "list_lists",
+      "query_items",
+      "get_item",
+      "draft_daily_plan",
+      "confirm_bulk_change",
+    ].includes(String(name)),
+    destructiveHint: ["update_item", "set_recurrence"].includes(String(name)),
+    openWorldHint: false,
+  },
 }));
 export function callAgent(
   store: Store,

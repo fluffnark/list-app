@@ -122,6 +122,18 @@ function App() {
   const [draft, setDraft] = useState(
     localStorage.getItem("listflow-draft") || "",
   );
+  const [noteTitle, setNoteTitle] = useState(
+    localStorage.getItem("listflow-note-title-draft") || "",
+  );
+  const [noteBody, setNoteBody] = useState(
+    localStorage.getItem("listflow-note-body-draft") || "",
+  );
+  const saveNoteDraft = (title: string, body: string) => {
+    setNoteTitle(title);
+    setNoteBody(body);
+    localStorage.setItem("listflow-note-title-draft", title);
+    localStorage.setItem("listflow-note-body-draft", body);
+  };
   const [captureType, setCaptureType] = useState<Item["type"]>("task");
   const [captureList, setCaptureList] = useState(INBOX);
   const [search, setSearch] = useState("");
@@ -229,6 +241,7 @@ function App() {
       if (!native) return;
       const data = await native.getLaunch();
       if (data.text) {
+        setCaptureType("task");
         setDraft(data.text);
         localStorage.setItem("listflow-draft", data.text);
         setCaptureOpen(true);
@@ -287,9 +300,20 @@ function App() {
   }
   async function submitCapture(e: React.FormEvent) {
     e.preventDefault();
-    if (!draft.trim()) return;
-    const parsed = capture(draft, captureList);
-    if (captureType === "note") parsed.type = "note";
+    if (
+      captureType === "note"
+        ? !noteTitle.trim() && !noteBody.trim()
+        : !draft.trim()
+    )
+      return;
+    const parsed =
+      captureType === "note"
+        ? newItem(noteTitle.trim() || "Untitled note", {
+            type: "note",
+            body_md: noteBody,
+            list_id: captureList,
+          })
+        : capture(draft, captureList);
     if (captureParent) {
       parsed.parent_item_id = captureParent;
       parsed.list_id =
@@ -297,8 +321,14 @@ function App() {
     }
     await act(async () => {
       await create(parsed);
-      setDraft("");
-      localStorage.removeItem("listflow-draft");
+      if (captureType === "note") {
+        saveNoteDraft("", "");
+        localStorage.removeItem("listflow-note-title-draft");
+        localStorage.removeItem("listflow-note-body-draft");
+      } else {
+        setDraft("");
+        localStorage.removeItem("listflow-draft");
+      }
       setCaptureOpen(false);
       notify(
         `Added to ${lists.find((x) => x.id === parsed.list_id)?.name || "Inbox"}`,
@@ -1091,27 +1121,100 @@ function App() {
                 Inside {items.find((x) => x.id === captureParent)?.title}
               </p>
             )}
-            <textarea
-              aria-label="What’s on your mind?"
-              placeholder="What’s on your mind?"
-              autoFocus
-              value={draft}
-              onChange={(e) => {
-                setDraft(e.target.value);
-                localStorage.setItem("listflow-draft", e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  void submitCapture(e);
-                }
-              }}
-            />
+            {captureType === "note" ? (
+              <div className="capture-note-fields">
+                <label htmlFor="capture-note-title">Title</label>
+                <input
+                  id="capture-note-title"
+                  aria-label="Note title"
+                  placeholder="Title (optional)"
+                  maxLength={500}
+                  autoFocus
+                  value={noteTitle}
+                  onChange={(e) => saveNoteDraft(e.target.value, noteBody)}
+                  onPaste={(e) => {
+                    const text = e.clipboardData.getData("text/plain");
+                    if (!text.includes("\n") && !text.includes("\r")) return;
+                    e.preventDefault();
+                    const input = e.currentTarget;
+                    const combined =
+                      noteTitle.slice(
+                        0,
+                        input.selectionStart ?? noteTitle.length,
+                      ) +
+                      text +
+                      noteTitle.slice(input.selectionEnd ?? noteTitle.length);
+                    const parsed = capture("note: " + combined);
+                    saveNoteDraft(
+                      parsed.title,
+                      parsed.body_md + (noteBody ? "\n\n" + noteBody : ""),
+                    );
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (e.ctrlKey || e.metaKey) void submitCapture(e);
+                      else
+                        document
+                          .getElementById("capture-note-content")
+                          ?.focus();
+                    }
+                  }}
+                />
+                <label htmlFor="capture-note-content">Content</label>
+                <textarea
+                  id="capture-note-content"
+                  aria-label="Note content"
+                  placeholder="Write your note… Markdown supported"
+                  value={noteBody}
+                  onChange={(e) => saveNoteDraft(noteTitle, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                      e.preventDefault();
+                      void submitCapture(e);
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <textarea
+                aria-label="What’s on your mind?"
+                placeholder="What’s on your mind?"
+                autoFocus
+                value={draft}
+                onChange={(e) => {
+                  setDraft(e.target.value);
+                  localStorage.setItem("listflow-draft", e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    void submitCapture(e);
+                  }
+                }}
+              />
+            )}
             <div className="capture-options">
               <select
                 aria-label="Item type"
                 value={captureType}
-                onChange={(e) => setCaptureType(e.target.value as Item["type"])}
+                onChange={(e) => {
+                  const next = e.target.value as Item["type"];
+                  if (
+                    next === "note" &&
+                    !noteTitle &&
+                    !noteBody &&
+                    draft.trim()
+                  ) {
+                    const parsed = capture(
+                      /^\s*note:/i.test(draft) ? draft : "note: " + draft,
+                    );
+                    saveNoteDraft(parsed.title, parsed.body_md);
+                    setDraft("");
+                    localStorage.removeItem("listflow-draft");
+                  }
+                  setCaptureType(next);
+                }}
               >
                 <option value="task">Task</option>
                 <option value="shopping">Shopping</option>
@@ -1129,7 +1232,11 @@ function App() {
                   </option>
                 ))}
               </select>
-              <span className="capture-hint">Try “review PR tomorrow”</span>
+              <span className="capture-hint">
+                {captureType === "note"
+                  ? "Ctrl/⌘ + Enter to save"
+                  : "Try “review PR tomorrow”"}
+              </span>
               {native && (
                 <button
                   type="button"
@@ -1139,8 +1246,15 @@ function App() {
                     native!
                       .dictate()
                       .then((d) => {
-                        setDraft(d.text);
-                        localStorage.setItem("listflow-draft", d.text);
+                        if (captureType === "note")
+                          saveNoteDraft(
+                            noteTitle,
+                            noteBody + (noteBody ? "\n" : "") + d.text,
+                          );
+                        else {
+                          setDraft(d.text);
+                          localStorage.setItem("listflow-draft", d.text);
+                        }
                       })
                       .catch(() =>
                         notify("Voice capture is unavailable on this device"),
@@ -1159,7 +1273,11 @@ function App() {
               <button
                 className="primary-button"
                 type="submit"
-                disabled={!draft.trim()}
+                disabled={
+                  captureType === "note"
+                    ? !noteTitle.trim() && !noteBody.trim()
+                    : !draft.trim()
+                }
               >
                 Add item
                 <CornerDownLeft size={14} />
@@ -2154,8 +2272,8 @@ function SettingsPanel({
             <p>Install ListFlow on your phone.</p>
             <a
               className="primary-button"
-              href={apiRoot() + "/downloads/listflow-v0.4.0.apk"}
-              download="listflow-v0.4.0.apk"
+              href={apiRoot() + "/downloads/listflow-v0.4.1.apk"}
+              download="listflow-v0.4.1.apk"
             >
               <Download size={18} />
               Download Android APK
@@ -2707,7 +2825,7 @@ function SettingsPanel({
             )}
           </div>
           <p className="settings-footnote">
-            ListFlow 0.4.0 · Built for a quieter day
+            ListFlow 0.4.1 · Built for a quieter day
           </p>
         </div>
       </div>

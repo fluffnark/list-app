@@ -270,3 +270,40 @@ test("image attachments require authentication, retry safely and cannot be overw
     data: data_url.split(",")[1],
   });
 });
+
+test("standard MCP SDK completes discovery, ping and a recoverable tool error", async ({
+  request,
+}) => {
+  const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+  const { StreamableHTTPClientTransport } =
+    await import("@modelcontextprotocol/sdk/client/streamableHttp.js");
+  const login = await request.post("/auth/login", {
+    data: { password: "listflow-test-password" },
+  });
+  const cookie = login.headers()["set-cookie"].split(";")[0];
+  const transport = new StreamableHTTPClientTransport(
+    new URL("http://localhost:4318/mcp"),
+    { requestInit: { headers: { Cookie: cookie } } },
+  );
+  const client = new Client({ name: "listflow-test-client", version: "1.0.0" });
+  try {
+    await client.connect(transport);
+    const { tools } = await client.listTools();
+    expect(tools).toHaveLength(13);
+    expect(
+      tools.find((t) => t.name === "query_items")?.annotations,
+    ).toMatchObject({ readOnlyHint: true, openWorldHint: false });
+    expect(
+      tools.find((t) => t.name === "update_item")?.annotations,
+    ).toMatchObject({ readOnlyHint: false, destructiveHint: true });
+    await client.ping();
+    const result = await client.callTool({
+      name: "get_item",
+      arguments: { id: uuid() },
+    });
+    expect(result.isError).toBe(true);
+  } finally {
+    await client.close();
+    await request.post("/api/logout");
+  }
+});

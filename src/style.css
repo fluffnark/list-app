@@ -2878,3 +2878,34 @@ h1 {
     max-height: 300px;
   }
 }
+.capture-note-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 20px 24px;
+}
+.capture-note-fields label {
+  font-size: 13px;
+  color: var(--muted);
+}
+.capture-note-fields input {
+  font-size: 18px;
+}
+.capture-note-fields textarea {
+  min-height: 190px;
+  max-height: 40dvh;
+  font-size: 16px;
+  line-height: 1.6;
+}
+@media (max-width: 760px) {
+  .capture-note-fields {
+    padding: 16px 20px;
+  }
+  .capture-note-fields input {
+    min-height: 48px;
+  }
+  .capture-note-fields textarea {
+    min-height: 150px;
+    max-height: 34dvh;
+  }
+}

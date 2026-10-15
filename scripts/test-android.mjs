@@ -48,9 +48,12 @@ try {
   ).toBeVisible();
   const noteTitle = "Android drawing " + Date.now();
   await page.getByRole("button", { name: "Quick capture" }).click();
+  await page.getByLabel("Item type").selectOption("note");
+  await page.getByRole("textbox", { name: "Note title" }).fill(noteTitle);
   await page
-    .getByRole("textbox", { name: "What’s on your mind?" })
-    .fill("note: " + noteTitle);
+    .getByRole("textbox", { name: "Note content" })
+    .fill("## Native drawing");
+  await page.screenshot({ path: "docs/screenshots/android-note-capture.png" });
   await page
     .locator(".capture-modal")
     .getByRole("button", { name: "Add item" })
@@ -60,9 +63,9 @@ try {
     .getByRole("button", { name: "Notes", exact: true })
     .click();
   await page.getByText(noteTitle, { exact: true }).click();
-  await page
-    .getByRole("textbox", { name: "Description" })
-    .fill("## Native drawing");
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    "## Native drawing",
+  );
   await page.getByRole("button", { name: "Draw", exact: true }).click();
   const canvasBounds = await page.getByLabel("Drawing canvas").boundingBox();
   await page.mouse.move(canvasBounds.x + 20, canvasBounds.y + 20);

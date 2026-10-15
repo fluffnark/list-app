@@ -218,6 +218,25 @@ export function nextOccurrence(
   return d.toUTC().toISO()!;
 }
 export function capture(text: string, listId = INBOX): Item {
+  // A note prefix makes the following text literal Markdown, not task instructions.
+  if (/^\s*note:/i.test(text)) {
+    const content = text
+      .replace(/\r\n?/g, "\n")
+      .replace(/^\s*note:[ \t]*/i, "")
+      .replace(/^\n+/, "");
+    const newline = content.indexOf("\n");
+    const first = (newline < 0 ? content : content.slice(0, newline)).trim();
+    return newItem(first.slice(0, 500) || "Untitled note", {
+      list_id: listId,
+      type: "note",
+      body_md:
+        first.length > 500
+          ? content
+          : newline < 0
+            ? ""
+            : content.slice(newline + 1),
+    });
+  }
   let title = text.trim();
   const patch: Partial<Item> = {
     list_id: listId,
@@ -227,10 +246,6 @@ export function capture(text: string, listId = INBOX): Item {
     title = title.replace(/\s+(?:for|to) shopping$/i, "");
     patch.list_id = SHOPPING;
     patch.type = "shopping";
-  }
-  if (/^note:\s*/i.test(title)) {
-    title = title.replace(/^note:\s*/i, "");
-    patch.type = "note";
   }
   const match = title.match(/\s+(today|tomorrow)$/i);
   if (match) {
