@@ -45,3 +45,15 @@ At the time this guide was updated, Harmony reported Google OAuth unconfigured (
 Tunnel setup update: the owner supplied a tunnel ID, retained only in Harmony’s local configuration. As of this check, the official tunnel guide and API pricing page did not state an explicit zero-price guarantee. Do not activate the client until the account’s terms confirm no additional charge. Runtime credentials and ChatGPT-account connection are still pending; no inference API calls or billing changes were made.
 
 Harmony preparation completed: installed the official ARM64 tunnel-client v0.0.16 after verifying its SHA-256 against GitHub release metadata; initialized the `listflow` OAuth/DCR profile in `~/.config/tunnel-client/listflow.yaml` with the supplied tunnel ID and private HTTPS MCP URL. The profile is mode 0600. No polling daemon was started, no runtime key was supplied, and no model/API inference request was made. Computer-use account verification remains unavailable (`CUA_REPL_ENABLED_SURFACES is required`).
+
+### Hidden runtime-key entry
+
+A local helper is installed on Harmony. After creating a restricted runtime key with only Tunnels Read + Use in the intended OpenAI organization, run:
+
+```bash
+ssh -t harmony '~/.local/bin/listflow-tunnel-key'
+```
+
+Paste the key at the hidden prompt. It saves `~/.config/tunnel-client/listflow-runtime-key` mode 0600, outside the repo, and does not start the tunnel. Do not paste a key into chat. The helper is reproducible from `scripts/save-tunnel-key.py`.
+
+The next operator diagnostic is `tunnel-client doctor --profile listflow --control-plane.api-key file:/home/harmony/.config/tunnel-client/listflow-runtime-key --explain`. Run connected diagnostics/startup only after the zero-additional-cost requirement is resolved for the account. Do not enable billing, top up credits, change plans, or invoke model APIs as a workaround for missing access. Platform/API tier is separate from the ChatGPT account’s ability to install a custom MCP connection.
