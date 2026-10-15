@@ -149,3 +149,42 @@ test("markdown note editing survives reload and remains local", async ({
     "## Keep this\nA private thought.",
   );
 });
+
+test("mobile opens navigation and recent notes with large controls; desktop keeps its view", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Your space." }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Write a note", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "What’s on your mind?" })
+    .fill("Mobile landing note");
+  await page
+    .locator(".capture-modal")
+    .getByRole("button", { name: "Add item" })
+    .click();
+  await expect(page.locator(".capture-modal")).toHaveCount(0);
+  await expect(
+    page.locator(".home-note").filter({ hasText: "Mobile landing note" }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.locator(".home-note").filter({ hasText: "Mobile landing note" }),
+  ).toBeVisible();
+  for (const button of await page.locator(".home-navigation button").all()) {
+    const bounds = (await button.boundingBox())!;
+    expect(bounds.height).toBeGreaterThanOrEqual(44);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(390);
+  }
+  await page.setViewportSize({ width: 320, height: 720 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(page.getByRole("heading", { name: "Today." })).toBeVisible();
+});

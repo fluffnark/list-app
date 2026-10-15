@@ -47,6 +47,7 @@ import {
   Play,
   SkipForward,
   FolderPlus,
+  House,
 } from "lucide-react";
 import {
   db,
@@ -104,8 +105,13 @@ function App() {
   const categories = entities.filter(
     (x): x is Category => x.kind === "category" && !x.archived_at,
   );
-  const [view, setView] = useState(
-    localStorage.getItem("listflow-view") || "today",
+  const [isMobile, setIsMobile] = useState(
+    () => window.matchMedia("(max-width: 760px)").matches,
+  );
+  const [view, setView] = useState(() =>
+    window.matchMedia("(max-width: 760px)").matches
+      ? "home"
+      : localStorage.getItem("listflow-view") || "today",
   );
   const [selected, setSelected] = useState<string | null>(null);
   const [captureOpen, setCaptureOpen] = useState(false);
@@ -165,8 +171,22 @@ function App() {
     };
   }, []);
   useEffect(() => {
-    localStorage.setItem("listflow-view", view);
-  }, [view]);
+    if (!isMobile && view !== "home")
+      localStorage.setItem("listflow-view", view);
+  }, [view, isMobile]);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 760px)");
+    const change = (event: MediaQueryListEvent) => {
+      setIsMobile(event.matches);
+      setView(
+        event.matches
+          ? "home"
+          : localStorage.getItem("listflow-view") || "today",
+      );
+    };
+    media.addEventListener("change", change);
+    return () => media.removeEventListener("change", change);
+  }, []);
   useEffect(() => {
     if (!notice) return;
     const t = setTimeout(() => {
@@ -244,7 +264,7 @@ function App() {
     setNavOpen(false);
     setShowDone(false);
   }
-  function openCapture(parent: string | null = null) {
+  function openCapture(parent: string | null = null, type?: Item["type"]) {
     setCaptureParent(parent);
     const list = parent
       ? items.find((x) => x.id === parent)?.list_id
@@ -252,7 +272,14 @@ function App() {
         ? view
         : INBOX;
     setCaptureList(list || INBOX);
-    setCaptureType(list === SHOPPING ? "shopping" : "task");
+    setCaptureType(
+      type ||
+        (!parent && view === "notes"
+          ? "note"
+          : list === SHOPPING
+            ? "shopping"
+            : "task"),
+    );
     setCaptureOpen(true);
   }
   async function submitCapture(e: React.FormEvent) {
@@ -367,17 +394,19 @@ function App() {
   ).length;
   const heading = search
     ? "Search results"
-    : view === "today"
-      ? "Today"
-      : view === "lists"
-        ? "Your lists"
-        : view === "notes"
-          ? "Notes"
-          : view === "routines"
-            ? "Routines"
-            : view === "trash"
-              ? "Trash"
-              : list?.name || "Inbox";
+    : view === "home"
+      ? "Your space"
+      : view === "today"
+        ? "Today"
+        : view === "lists"
+          ? "Your lists"
+          : view === "notes"
+            ? "Notes"
+            : view === "routines"
+              ? "Routines"
+              : view === "trash"
+                ? "Trash"
+                : list?.name || "Inbox";
   const chosen = items.find((x) => x.id === selected);
   function count(id: string) {
     return active.filter((x) => x.list_id === id).length;
@@ -643,7 +672,9 @@ function App() {
           </div>
         </header>
         <main>
-          <div className="page-header">
+          <div
+            className={`page-header ${view === "home" ? "home-page-header" : ""}`}
+          >
             <div>
               <div className="eyebrow">
                 {view === "today"
@@ -655,19 +686,21 @@ function App() {
                 <span className="heading-dot">.</span>
               </h1>
               <p className="page-subtitle">
-                {view === "today"
-                  ? "Make room for what matters. One thing at a time."
-                  : view === SHOPPING
-                    ? "Less remembering. More getting on with your day."
-                    : view === "lists"
-                      ? "Everything has a place. Find yours."
-                      : view === "notes"
-                        ? "Catch a thought before it slips away."
-                        : view === "routines"
-                          ? "Small rhythms, a little less to remember."
-                          : view === "trash"
-                            ? "Nothing lost in a hurry. Restore items and their subtasks."
-                            : "A quiet place to collect your thoughts and next steps."}
+                {view === "home"
+                  ? "Your notes and lists. Right here."
+                  : view === "today"
+                    ? "Make room for what matters. One thing at a time."
+                    : view === SHOPPING
+                      ? "Less remembering. More getting on with your day."
+                      : view === "lists"
+                        ? "Everything has a place. Find yours."
+                        : view === "notes"
+                          ? "Catch a thought before it slips away."
+                          : view === "routines"
+                            ? "Small rhythms, a little less to remember."
+                            : view === "trash"
+                              ? "Nothing lost in a hurry. Restore items and their subtasks."
+                              : "A quiet place to collect your thoughts and next steps."}
               </p>
             </div>
             <button
@@ -716,7 +749,122 @@ function App() {
               </div>
             </div>
           )}
-          {view === "lists" && !search ? (
+          {view === "home" && !search ? (
+            <section className="mobile-home" aria-label="Notes and navigation">
+              <button
+                className="home-write-note"
+                aria-label="Write a note"
+                onClick={() => openCapture(null, "note")}
+              >
+                <span className="home-write-icon">
+                  <Plus size={24} />
+                </span>
+                <span>
+                  Write a note<small>Catch a thought, right away</small>
+                </span>
+                <FileText size={23} />
+              </button>
+              <nav
+                className="home-navigation"
+                aria-label="Workspace destinations"
+              >
+                <button onClick={() => navigate("today")}>
+                  <Sun size={25} />
+                  <strong>Today</strong>
+                  <small>Your next steps</small>
+                </button>
+                <button onClick={() => navigate(INBOX)}>
+                  <Inbox size={25} />
+                  <strong>Inbox</strong>
+                  <small>{count(INBOX)} active items</small>
+                </button>
+                <button
+                  className="shopping-destination"
+                  onClick={() => navigate(SHOPPING)}
+                >
+                  <ShoppingCart size={25} />
+                  <strong>Shopping</strong>
+                  <small>{count(SHOPPING)} to pick up</small>
+                </button>
+                <button onClick={() => navigate("lists")}>
+                  <Layers size={25} />
+                  <strong>All lists</strong>
+                  <small>
+                    {lists.length} lists · {categories.length} categories
+                  </small>
+                </button>
+              </nav>
+              {lists.some(
+                (l) => l.pinned && l.id !== SHOPPING && l.id !== INBOX,
+              ) && (
+                <nav className="home-pins" aria-label="Pinned lists">
+                  {lists
+                    .filter(
+                      (l) => l.pinned && l.id !== SHOPPING && l.id !== INBOX,
+                    )
+                    .map((l) => (
+                      <button key={l.id} onClick={() => navigate(l.id)}>
+                        <Hash size={17} />
+                        {l.name}
+                        <ChevronRight size={16} />
+                      </button>
+                    ))}
+                </nav>
+              )}
+              <div className="home-notes-heading">
+                <h2>Recent notes</h2>
+                <button
+                  className="text-button"
+                  onClick={() => navigate("notes")}
+                >
+                  All notes <ArrowUpRight size={17} />
+                </button>
+              </div>
+              <div className="home-notes">
+                {items
+                  .filter(
+                    (x) =>
+                      x.type === "note" && !x.deleted_at && !x.parent_item_id,
+                  )
+                  .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+                  .slice(0, 3)
+                  .map((note) => (
+                    <button
+                      className="home-note"
+                      key={note.id}
+                      onClick={() => setSelected(note.id)}
+                    >
+                      <span className="home-note-title">
+                        <FileText size={20} />
+                        <strong>{note.title}</strong>
+                        <ChevronRight size={18} />
+                      </span>
+                      {note.body_md && <p>{note.body_md.slice(0, 180)}</p>}
+                      <small>
+                        {DateTime.fromISO(note.updated_at).toRelative()}
+                      </small>
+                    </button>
+                  ))}
+                {!items.some(
+                  (x) =>
+                    x.type === "note" && !x.deleted_at && !x.parent_item_id,
+                ) && (
+                  <button
+                    className="home-notes-empty"
+                    onClick={() => openCapture(null, "note")}
+                  >
+                    <FileText size={23} />
+                    <span>
+                      A thought, a reminder, a little idea.
+                      <strong>
+                        Start your first note <Plus size={17} />
+                      </strong>
+                    </span>
+                  </button>
+                )}
+              </div>
+            </section>
+          ) : view === "lists" && !search ? (
             <ListGallery
               lists={lists}
               categories={categories}
@@ -869,18 +1017,18 @@ function App() {
       </div>
       <nav className="bottom-nav">
         <button
-          className={view === "today" ? "active" : ""}
-          onClick={() => navigate("today")}
+          className={view === "home" ? "active" : ""}
+          onClick={() => navigate("home")}
         >
-          <Sun size={20} />
-          <span>Today</span>
+          <House size={24} />
+          <span>Home</span>
         </button>
         <button
-          className={view === INBOX ? "active" : ""}
-          onClick={() => navigate(INBOX)}
+          className={view === "notes" ? "active" : ""}
+          onClick={() => navigate("notes")}
         >
-          <Inbox size={20} />
-          <span>Inbox</span>
+          <FileText size={24} />
+          <span>Notes</span>
         </button>
         <button
           className="mobile-quick"
@@ -2335,6 +2483,22 @@ function SettingsPanel({
               options. A deployed endpoint alone does not connect it to this
               chat.
             </p>
+            <div className="detail-actions">
+              <a
+                className="secondary-button"
+                href={apiRoot() + "/downloads/listflow-notes-plugin.zip"}
+                download
+              >
+                Download notes skill
+              </a>
+              <a
+                className="secondary-button"
+                href={apiRoot() + "/downloads/listflow-chatgpt-context.txt"}
+                download
+              >
+                Download ChatGPT context
+              </a>
+            </div>
           </div>
           {proposals.length > 0 && (
             <div className="settings-card">
@@ -2470,7 +2634,7 @@ function SettingsPanel({
               </button>
               <a
                 className="text-button"
-                href={apiRoot() + "/downloads/listflow-v0.1.0.apk"}
+                href={apiRoot() + "/downloads/listflow-v0.2.0.apk"}
               >
                 Download Android APK <Download size={14} />
               </a>
@@ -2500,7 +2664,7 @@ function SettingsPanel({
             )}
           </div>
           <p className="settings-footnote">
-            ListFlow 0.1.0 · Built for a quieter day
+            ListFlow 0.2.0 · Built for a quieter day
           </p>
         </div>
       </div>

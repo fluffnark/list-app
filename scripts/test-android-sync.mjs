@@ -47,6 +47,11 @@ try {
   ).json();
   [device] = await android.devices();
   if (!device) throw new Error("No Android device");
+  if (!device.serial().startsWith("emulator-"))
+    throw new Error(
+      "This isolated test resets app data; use a disposable emulator",
+    );
+  await device.shell("pm clear com.doomslug.listflow");
   await device.shell("svc wifi enable");
   await device.shell("svc data enable");
   await device.shell(
@@ -60,6 +65,7 @@ try {
   const page = await (
     await device.webView({ pkg: "com.doomslug.listflow" })
   ).page();
+  page.setDefaultTimeout(20000);
   page.on("dialog", (d) => d.accept());
   if (await page.getByRole("button", { name: "Close capture" }).isVisible())
     await page.getByRole("button", { name: "Close capture" }).click();
@@ -77,7 +83,11 @@ try {
   await page.getByRole("button", { name: "Close settings" }).click();
   await page
     .locator(".bottom-nav")
-    .getByRole("button", { name: "Inbox" })
+    .getByRole("button", { name: "Home" })
+    .click();
+  await page
+    .locator(".home-navigation")
+    .getByRole("button", { name: /Inbox/ })
     .click();
   await page.getByRole("button", { name: "Quick capture" }).click();
   const title = "Native sync integration " + Date.now();

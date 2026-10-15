@@ -14,3 +14,10 @@
 - Voice recognition uses the device's installed speech service only after explicit tap; availability and offline behavior depend on that service.
 - Obsidian exports carry stable IDs and URI links; Markdown import creates a new note, avoiding unsafe implicit bidirectional merges.
 - No performance timings, multi-day offline endurance, Sheets live-account behavior, or Android lifecycle reliability are claimed without executing the corresponding tests.
+
+
+## 2026-10-14 — Mobile landing and ChatGPT notes
+
+Mobile launches into notes/navigation regardless of the previous route; desktop keeps its remembered route. Mobile Home and Notes replace Today/Inbox in bottom navigation, while destination tiles retain direct access. Global capture remains general-purpose; dedicated note capture sets the note type.
+
+Use the existing operations API for live assistant writes. Google Sheets cell edits are not an import protocol. Prefer the account-supported outbound OpenAI MCP tunnel to public ingress; activation remains pending account credentials/association. A skill supplies workflow context and does not create a connection or enforce a narrower authorization scope.

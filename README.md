@@ -32,7 +32,7 @@ The web shell is public; all synchronized user data, search, exports, and assist
 
 ## Android
 
-Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.1.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
+Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.2.0.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
 
 For cross-device sync:
 

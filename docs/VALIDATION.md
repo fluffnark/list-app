@@ -1,12 +1,12 @@
 # Actual validation — October 14, 2026
 
-These are observed results, distinct from the proposed product specification. This is a working v0.1 implementation, not a claim that every long-duration release gate has passed.
+These are observed results, distinct from the proposed product specification. This is a working v0.2 implementation, not a claim that every long-duration release gate has passed.
 
 | Check                              | Actual result                                                                                                                                                                                                                                                                                              |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript + Vite production build | Passed; installable PWA app-shell manifest and service worker generated.                                                                                                                                                                                                                                   |
-| Vitest unit/integration suite      | 36 tests passed across model, mutation invariants, local IndexedDB/outbox, SQLite ledger, assistant policies, and mocked Sheets projection.                                                                                                                                                                |
-| Playwright browser/API suite       | 6 tests passed: authorization, conflict merge/idempotency/approval, offline reload and hierarchy undo, mobile capture draft + Shopping, cross-device sync, note persistence, and OAuth discovery/consent/PKCE/code reuse/refresh revocation.                                                               |
+| Vitest unit/integration suite      | 37 tests passed across model, mutation invariants, local IndexedDB/outbox, SQLite ledger, assistant policies, and mocked Sheets projection.                                                                                                                                                                |
+| Playwright browser/API suite       | 7 tests passed: authorization, conflict merge/idempotency/approval, offline reload and hierarchy undo, mobile capture draft + Shopping, cross-device sync, note persistence, and OAuth discovery/consent/PKCE/code reuse/refresh revocation.                                                               |
 | SQLite interrupted write           | Actual child process receives SIGKILL inside an uncommitted transaction; committed data and sequence survive, uncommitted data does not.                                                                                                                                                                   |
 | Android debug build                | Passed on Java 21 / Android SDK 36 / AGP 8.13 / Gradle 8.14.5.                                                                                                                                                                                                                                             |
 | Android signed release APK + AAB   | Built; APK verified with apksigner; AAB verified with jarsigner. App signing key stored outside the repository.                                                                                                                                                                                            |
@@ -21,7 +21,7 @@ Run commands and reproduction details are in README and scripts/test-android.mjs
 
 ## Pending external requirements
 
-- Per the user's deployment decision, ListFlow is Tailscale-only on HTTPS port 4443. No public Funnel exposes it. Public internet access and cloud-hosted ChatGPT connectivity are intentionally unavailable. Existing 8443/10000 Funnel entries belong to other applications and were left in place; port 443 remains tailnet-only.
+- Per the user's deployment decision, ListFlow is Tailscale-only on HTTPS port 4443. No public Funnel exposes it. Public internet ingress is intentionally unavailable. Cloud ChatGPT connectivity can be configured through an outbound Secure MCP Tunnel, but account setup and an end-to-end ChatGPT call are still pending. Existing 8443/10000 Funnel entries belong to other applications and were left in place; port 443 remains tailnet-only.
 - Google OAuth needs a web OAuth client, client secret, allowlisted OWNER_EMAIL, enabled Sheets API, and owner consent. Google live-account login, token renewal, and projection have not been exercised. Sheets tests use mocked HTTP responses; no staging spreadsheet was available.
 - ChatGPT/Codex connector installation remains an account-side step. The deployed MCP OAuth protocol passes local tests; no claim is made that this chat already has ListFlow tools.
 - No physical Android device was connected. Seven-day offline endurance, real-device battery/launch/tap performance, OEM process death, actual reminder delivery, speech recognition, and Play Console upload are not claimed tested.
@@ -32,3 +32,16 @@ Run commands and reproduction details are in README and scripts/test-android.mjs
 ## Early failures corrected
 
 The first browser run used an exact Add-button name that included its keyboard hint; an explicit accessible label fixed the selector. An intermittent offline test matched the capture editor text before the local transaction had acknowledged completion; the test now waits for the committed task row and closed capture editor before reloading. Interrupted drafts remain recoverable. IndexedDB uses strict transaction durability, startup reads a snapshot before rendering, and SQLite uses FULL synchronous commits. The initial OAuth router limiter incorrectly applied to all traffic; it is now restricted to OAuth routes. Native device tokens and Android CORS/credential handling were corrected before release. No failing run is represented as passing in the table above.
+
+
+## Mobile and notes-access update (v0.2.0)
+
+Built mobile Home with direct note capture, recent notes, destination tiles, persistent Notes/Shopping navigation and larger controls. Desktop retains its layout and remembered view. Added assistant note-type query filtering and Markdown body capture, plus a portable notes skill and project context. Google Sheets remains a projection; direct spreadsheet edits are not imported.
+
+Executed: TypeScript/Vite production build; 37 unit/integration tests passed; 7 Playwright tests passed, including mobile landing/capture/reload, 44px destination targets, 320px no-overflow, and switching back to the desktop view. Skill frontmatter validated with the skill-creator validator in an isolated Python environment. Signed Android APK/AAB versionCode 2 built successfully after a clean build resolved a Gradle incremental-resource cache failure.
+
+No ChatGPT-account installation or live notes tool call is claimed. Harmony reports Google OAuth unconfigured. A private tunnel ID, restricted runtime key, and account-side custom MCP connection are still required. The instructions disclose that current OAuth read/write access covers the workspace, rather than enforcing notes-only permissions.
+
+Android follow-up: emulator offline/SQLite recovery, share target and deep link checks passed. Native read/write gateway integration passed with a fresh disposable app state and debug-only HTTP test configuration; production Capacitor configuration was restored to `allowMixedContent: false`. Initial sync reruns reused a cursor from another temporary test database and failed; the integration test now resets app data only on an emulator and refuses physical-device resets.
+
+Production follow-up: Harmony private HTTPS login, capture, durable sync, desktop/mobile rendering and OAuth discovery passed on v0.2.0. Tailscale Serve inspection confirmed no Funnel grant for ListFlow port 4443.

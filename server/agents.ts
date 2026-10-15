@@ -20,6 +20,7 @@ export const agentTools = [
         query: { type: "string" },
         list_id: { type: "string" },
         status: { type: "string" },
+        type: { enum: ["task", "shopping", "note"] },
         offset: { type: "integer" },
         limit: { type: "integer" },
       },
@@ -42,6 +43,7 @@ export const agentTools = [
       properties: {
         title: { type: "string" },
         type: { enum: ["task", "shopping", "note"] },
+        body_md: { type: "string" },
         list_id: { type: "string" },
         idempotency_key: { type: "string" },
       },
@@ -154,7 +156,8 @@ export function callAgent(
             .toLowerCase()
             .includes(String(args.query).toLowerCase())) &&
         (!args.list_id || x.list_id === args.list_id) &&
-        (!args.status || x.status === args.status),
+        (!args.status || x.status === args.status) &&
+        (!args.type || x.type === args.type),
     );
     return {
       items: all.slice(start, start + limit),
@@ -197,19 +200,17 @@ export function callAgent(
       .max(100)
       .parse(args.operations);
     const id = uuid();
-    store.db
-      .prepare("INSERT INTO proposals VALUES (?,?,?)")
-      .run(
+    store.db.prepare("INSERT INTO proposals VALUES (?,?,?)").run(
+      id,
+      JSON.stringify({
         id,
-        JSON.stringify({
-          id,
-          operations,
-          actor,
-          status: "pending",
-          created_at: new Date().toISOString(),
-        }),
-        Date.now() + 86400000,
-      );
+        operations,
+        actor,
+        status: "pending",
+        created_at: new Date().toISOString(),
+      }),
+      Date.now() + 86400000,
+    );
     return {
       proposal_id: id,
       status: "pending",
@@ -243,6 +244,8 @@ export function callAgent(
     } else {
       if (args.type) patch.type = args.type;
       if (args.list_id) patch.list_id = args.list_id;
+      if (args.body_md !== undefined)
+        patch.body_md = z.string().parse(args.body_md);
     }
     const item = newItem(z.string().min(1).parse(args.title), patch);
     operation = {

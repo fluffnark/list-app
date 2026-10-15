@@ -128,3 +128,35 @@ it("rolls back an interrupted SQLite write after a real SIGKILL", async () => {
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+describe("assistant notes", () => {
+  it("creates Markdown notes idempotently and filters note searches", () => {
+    const s = new Store(":memory:");
+    s.apply(make("Ordinary task"), "owner");
+    const args = {
+      title: "Private note",
+      type: "note",
+      body_md: "## Details\nKeep this.",
+      idempotency_key: uuid(),
+    };
+    const first = callAgent(s, "create_item", args, "agent:notes", true);
+    expect(callAgent(s, "create_item", args, "agent:notes", true)).toEqual(
+      first,
+    );
+    const result = callAgent(
+      s,
+      "query_items",
+      { type: "note" },
+      "agent:notes",
+      false,
+    ) as any;
+    expect(result.total).toBe(1);
+    expect(result.items[0]).toMatchObject({
+      type: "note",
+      title: args.title,
+      body_md: args.body_md,
+      actor_id: "agent:notes",
+    });
+    s.db.close();
+  });
+});

@@ -22,7 +22,11 @@ try {
     await page.getByRole("button", { name: "Close capture" }).click();
   await page
     .locator(".bottom-nav")
-    .getByRole("button", { name: "Inbox" })
+    .getByRole("button", { name: "Home" })
+    .click();
+  await page
+    .locator(".home-navigation")
+    .getByRole("button", { name: /Inbox/ })
     .click();
   await device.shell("svc wifi disable");
   await device.shell("svc data disable");
@@ -43,6 +47,13 @@ try {
     throw new Error("SQLite checkpoint did not contain queued operation");
   await device.shell("am force-stop " + pkg);
   page = await start();
+  await expect(
+    page.getByRole("heading", { name: "Your space." }),
+  ).toBeVisible();
+  await page
+    .locator(".home-navigation")
+    .getByRole("button", { name: /Inbox/ })
+    .click();
   await expect(
     page.locator(".task-title").filter({ hasText: title }),
   ).toBeVisible();
@@ -68,6 +79,13 @@ try {
   });
   await device.shell("am force-stop " + pkg);
   page = await start();
+  await expect(
+    page.getByRole("heading", { name: "Your space." }),
+  ).toBeVisible();
+  await page
+    .locator(".home-navigation")
+    .getByRole("button", { name: /Inbox/ })
+    .click();
   await expect(
     page.locator(".task-title").filter({ hasText: title }),
   ).toBeVisible();

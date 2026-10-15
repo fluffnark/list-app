@@ -2,7 +2,8 @@ import { chromium, expect } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 const url =
-  process.env.LISTFLOW_URL || "https://harmony.great-kettle.ts.net:4443/listflow";
+  process.env.LISTFLOW_URL ||
+  "https://harmony.great-kettle.ts.net:4443/listflow";
 const browser = await chromium.launch({
   headless: true,
   ...(process.env.LISTFLOW_PROXY
@@ -13,8 +14,10 @@ const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
 });
 const page = await context.newPage();
+page.setDefaultTimeout(20000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
+console.log("Checking deployment route");
 await page.goto(url + "/");
 await expect(page.getByRole("heading", { name: "Today." })).toBeVisible();
 const password = execFileSync(
@@ -34,6 +37,11 @@ await expect(
   page.getByText("Signed in to your private workspace."),
 ).toBeVisible();
 await page.getByRole("button", { name: "Close settings" }).click();
+await page
+  .locator(".sidebar")
+  .getByRole("button", { name: /^Inbox/ })
+  .click();
+console.log("Checking capture and sync");
 const title = "Deployment verification " + Date.now();
 await page.getByRole("button", { name: "Add item", exact: true }).click();
 await page.getByRole("textbox", { name: "What’s on your mind?" }).fill(title);
@@ -60,11 +68,23 @@ await page.screenshot({
   path: "docs/screenshots/web-desktop.png",
   fullPage: true,
 });
+console.log("Checking mobile launch");
 await page.setViewportSize({ width: 390, height: 844 });
+await page.reload();
+await expect(page.getByRole("heading", { name: "Your space." })).toBeVisible();
+await expect
+  .poll(
+    async () =>
+      (await page.locator(".sidebar").boundingBox()).x +
+      (await page.locator(".sidebar").boundingBox()).width,
+  )
+  .toBeLessThanOrEqual(0);
 await page.screenshot({
   path: "docs/screenshots/web-mobile.png",
   fullPage: true,
 });
+await page.setViewportSize({ width: 1440, height: 1000 });
+await expect(page.getByRole("heading", { name: "Inbox." })).toBeVisible();
 await page.locator(".task-title").filter({ hasText: title }).click();
 await page.getByRole("button", { name: "Move to trash", exact: true }).click();
 const metadata = await context.request.get(

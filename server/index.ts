@@ -127,7 +127,7 @@ router.use(
   }),
 );
 router.get("/api/health", (_req, res) =>
-  res.json({ ok: true, version: "0.1.0", time: new Date().toISOString() }),
+  res.json({ ok: true, version: "0.2.0", time: new Date().toISOString() }),
 );
 router.get("/api/config", (_req, res) =>
   res.json({
@@ -537,7 +537,7 @@ router.post("/mcp", (req, res) => {
           ? msg.params.protocolVersion
           : "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "listflow", version: "0.1.0" },
+        serverInfo: { name: "listflow", version: "0.2.0" },
       };
     else if (msg.method === "tools/list") result = { tools: agentTools };
     else if (msg.method === "ping") result = {};
@@ -579,7 +579,7 @@ router.get("/mcp", (_req, res) => res.set("Allow", "POST").sendStatus(405));
 router.get("/openapi.json", (_req, res) =>
   res.json({
     openapi: "3.1.0",
-    info: { title: "ListFlow assistant API", version: "0.1.0" },
+    info: { title: "ListFlow assistant API", version: "0.2.0" },
     servers: [{ url: origin + base }],
     security: [{ bearer: [] }],
     components: {
