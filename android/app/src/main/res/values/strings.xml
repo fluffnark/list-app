@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ListFlow</string>
+    <string name="title_activity_main">ListFlow</string>
+    <string name="package_name">com.doomslug.listflow</string>
+    <string name="custom_url_scheme">com.doomslug.listflow</string>
+    <string name="shortcut_capture">Quick capture</string>
+    <string name="shortcut_shopping">Shopping</string>
+</resources>

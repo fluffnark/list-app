@@ -1,0 +1,8 @@
+[Unit]
+Description=Nightly ListFlow recovery snapshots
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+RandomizedDelaySec=1800
+[Install]
+WantedBy=timers.target
