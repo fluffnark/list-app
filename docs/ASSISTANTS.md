@@ -69,3 +69,8 @@ The current operator diagnostic is `tunnel-client doctor --profile listflow --ex
 ChatGPT uses a tunnel resource identifier in its authorization request. Configure that exact identifier in `OAUTH_RESOURCE_ALIASES` on Harmony; the default Tailscale MCP resource remains accepted. Unknown resource identifiers are rejected. The approved resource is retained in the code and refresh grant, and an explicitly different token-exchange resource is rejected. Do not automatically trust arbitrary resource values supplied by a browser.
 
 The consent form posts to a relative same-origin path. HTTPS retains a Secure nonce cookie; the explicitly allowlisted LAN HTTP origin uses a non-Secure nonce cookie, matching the owner-enabled LAN login behavior. The password and nonce checks remain mandatory.
+
+
+### Browser consent response policies
+
+The consent page overrides the app’s default no-referrer policy with `strict-origin`. Browsers otherwise submit the HTML form with `Origin: null`, which the API correctly rejects. It also extends `form-action` with only the validated, registered callback origin, because browsers apply that directive to the post-approval redirect chain. Other app pages retain their default policies; the global origin allowlist still rejects null and unapproved origins.

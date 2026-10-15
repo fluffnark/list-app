@@ -69,3 +69,10 @@ Production build passed; 39 unit/integration tests and 7 browser/API tests passe
 ## APK download in Settings
 
 Moved the signed Android APK download from the bottom recovery controls into its own Android app card at the top of Settings. The link names the current v0.2.0 APK and includes a download filename. Production browser verification at a 390px mobile viewport confirmed the card/link is immediately visible and downloaded bytes match the signed release SHA-256. Production build passed.
+
+
+## Browser form origin and callback correction
+
+Reproduced the reported production `Origin denied` error with a real Chromium form submission: the consent page’s inherited `Referrer-Policy: no-referrer` caused `Origin: null`. The page now uses `strict-origin`, preserving origin checks while withholding authorization query details. A real browser regression also exposed CSP blocking the callback redirect; the consent page now allows only its validated callback origin in form-action. No global null-origin exception was added.
+
+Production build, 39 unit/integration tests and 8 browser/API tests passed. The new browser test submits the password, observes an allowed Origin, follows a mocked callback and exchanges the authorization code successfully. A production check with a deliberately wrong diagnostic password confirmed that the LAN form now reaches password validation and that the callback CSP is scoped correctly. Actual ChatGPT-account consent remains user-driven; these tests do not claim its connection is complete.

@@ -178,7 +178,19 @@ export function oauthRouter(
         path: new URL(issuer).pathname || "/",
         maxAge: 600000,
       });
+      // Browsers apply form-action to the callback redirect as well as the POST.
+      const policy = String(
+        res.getHeader("Content-Security-Policy") || "default-src 'self'",
+      )
+        .split(";")
+        .filter((directive) => !directive.trim().startsWith("form-action"))
+        .join(";");
+      res.set(
+        "Content-Security-Policy",
+        `${policy};form-action 'self' ${new URL(String(q.redirect_uri)).origin}`,
+      );
       res
+        .set("Referrer-Policy", "strict-origin")
         .type("html")
         .send(
           `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect to ListFlow</title><style>body{background:#111214;color:#ddd;font:15px system-ui;display:grid;place-items:center;min-height:95vh}main{max-width:430px;padding:32px;border:1px solid #39333f;border-radius:15px;background:#1c1a21}h1{font-size:24px}p{line-height:1.7;color:#a99db8}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:7px;margin:8px 0;background:#24202d;color:#eee;border:1px solid #50455f}button{background:#8275df;cursor:pointer}small{font-size:11px;color:#8f829d;overflow-wrap:anywhere}</style><main><h1>Connect ${escape(c.client_name)}?</h1><p>This assistant requests <strong>${scope.includes("listflow.write") ? "read and item-edit" : "read-only"}</strong> access to your private ListFlow workspace. Bulk and destructive changes still require your approval in ListFlow.</p><small>Redirect: ${escape(String(q.redirect_uri))}</small><form method="post" action="${escape(consentPath)}/oauth/approve"><input type="hidden" name="pending" value="${pending}"><label>Workspace password<input type="password" name="password" autocomplete="current-password" required></label><button type="submit">Authorize assistant</button></form><a href="${escape(issuer)}/" style="color:#afa0e2">Cancel</a></main></html>`,

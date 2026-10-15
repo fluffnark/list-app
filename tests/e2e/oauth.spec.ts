@@ -110,3 +110,59 @@ test("OAuth discovery, explicit consent, PKCE, one-time codes and refresh revoca
     ).status(),
   ).toBe(400);
 });
+
+test("browser consent submits an allowed origin and finishes password authorization", async ({
+  page,
+}) => {
+  const issuer = "http://localhost:4318";
+  const registration = await page.request.post("/oauth/register", {
+    data: {
+      client_name: "Browser consent test",
+      redirect_uris: ["https://example.com/callback"],
+      token_endpoint_auth_method: "none",
+    },
+  });
+  const { client_id } = await registration.json();
+  const verifier = randomBytes(32).toString("base64url");
+  const query = new URLSearchParams({
+    client_id,
+    response_type: "code",
+    redirect_uri: "https://example.com/callback",
+    code_challenge: createHash("sha256").update(verifier).digest("base64url"),
+    code_challenge_method: "S256",
+    resource: issuer + "/mcp",
+    scope: "listflow.read listflow.write",
+    state: "browser-consent-state",
+  });
+  await page.route("https://example.com/callback?*", (route) =>
+    route.fulfill({
+      contentType: "text/plain",
+      body: "Consent callback received",
+    }),
+  );
+  const consent = await page.goto("/oauth/authorize?" + query);
+  expect(consent!.headers()["referrer-policy"]).toBe("strict-origin");
+  await page.getByLabel("Workspace password").fill("listflow-test-password");
+  const approvalPromise = page.waitForResponse((response) =>
+    response.url().endsWith("/oauth/approve"),
+  );
+  await page.getByRole("button", { name: "Authorize assistant" }).click();
+  const approval = await approvalPromise;
+  expect(approval.request().headers().origin).toBe(issuer);
+  expect(approval.status()).toBe(302);
+  await expect(page).toHaveURL(/https:\/\/example\.com\/callback\?/);
+  const callback = new URL(page.url());
+  expect(callback.searchParams.get("state")).toBe("browser-consent-state");
+  const token = await page.request.post("/oauth/token", {
+    form: {
+      client_id,
+      grant_type: "authorization_code",
+      code: callback.searchParams.get("code")!,
+      redirect_uri: "https://example.com/callback",
+      code_verifier: verifier,
+      resource: issuer + "/mcp",
+    },
+  });
+  expect(token.status()).toBe(200);
+  expect((await token.json()).scope).toBe("listflow.read listflow.write");
+});
