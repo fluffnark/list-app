@@ -162,3 +162,41 @@ test("authorization, retry safety, conflict merge and assistant approval gates",
     ).status(),
   ).toBe(403);
 });
+
+test("MCP discovery accepts request ID zero and only treats missing IDs as notifications", async ({
+  request,
+}) => {
+  await request.post("/auth/login", {
+    data: { password: "listflow-test-password" },
+  });
+  const initialize = await request.post("/mcp", {
+    data: {
+      jsonrpc: "2.0",
+      id: 0,
+      method: "initialize",
+      params: {
+        protocolVersion: "2025-03-26",
+        capabilities: {},
+        clientInfo: { name: "Discovery test", version: "1" },
+      },
+    },
+  });
+  expect(initialize.status()).toBe(200);
+  expect(await initialize.json()).toMatchObject({
+    jsonrpc: "2.0",
+    id: 0,
+    result: { capabilities: { tools: {} }, protocolVersion: "2025-03-26" },
+  });
+  const tools = await request.post("/mcp", {
+    data: { jsonrpc: "2.0", id: 0, method: "tools/list" },
+  });
+  expect(tools.status()).toBe(200);
+  expect(
+    (await tools.json()).result.tools.map((tool: any) => tool.name),
+  ).toContain("query_items");
+  const notification = await request.post("/mcp", {
+    data: { jsonrpc: "2.0", method: "notifications/initialized" },
+  });
+  expect(notification.status()).toBe(202);
+  expect(await notification.text()).toBe("");
+});

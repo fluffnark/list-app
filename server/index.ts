@@ -535,8 +535,8 @@ router.post("/api/agent/:tool", (req, res) => {
 router.post("/mcp", (req, res) => {
   const msg = req.body;
   const identity = (req as any).identity;
-  if (!msg.id) {
-    res.sendStatus(202);
+  if (msg.id === undefined) {
+    res.status(202).end();
     return;
   }
   try {
