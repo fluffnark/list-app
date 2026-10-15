@@ -69,6 +69,7 @@ import {
   uuid,
   newItem,
   capture,
+  calendarDate,
   isActive,
   ready,
   descendants,
@@ -319,7 +320,7 @@ function App() {
     visible = active.filter(
       (x) =>
         x.type !== "note" &&
-        (!x.scheduled_for || x.scheduled_for.slice(0, 10) <= today),
+        (!x.scheduled_for || calendarDate(x.scheduled_for)! <= today),
     );
   else if (view === "notes")
     visible = items.filter(
@@ -346,7 +347,7 @@ function App() {
   visible.sort((a, b) => a.sort_key - b.sort_key);
   const scheduled =
     view === "today" && !search
-      ? visible.filter((x) => x.scheduled_for?.slice(0, 10) === today)
+      ? visible.filter((x) => calendarDate(x.scheduled_for) === today)
       : [];
   let next =
     view === "today" && !search
@@ -362,7 +363,7 @@ function App() {
           .slice(0, 5)
       : visible;
   const completedToday = items.filter(
-    (x) => !x.deleted_at && x.completed_at?.slice(0, 10) === today,
+    (x) => !x.deleted_at && calendarDate(x.completed_at) === today,
   ).length;
   const heading = search
     ? "Search results"
@@ -468,7 +469,7 @@ function App() {
             )}
             {item.due_at && (
               <span
-                className={`date-tag ${item.due_at.slice(0, 10) < today ? "overdue" : ""}`}
+                className={`date-tag ${calendarDate(item.due_at)! < today ? "overdue" : ""}`}
               >
                 {DateTime.fromISO(item.due_at).toFormat("MMM d")}
               </span>
@@ -522,7 +523,7 @@ function App() {
             Sun,
             active.filter(
               (x) =>
-                x.type === "task" && x.scheduled_for?.slice(0, 10) === today,
+                x.type === "task" && calendarDate(x.scheduled_for) === today,
             ).length,
           )}
           {navButton(INBOX, "Inbox", Inbox, count(INBOX))}
@@ -1502,7 +1503,7 @@ function ItemDetail({
               <input
                 aria-label="Scheduled date"
                 type="date"
-                value={item.scheduled_for?.slice(0, 10) || ""}
+                value={calendarDate(item.scheduled_for) || ""}
                 onChange={(e) =>
                   patch({ scheduled_for: e.target.value || null })
                 }
@@ -1514,7 +1515,7 @@ function ItemDetail({
               <input
                 aria-label="Due date"
                 type="date"
-                value={item.due_at?.slice(0, 10) || ""}
+                value={calendarDate(item.due_at) || ""}
                 onChange={(e) => patch({ due_at: e.target.value || null })}
               />
             </label>
@@ -2418,7 +2419,12 @@ function SettingsPanel({
                   if (
                     server &&
                     new URL(server).protocol !== "https:" &&
-                    !((new URL(server).protocol === "http:") && ["localhost", "127.0.0.1"].includes(new URL(server).hostname))
+                    !(
+                      new URL(server).protocol === "http:" &&
+                      ["localhost", "127.0.0.1"].includes(
+                        new URL(server).hostname,
+                      )
+                    )
                   )
                     throw new Error("Use an HTTPS sync server");
                   const previous =

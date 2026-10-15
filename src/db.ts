@@ -22,7 +22,7 @@ class LocalDB extends Dexie {
   meta!: Table<{ key: string; value: any }, string>;
   conflicts!: Table<Conflict, string>;
   constructor() {
-    super("listflow-v1");
+    super("listflow-v1", { chromeTransactionDurability: "strict" });
     this.version(1).stores({
       remote: "id,kind",
       entities: "id,kind",

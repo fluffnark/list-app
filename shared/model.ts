@@ -240,3 +240,12 @@ export function ready(x: Item, now = DateTime.now()) {
     Date.parse(x.recurrence.next_at) <= now.toMillis()
   );
 }
+
+export function calendarDate(
+  value: string | null | undefined,
+  zone = DateTime.local().zoneName,
+): string | null {
+  return value
+    ? DateTime.fromISO(value, { zone }).setZone(zone).toISODate()
+    : null;
+}

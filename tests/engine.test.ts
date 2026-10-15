@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { applyOperation } from "../shared/engine";
 import {
   capture,
+  calendarDate,
   initialEntities,
   newItem,
   uuid,
@@ -250,4 +251,11 @@ describe("recurrence", () => {
     f.apply(op(e, "complete"));
     expect((f.get(e.id) as any).status).toBe("done");
   });
+});
+
+it("uses the local day for UTC completions after evening in Denver", () => {
+  expect(calendarDate("2026-10-15T03:00:00Z", "America/Denver")).toBe(
+    "2026-10-14",
+  );
+  expect(calendarDate("2026-10-15", "America/Denver")).toBe("2026-10-15");
 });

@@ -6,6 +6,7 @@ async function capture(page: Page, title: string) {
     .locator(".capture-modal")
     .getByRole("button", { name: "Add item" })
     .click();
+  await expect(page.locator(".capture-modal")).toHaveCount(0);
 }
 test("capture survives offline reload, supports hierarchy and undo", async ({
   page,
@@ -19,9 +20,13 @@ test("capture survives offline reload, supports hierarchy and undo", async ({
   await page.reload();
   await context.setOffline(true);
   await capture(page, "Offline parent");
-  await expect(page.getByText("Offline parent", { exact: true })).toBeVisible();
+  await expect(
+    page.locator(".task-title").filter({ hasText: /^Offline parent$/ }),
+  ).toBeVisible();
   await page.reload();
-  await expect(page.getByText("Offline parent", { exact: true })).toBeVisible();
+  await expect(
+    page.locator(".task-title").filter({ hasText: /^Offline parent$/ }),
+  ).toBeVisible();
   await page.getByText("Offline parent", { exact: true }).click();
   await page.getByRole("button", { name: "Add subtask", exact: true }).click();
   await page
