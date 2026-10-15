@@ -3,13 +3,17 @@ Description=ListFlow private OpenAI MCP tunnel
 After=network-online.target listflow.service tailscaled.service
 Wants=network-online.target
 Requires=listflow.service
+PartOf=listflow.service
 
 [Service]
 Type=simple
 User=harmony
 Group=harmony
 WorkingDirectory=/home/harmony
+ExecStartPre=/usr/bin/curl --fail --silent --show-error --output /dev/null --retry 30 --retry-all-errors --retry-delay 1 --max-time 3 https://harmony.great-kettle.ts.net:4443/listflow/.well-known/oauth-authorization-server
 ExecStart=/home/harmony/.local/bin/tunnel-client run --profile listflow
+ExecStartPost=/usr/bin/python3 /home/harmony/.local/share/listflow-tunnel/wait-ready.py
+TimeoutStartSec=150
 Restart=on-failure
 RestartSec=5
 UMask=0077
