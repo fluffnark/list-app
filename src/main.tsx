@@ -75,6 +75,7 @@ import {
   isActive,
   ready,
   descendants,
+  markdownExcerpt,
   type Item,
   type Entity,
   type List,
@@ -202,6 +203,13 @@ function App() {
     media.addEventListener("change", change);
     return () => media.removeEventListener("change", change);
   }, []);
+  useEffect(() => {
+    if (!navOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [navOpen]);
   useEffect(() => {
     if (!notice) return;
     const t = setTimeout(() => {
@@ -457,7 +465,7 @@ function App() {
         onClick={() => navigate(id)}
       >
         <Icon {...iconProps} />
-        <span>{label}</span>
+        <span className="nav-label">{label}</span>
         {!!badge && <span className="nav-count">{badge}</span>}
       </button>
     );
@@ -493,7 +501,9 @@ function App() {
           <button className="task-main" onClick={() => setSelected(item.id)}>
             <span className="task-title">{item.title}</span>
             {item.type === "note" && item.body_md && (
-              <span className="note-excerpt">{item.body_md.slice(0, 100)}</span>
+              <span className="note-excerpt">
+                {markdownExcerpt(item.body_md, 100)}
+              </span>
             )}
           </button>
           <div className="task-meta">
@@ -646,7 +656,7 @@ function App() {
           {navButton("trash", "Trash", Trash2)}
           <button className="nav-item" onClick={() => setSettingsOpen(true)}>
             <Settings {...iconProps} />
-            <span>Settings & connections</span>
+            <span className="nav-label">Settings & connections</span>
           </button>
           <button
             className="sync-indicator"
@@ -682,8 +692,8 @@ function App() {
             >
               <Menu size={19} />
             </button>
-            <span>My workspace</span>
-            <ChevronRight size={13} />
+            <span className="root-crumb">My workspace</span>
+            <ChevronRight size={13} className="crumb-separator" />
             <span className="current-crumb">{heading}</span>
           </div>
           <div className="topbar-actions">
@@ -875,7 +885,7 @@ function App() {
                         <strong>{note.title}</strong>
                         <ChevronRight size={18} />
                       </span>
-                      {note.body_md && <p>{note.body_md.slice(0, 180)}</p>}
+                      {note.body_md && <p>{markdownExcerpt(note.body_md, 180)}</p>}
                       <small>
                         {DateTime.fromISO(note.updated_at).toRelative()}
                       </small>

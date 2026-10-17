@@ -267,6 +267,21 @@ export function ready(x: Item, now = DateTime.now()) {
   );
 }
 
+// Plain-text preview of a note body for single-line and card excerpts.
+export function markdownExcerpt(md: string, max = 180): string {
+  const text = md
+    .replace(/```[^\n]*\n?/g, "")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/^\s{0,3}(#{1,6}\s+|>\s?|[-*+]\s+\[[ xX]\]\s+|[-*+]\s+|\d+[.)]\s+)/gm, "")
+    .replace(/(\*\*|__|~~|`)(.+?)\1/g, "$2")
+    .replace(/(^|\W)[*_](\S(?:.*?\S)?)[*_](?=\W|$)/g, "$1$2")
+    .replace(/^\s*([-*_]\s*){3,}$/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > max ? text.slice(0, max - 1).trimEnd() + "…" : text;
+}
+
 export function calendarDate(
   value: string | null | undefined,
   zone = DateTime.local().zoneName,
