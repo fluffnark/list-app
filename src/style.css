@@ -1852,8 +1852,8 @@ h1 {
     padding: 24px 18px 28px;
   }
   .topbar {
-    height: 64px;
-    padding: 0 18px;
+    height: calc(64px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 18px 0;
   }
   .breadcrumbs {
     font-size: 14px;
@@ -1920,15 +1920,9 @@ h1 {
     font-size: 15px;
     gap: 8px;
   }
+  /* The topbar already says "Home". */
   .home-page-header {
-    margin-bottom: 20px;
-  }
-  .home-page-header .eyebrow,
-  .home-page-header .header-add {
     display: none;
-  }
-  .home-page-header .page-subtitle {
-    margin-top: 7px;
   }
   .mobile-home {
     display: grid;
@@ -2353,6 +2347,11 @@ h1 {
   .nav-section-label {
     font-size: 12px;
   }
+  .nav-section-label .icon-button {
+    width: 36px;
+    height: 36px;
+    margin: -9px 0;
+  }
   .nav-count,
   .category-label {
     font-size: 14px;
@@ -2580,24 +2579,38 @@ h1 {
     font-size: 14px;
     line-height: 1.5;
   }
+  /* One group per list: name + pin, then a lighter category picker. */
   .list-management-row {
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 6px 8px;
+    margin-top: 0;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line, #303137);
+  }
+  .list-management-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
   }
   .list-management-row input {
     font-size: 16px;
     min-height: 48px;
-    width: calc(100% - 54px);
-    flex: auto;
+    width: 100%;
   }
   .list-management-row select {
-    font-size: 16px;
-    min-height: 48px;
-    width: calc(100% - 54px);
-    flex: 1;
-    order: 1;
+    grid-column: 1;
+    width: auto;
+    justify-self: start;
+    max-width: 100%;
+    font-size: 14px;
+    min-height: 36px;
+    padding: 6px 30px 6px 10px;
+    color: var(--muted, #8e909a);
+    background-color: transparent;
   }
   .list-management-row .icon-button {
+    grid-column: 2;
+    grid-row: 1;
     min-height: 48px;
     width: 44px;
   }

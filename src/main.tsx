@@ -225,6 +225,7 @@ function App() {
         setSearchOpen(true);
       }
       if (e.key === "Escape") {
+        setNavOpen(false);
         setCaptureOpen(false);
         setSearchOpen(false);
         setSelected(null);
@@ -357,7 +358,7 @@ function App() {
       await mutate(item.id, "complete");
       notify(
         item.recurrence?.active
-          ? "Done. Next repeat is ready when you need it."
+          ? "Done. Next repeat scheduled"
           : "Completed",
         () => mutate(item.id, "reopen"),
       );
@@ -367,7 +368,7 @@ function App() {
     await act(async () => {
       await mutate(item.id, "delete");
       setSelected(null);
-      notify("Moved to trash. Subtasks stay together.", () =>
+      notify("Moved to trash", () =>
         mutate(item.id, "restore"),
       );
     });
@@ -430,17 +431,20 @@ function App() {
           )
           .slice(0, 5)
       : visible;
+  const todayCount = active.filter(
+    (x) => x.type === "task" && calendarDate(x.scheduled_for) === today,
+  ).length;
   const completedToday = items.filter(
     (x) => !x.deleted_at && calendarDate(x.completed_at) === today,
   ).length;
   const heading = search
     ? "Search results"
     : view === "home"
-      ? "Your space"
+      ? "Home"
       : view === "today"
         ? "Today"
         : view === "lists"
-          ? "Your lists"
+          ? "Lists"
           : view === "notes"
             ? "Notes"
             : view === "routines"
@@ -593,10 +597,7 @@ function App() {
             "today",
             "Today",
             Sun,
-            active.filter(
-              (x) =>
-                x.type === "task" && calendarDate(x.scheduled_for) === today,
-            ).length,
+            todayCount,
           )}
           {navButton(INBOX, "Inbox", Inbox, count(INBOX))}
           {navButton("notes", "Notes", FileText)}
@@ -645,14 +646,6 @@ function App() {
             .map((x) => navButton(x.id, x.name, Hash, count(x.id)))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-tip">
-            <div className="tip-symbol">✧</div>
-            <p>
-              A little space.
-              <br />
-              <span>A clearer mind.</span>
-            </p>
-          </div>
           {navButton("trash", "Trash", Trash2)}
           <button className="nav-item" onClick={() => setSettingsOpen(true)}>
             <Settings {...iconProps} />
@@ -722,32 +715,15 @@ function App() {
             className={`page-header ${view === "home" ? "home-page-header" : ""}`}
           >
             <div>
-              <div className="eyebrow">
-                {view === "today"
-                  ? DateTime.local().toFormat("EEEE, LLLL d")
-                  : "YOUR PERSONAL WORKSPACE"}
-              </div>
+              {view === "today" && (
+                <div className="eyebrow">
+                  {DateTime.local().toFormat("EEEE, LLLL d")}
+                </div>
+              )}
               <h1>
                 {heading}
                 <span className="heading-dot">.</span>
               </h1>
-              <p className="page-subtitle">
-                {view === "home"
-                  ? "Your notes and lists. Right here."
-                  : view === "today"
-                    ? "Make room for what matters. One thing at a time."
-                    : view === SHOPPING
-                      ? "Less remembering. More getting on with your day."
-                      : view === "lists"
-                        ? "Everything has a place. Find yours."
-                        : view === "notes"
-                          ? "Catch a thought before it slips away."
-                          : view === "routines"
-                            ? "Small rhythms, a little less to remember."
-                            : view === "trash"
-                              ? "Nothing lost in a hurry. Restore items and their subtasks."
-                              : "A quiet place to collect your thoughts and next steps."}
-              </p>
             </div>
             <button
               className="primary-button header-add"
@@ -773,14 +749,11 @@ function App() {
               <div className="sun-disc">
                 <Sun size={24} />
               </div>
-              <div>
-                <strong>A fresh start, at your pace</strong>
-                <p>
-                  {active.length === 0
-                    ? "Your mind can take a breather. Capture something when you’re ready."
-                    : `${Math.min(next.length + scheduled.length, 8)} things to focus on. The rest can wait.`}
-                </p>
-              </div>
+              <strong>
+                {active.length === 0
+                  ? "All clear"
+                  : `${Math.min(next.length + scheduled.length, 8)} to focus on`}
+              </strong>
               <div className="daily-progress">
                 <span>
                   <strong>{completedToday}</strong> done today
@@ -806,7 +779,7 @@ function App() {
                   <Plus size={24} />
                 </span>
                 <span>
-                  Write a note<small>Catch a thought, right away</small>
+                  Write a note
                 </span>
                 <FileText size={23} />
               </button>
@@ -817,12 +790,14 @@ function App() {
                 <button onClick={() => navigate("today")}>
                   <Sun size={25} />
                   <strong>Today</strong>
-                  <small>Your next steps</small>
+                  <small>{todayCount} planned</small>
                 </button>
                 <button onClick={() => navigate(INBOX)}>
                   <Inbox size={25} />
                   <strong>Inbox</strong>
-                  <small>{count(INBOX)} active items</small>
+                  <small>
+                    {count(INBOX)} {count(INBOX) === 1 ? "item" : "items"}
+                  </small>
                 </button>
                 <button
                   className="shopping-destination"
@@ -901,7 +876,6 @@ function App() {
                   >
                     <FileText size={23} />
                     <span>
-                      A thought, a reminder, a little idea.
                       <strong>
                         Start your first note <Plus size={17} />
                       </strong>
@@ -972,25 +946,11 @@ function App() {
                         : view === "trash"
                           ? "Nothing in trash"
                           : view === SHOPPING
-                            ? "A clean shopping list"
+                            ? "Shopping list is empty"
                             : view === "today"
-                              ? "A little breathing room"
-                              : "Start with a thought"}
+                              ? "Nothing planned"
+                              : "Nothing here yet"}
                     </h3>
-                    <p>
-                      {search
-                        ? "Try a different word."
-                        : "Add something here. We’ll keep it safe, even offline."}
-                    </p>
-                    {view !== "trash" && !search && (
-                      <button
-                        className="text-button"
-                        onClick={() => openCapture()}
-                      >
-                        <Plus size={14} />
-                        Add your first item
-                      </button>
-                    )}
                   </div>
                 )}
                 {view !== "trash" && (
@@ -1053,8 +1013,6 @@ function App() {
             </>
           )}
           <footer className="page-footer">
-            <span className="footer-flower">✧</span> Less noise. More space for
-            you.
             <span className="keyboard-hint">
               <kbd>⌘ K</kbd> to find anything
             </span>
@@ -1539,8 +1497,7 @@ function ListGallery({
         </form>
       </div>
       <div className="settings-card">
-        <h3>Organize your lists</h3>
-        <p>Rename a destination, group it, or keep it one tap away.</p>
+        <h3>Organize lists</h3>
         {lists.map((l) => (
           <div className="list-management-row" key={l.id}>
             <input
@@ -1587,7 +1544,6 @@ function ListGallery({
       </div>
       <div className="settings-card">
         <h3>Create a category</h3>
-        <p>Group related lists without copying their items.</p>
         <form
           className="inline-form"
           onSubmit={async (e) => {
@@ -2279,7 +2235,6 @@ function SettingsPanel({
           <ThemePicker />
           <div className="settings-card">
             <h3>Android app</h3>
-            <p>Install ListFlow on your phone.</p>
             <a
               className="primary-button"
               href={apiRoot() + "/downloads/listflow-v0.4.1.apk"}
@@ -2332,6 +2287,8 @@ function SettingsPanel({
                     void run(async () => {
                       await syncNow(true);
                       onSession();
+                      const failed = await db.meta.get("sync_error");
+                      if (failed) throw new Error(failed.value);
                     })
                   }
                 >
@@ -2364,8 +2321,8 @@ function SettingsPanel({
             )}
             {!google && (
               <p className="tiny muted">
-                Google OAuth awaits a web client configuration. Password sign-in
-                works independently.
+                Google isn&apos;t set up on this server yet (no OAuth client
+                ID/secret). Password sign-in and sync work without it.
               </p>
             )}
           </div>

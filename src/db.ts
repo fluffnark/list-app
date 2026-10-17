@@ -267,7 +267,12 @@ export async function syncNow(force = false) {
   } catch (e) {
     await db.meta.put({
       key: "sync_error",
-      value: e instanceof Error ? e.message : "Sync could not finish",
+      value:
+        e instanceof TypeError
+          ? `Can't reach the server at ${apiRoot() || location.origin}. Check your connection (and Tailscale, on phones).`
+          : e instanceof Error
+            ? e.message
+            : "Sync could not finish",
     });
     failures++;
     nextTry =

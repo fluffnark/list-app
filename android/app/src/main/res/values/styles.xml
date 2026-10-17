@@ -13,6 +13,11 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Shown behind the status/navigation bars once the WebView is inset (adjustMarginsForEdgeToEdge). -->
+        <item name="android:windowBackground">@color/listflow_bar</item>
+        <item name="android:statusBarColor">@color/listflow_bar</item>
+        <item name="android:navigationBarColor">@color/listflow_bar</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 
