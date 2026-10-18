@@ -12,7 +12,12 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { operationSchema, uuid } from "../shared/model";
 import { Store } from "./store";
-import { SheetsProjection, seal } from "./sheets";
+import {
+  SheetsProjection,
+  seal,
+  googleCredentials,
+  saveGoogleCredentials,
+} from "./sheets";
 import { oauthRouter } from "./oauth";
 import { agentTools, callAgent } from "./agents";
 import { attachmentRoutes } from "./attachments";
@@ -112,7 +117,7 @@ router.use((req, res, next) => {
     res.header("Vary", "Origin");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
-    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   }
   if (req.method === "OPTIONS") {
     res.sendStatus(204);
@@ -151,7 +156,9 @@ router.get("/api/health", (_req, res) =>
 router.get("/api/config", (_req, res) =>
   res.json({
     google: !!(
-      process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      googleCredentials(store, secret).clientId &&
+      googleCredentials(store, secret).clientSecret &&
+      googleCredentials(store, secret).ownerEmail
     ),
     base,
     retention:
@@ -172,8 +179,18 @@ router.post("/auth/login", (req, res) => {
   res.json({ ok: true });
 });
 router.get("/auth/google", (req, res) => {
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  const credentials = googleCredentials(store, secret);
+  if (
+    !credentials.clientId ||
+    !credentials.clientSecret ||
+    !credentials.ownerEmail
+  ) {
     res.status(503).send("Google OAuth is not configured");
+    return;
+  }
+  // Start on the callback's origin so its state cookie survives LAN → HTTPS.
+  if (`${req.protocol}://${req.get("host")}` !== origin) {
+    res.redirect(origin + base + "/auth/google");
     return;
   }
   const state = randomBytes(32).toString("base64url");
@@ -192,7 +209,7 @@ router.get("/auth/google", (req, res) => {
     maxAge: 600000,
   });
   const query = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_id: credentials.clientId,
     redirect_uri: origin + base + "/auth/google/callback",
     response_type: "code",
     scope: [
@@ -221,13 +238,15 @@ router.get("/auth/google/callback", async (req, res) => {
       .prepare("DELETE FROM settings WHERE key=?")
       .run("oauth:" + hash(state));
     res.clearCookie("listflow_oauth", { path: base || "/" });
-    if (!process.env.OWNER_EMAIL)
+    const credentials = googleCredentials(store, secret);
+    if (!credentials.ownerEmail)
       throw new Error("Owner email must be configured");
+    if (req.query.error) throw new Error("Google authorization was cancelled");
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID!,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        client_id: credentials.clientId,
+        client_secret: credentials.clientSecret,
         code: String(req.query.code),
         grant_type: "authorization_code",
         redirect_uri: origin + base + "/auth/google/callback",
@@ -243,20 +262,16 @@ router.get("/auth/google/callback", async (req, res) => {
     if (
       !identityResponse.ok ||
       !identity.email_verified ||
-      identity.email.toLowerCase() !== process.env.OWNER_EMAIL.toLowerCase()
+      identity.email.toLowerCase() !== credentials.ownerEmail.toLowerCase()
     )
       throw new Error("This Google account is not the workspace owner");
     if (tokens.refresh_token)
       store.set("google_refresh", seal(tokens.refresh_token, secret));
     if (tokens.scope) store.set("google_scopes", String(tokens.scope));
     session(req, res);
-    res.redirect(base + "/");
-  } catch (e) {
-    res
-      .status(400)
-      .send(
-        "Google connection failed. Check owner email, OAuth client, and callback configuration.",
-      );
+    res.redirect(base + "/?google=connected");
+  } catch {
+    res.redirect(base + "/?google=error");
   }
 });
 router.use(["/api", "/mcp", "/openapi.json"], (req, res, next) => {
@@ -328,6 +343,30 @@ router.use(
   }),
 );
 attachmentRoutes(router, store, writer);
+router.get("/api/google/config", admin, (_req, res) => {
+  const c = googleCredentials(store, secret);
+  res.json({
+    configured: !!(c.clientId && c.clientSecret && c.ownerEmail),
+    ownerEmail: c.ownerEmail,
+    redirectUri: origin + base + "/auth/google/callback",
+    authorizationUrl: origin + base + "/auth/google",
+  });
+});
+router.put("/api/google/config", admin, (req, res) => {
+  try {
+    saveGoogleCredentials(store, secret, req.body);
+    res.json({ ok: true });
+  } catch (e) {
+    res
+      .status(400)
+      .json({
+        error:
+          e instanceof Error
+            ? e.message
+            : "Could not save Google configuration",
+      });
+  }
+});
 router.get("/api/session", (req, res) =>
   res.json({
     signedIn: true,

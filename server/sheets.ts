@@ -31,6 +31,71 @@ export function unseal(value: string, secret: string) {
     c.final(),
   ]).toString();
 }
+export type GoogleCredentials = {
+  clientId: string;
+  clientSecret: string;
+  ownerEmail: string;
+};
+export function googleCredentials(
+  store: Store,
+  secret: string,
+): GoogleCredentials {
+  const saved = store.setting("google_client");
+  if (saved) return JSON.parse(unseal(saved, secret));
+  return {
+    clientId: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    ownerEmail: process.env.OWNER_EMAIL || "",
+  };
+}
+export function saveGoogleCredentials(
+  store: Store,
+  secret: string,
+  input: unknown,
+) {
+  const v = input as Partial<GoogleCredentials> | null;
+  if (
+    !v ||
+    typeof v.clientId !== "string" ||
+    !/^[a-zA-Z0-9_.-]+\.apps\.googleusercontent\.com$/.test(
+      v.clientId.trim(),
+    ) ||
+    typeof v.clientSecret !== "string" ||
+    !v.clientSecret.trim() ||
+    v.clientSecret.length > 512 ||
+    typeof v.ownerEmail !== "string" ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.ownerEmail.trim())
+  )
+    throw new Error(
+      "Enter a Google web client ID, client secret, and your full Google email address.",
+    );
+  const next = {
+    clientId: v.clientId.trim(),
+    clientSecret: v.clientSecret.trim(),
+    ownerEmail: v.ownerEmail.trim().toLowerCase(),
+  };
+  const old = googleCredentials(store, secret);
+  // Keep existing calendar selections, but never reuse a token with another client/account.
+  store.db.exec("BEGIN IMMEDIATE");
+  try {
+    store.set("google_client", seal(JSON.stringify(next), secret));
+    if (
+      old.clientId !== next.clientId ||
+      old.clientSecret !== next.clientSecret ||
+      old.ownerEmail.toLowerCase() !== next.ownerEmail
+    ) {
+      store.db
+        .prepare(
+          "DELETE FROM settings WHERE key IN ('google_refresh', 'google_scopes')",
+        )
+        .run();
+    }
+    store.db.exec("COMMIT");
+  } catch (error) {
+    store.db.exec("ROLLBACK");
+    throw error;
+  }
+}
 const tabs = [
   "Items",
   "Lists",
@@ -64,11 +129,12 @@ export class SheetsProjection {
   async token() {
     const encrypted = this.store.setting("google_refresh");
     if (!encrypted) throw new Error("Connect Google first");
+    const credentials = googleCredentials(this.store, this.secret);
     const r = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID!,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        client_id: credentials.clientId,
+        client_secret: credentials.clientSecret,
         grant_type: "refresh_token",
         refresh_token: unseal(encrypted, this.secret),
       }),

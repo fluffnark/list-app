@@ -151,7 +151,9 @@ function App() {
   const [captureList, setCaptureList] = useState(INBOX);
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(() =>
+    new URLSearchParams(location.search).has("google"),
+  );
   const [navOpen, setNavOpen] = useState(false);
   const [showDone, setShowDone] = useState(false);
   const [syncStatus, setSyncStatus] = useState("Saved on device");
@@ -868,6 +870,7 @@ function App() {
               <CalendarView
                 items={items}
                 signedIn={!!session.data}
+                onSettings={() => setSettingsOpen(true)}
                 onOpen={setSelected}
               />
             </React.Suspense>
@@ -2285,29 +2288,15 @@ function SettingsPanel({
                 </button>
               </div>
             )}
-            {google && (
-              <a
-                className="secondary-button google-button"
-                href={apiRoot() + "/auth/google"}
-              >
-                <LogIn size={15} />
-                {session?.googleConnected
-                  ? "Reconnect Google"
-                  : "Connect Google"}
-              </a>
-            )}
-            {!google && (
-              <p className="tiny muted">
-                Google isn&apos;t set up on this server yet (no OAuth client
-                ID/secret). Password sign-in and sync work without it.
-              </p>
-            )}
           </div>
-          {session && (
-            <React.Suspense fallback={null}>
-              <CalendarSettings googleConfigured={google} onError={onError} />
-            </React.Suspense>
-          )}
+          <React.Suspense fallback={null}>
+            <CalendarSettings
+              googleConfigured={google}
+              signedIn={!!session}
+              onConfigured={() => setGoogle(true)}
+              onError={onError}
+            />
+          </React.Suspense>
           <div className="settings-card">
             <h3>Google Sheets</h3>
             <p>

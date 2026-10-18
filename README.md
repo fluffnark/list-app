@@ -52,13 +52,15 @@ The isolated native sync test uses `LISTFLOW_ALLOW_TEST_HTTP=1` at Capacitor syn
 
 Set `LISTFLOW_SIGNING_FILE` to an external Java properties file (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`) for signed `assembleRelease bundleRelease`. The generated signing key on this workstation is stored outside this repo at `~/.local/share/listflow-signing/`. Back up that directory privately; never commit it.
 
-## Google sign-in and Sheets
+## Calendar and Google sign-in
 
-Google integration is implemented but requires a Google Cloud **web** OAuth client, Sheets API enabled, and the exact callback URI:
+Calendar has Day and Week timelines and a Month grid. Use the view buttons, previous/next, and Today; select a month date to open its day. Dated tasks stay visible alongside Google and ICS events. Select an event to read its full details. The chosen view is remembered on this device.
+
+Settings → Calendars has a Google setup guide and owner-only client configuration form. Create a Google Cloud **web** OAuth client, enable the Calendar API, and add the exact callback URI:
 
 `https://harmony.great-kettle.ts.net:4443/listflow/auth/google/callback`
 
-Configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `OWNER_EMAIL` in `/etc/listflow.env` on Harmony, then restart `listflow.service`. Add your Google account as a test user if the consent screen is in testing. Connect Google from Settings, then create the spreadsheet. Scopes are `openid email drive.file` plus `calendar.calendarlist.readonly` and `calendar.events` for Calendar; Drive access is limited to app-created files. Existing Android Google Tasks OAuth registrations are not reusable web clients.
+Sign in to the workspace, enter the web client ID, client secret, and full owner Google email in Settings → Calendars, then select **Sign in with Google**. Credentials are encrypted in the server database and never returned by its configuration API. Alternatively, configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `OWNER_EMAIL` in `/etc/listflow.env` and restart `listflow.service`; saved Settings configuration takes precedence. Add your Google account as a test user if the consent screen is in testing. OAuth opens on the canonical HTTPS address, which must be reachable in that browser; LAN starts redirect there before setting the OAuth cookie. Enable the Sheets and Drive APIs too for the optional spreadsheet copy. Scopes are `openid email drive.file` plus `calendar.calendarlist.readonly` and `calendar.events` for Calendar; Drive access is limited to app-created files. Existing Android Google Tasks OAuth registrations are not reusable web clients.
 
 Sheets is a read-only materialized copy. Edit through ListFlow or its APIs. External row changes stop projection and show an actionable error. Export manual edits before explicitly rebuilding. Full operation history stays in transactional SQLite. Live Google-account authorization is not claimed tested without credentials.
 
