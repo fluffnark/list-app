@@ -84,6 +84,7 @@ import {
 } from "../shared/model";
 import { native } from "./native";
 import { CalendarView, CalendarSettings } from "./calendar";
+import { VERSION } from "../shared/version";
 import "./style.css";
 import { ThemePicker } from "./themes";
 import { NoteEditor, CategoryIcon, CategoryIconPicker } from "./notes";
@@ -2239,8 +2240,8 @@ function SettingsPanel({
             <h3>Android app</h3>
             <a
               className="primary-button"
-              href={apiRoot() + "/downloads/listflow-v0.4.1.apk"}
-              download="listflow-v0.4.1.apk"
+              href={apiRoot() + `/downloads/listflow-v${VERSION}.apk`}
+              download={`listflow-v${VERSION}.apk`}
             >
               <Download size={18} />
               Download Android APK
@@ -2796,9 +2797,7 @@ function SettingsPanel({
               </pre>
             )}
           </div>
-          <p className="settings-footnote">
-            ListFlow 0.4.1 · Built for a quieter day
-          </p>
+          <p className="settings-footnote">ListFlow {VERSION}</p>
         </div>
       </div>
     </div>

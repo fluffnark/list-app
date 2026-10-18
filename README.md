@@ -32,7 +32,7 @@ The web shell is public; all synchronized user data, search, exports, and assist
 
 ## Android
 
-Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v0.4.1.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
+Signed artifacts are in `releases/`; the deployment also serves `/listflow/downloads/listflow-v<version>.apk`. Install the APK directly; the AAB is for a future Play Console upload. The Android app bundles the web interface, so local capture does not require Harmony to be reachable. It uses a native SQLite checkpoint with IndexedDB as a UI mirror, a native text-share target, quick-capture/shopping shortcuts, speech-recognizer handoff, and optional inexact reminders.
 
 For cross-device sync:
 
@@ -40,7 +40,7 @@ For cross-device sync:
 2. In Settings → Assistant access, create a **Personal Android device** token. This grants full owner access; do not give this token to an assistant.
 3. On Android, Settings → Device & connection: set the sync URL to `https://harmony.great-kettle.ts.net:4443/listflow`, paste the token, and save.
 
-Build with Java 21 and Android SDK 36:
+Signed release builds (including from another machine) follow `docs/ANDROID-BUILD.md`. Build with Java 21 and Android SDK 36:
 
 ```sh
 npm run android:sync
@@ -58,7 +58,7 @@ Google integration is implemented but requires a Google Cloud **web** OAuth clie
 
 `https://harmony.great-kettle.ts.net:4443/listflow/auth/google/callback`
 
-Configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `OWNER_EMAIL` in `/etc/listflow.env` on Harmony, then restart `listflow.service`. Add your Google account as a test user if the consent screen is in testing. Connect Google from Settings, then create the spreadsheet. Scopes are `openid email drive.file`, limiting file access to app-created files. Existing Android Google Tasks OAuth registrations are not reusable web clients.
+Configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `OWNER_EMAIL` in `/etc/listflow.env` on Harmony, then restart `listflow.service`. Add your Google account as a test user if the consent screen is in testing. Connect Google from Settings, then create the spreadsheet. Scopes are `openid email drive.file` plus `calendar.calendarlist.readonly` and `calendar.events` for Calendar; Drive access is limited to app-created files. Existing Android Google Tasks OAuth registrations are not reusable web clients.
 
 Sheets is a read-only materialized copy. Edit through ListFlow or its APIs. External row changes stop projection and show an actionable error. Export manual edits before explicitly rebuilding. Full operation history stays in transactional SQLite. Live Google-account authorization is not claimed tested without credentials.
 
@@ -77,7 +77,14 @@ Bearer authentication is required for API calls. Tools support stable IDs and id
 Example MCP client configuration:
 
 ```json
-{"mcpServers":{"listflow":{"url":"https://harmony.great-kettle.ts.net:4443/listflow/mcp","headers":{"Authorization":"Bearer <scoped-assistant-token>"}}}}
+{
+  "mcpServers": {
+    "listflow": {
+      "url": "https://harmony.great-kettle.ts.net:4443/listflow/mcp",
+      "headers": { "Authorization": "Bearer <scoped-assistant-token>" }
+    }
+  }
+}
 ```
 
 ## Verification
@@ -105,7 +112,7 @@ Trash and audit are retained indefinitely in v0.1; the UI supports recovery and 
 
 Notes have Edit/Preview modes with CommonMark and GitHub-flavored Markdown, including tables, checklists, links and code blocks. Add or paste images, draw with pen/color/undo controls, and export a ZIP containing Markdown and its images. Images and doodles are saved locally, then synchronized through authenticated attachment endpoints. Larger images are resized; the uploaded limit is 1 MiB per image. Cached images remain available offline. Raw HTML is displayed as text.
 
-In All Lists, create a category with an emoji or use Upload icon for a custom PNG/JPEG/WebP. Icons synchronize with the category. Settings provides the signed v0.4.1 Android download; older APK URLs remain available.
+In All Lists, create a category with an emoji or use Upload icon for a custom PNG/JPEG/WebP. Icons synchronize with the category. Settings provides the signed Android download for the current version; older APK URLs remain available.
 
 ## Appearance
 

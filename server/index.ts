@@ -17,6 +17,7 @@ import { oauthRouter } from "./oauth";
 import { agentTools, callAgent } from "./agents";
 import { attachmentRoutes } from "./attachments";
 import { CalendarService, CALENDAR_SCOPES } from "./calendar";
+import { VERSION } from "../shared/version";
 const data = resolve(process.env.DATA_DIR || "data");
 mkdirSync(data, { recursive: true, mode: 0o700 });
 const secretPath = resolve(data, "secret");
@@ -145,7 +146,7 @@ router.use(
   }),
 );
 router.get("/api/health", (_req, res) =>
-  res.json({ ok: true, version: "0.4.1", time: new Date().toISOString() }),
+  res.json({ ok: true, version: VERSION, time: new Date().toISOString() }),
 );
 router.get("/api/config", (_req, res) =>
   res.json({
@@ -627,7 +628,7 @@ router.post("/mcp", (req, res) => {
           ? msg.params.protocolVersion
           : "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "listflow", version: "0.4.1" },
+        serverInfo: { name: "listflow", version: VERSION },
       };
     else if (msg.method === "tools/list") result = { tools: agentTools };
     else if (msg.method === "ping") result = {};
@@ -680,7 +681,7 @@ router.get("/mcp", (_req, res) => res.set("Allow", "POST").sendStatus(405));
 router.get("/openapi.json", (_req, res) =>
   res.json({
     openapi: "3.1.0",
-    info: { title: "ListFlow assistant API", version: "0.4.1" },
+    info: { title: "ListFlow assistant API", version: VERSION },
     servers: [{ url: origin + base }],
     security: [{ bearer: [] }],
     components: {
