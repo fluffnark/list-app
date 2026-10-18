@@ -54,6 +54,9 @@ test("only the owner can configure or run Google Tasks imports", async ({
 test("task capture settings explain enablement and stay inside a mobile viewport", async ({
   page,
 }) => {
+  await page.route("**/api/config", (route) =>
+    route.fulfill({ json: { google: false } }),
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Open account settings" }).click();
