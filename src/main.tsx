@@ -83,11 +83,20 @@ import {
   type Category,
 } from "../shared/model";
 import { native } from "./native";
-import { CalendarView, CalendarSettings } from "./calendar";
+// Markdown editor and calendar load on first use to keep startup small.
+const NoteEditor = React.lazy(() =>
+  import("./notes").then((m) => ({ default: m.NoteEditor })),
+);
+const CalendarView = React.lazy(() =>
+  import("./calendar").then((m) => ({ default: m.CalendarView })),
+);
+const CalendarSettings = React.lazy(() =>
+  import("./calendar").then((m) => ({ default: m.CalendarSettings })),
+);
 import { VERSION } from "../shared/version";
 import "./style.css";
 import { ThemePicker } from "./themes";
-import { NoteEditor, CategoryIcon, CategoryIconPicker } from "./notes";
+import { CategoryIcon, CategoryIconPicker } from "./assets";
 const client = new QueryClient();
 let initialData: Entity[] = [];
 let initialPending = 0;
@@ -882,11 +891,13 @@ function App() {
               </div>
             </section>
           ) : view === "calendar" && !search ? (
-            <CalendarView
-              items={items}
-              signedIn={!!session.data}
-              onOpen={setSelected}
-            />
+            <React.Suspense fallback={null}>
+              <CalendarView
+                items={items}
+                signedIn={!!session.data}
+                onOpen={setSelected}
+              />
+            </React.Suspense>
           ) : view === "lists" && !search ? (
             <ListGallery
               lists={lists}
@@ -1715,13 +1726,15 @@ function ItemDetail({
             rows={item.type === "note" ? 1 : 2}
           />
           {item.type === "note" && (
-            <NoteEditor
-              key={item.id}
-              noteId={item.id}
-              value={body}
-              onChange={(value) => draft(title, value)}
-              onError={onError}
-            />
+            <React.Suspense fallback={null}>
+              <NoteEditor
+                key={item.id}
+                noteId={item.id}
+                value={body}
+                onChange={(value) => draft(title, value)}
+                onError={onError}
+              />
+            </React.Suspense>
           )}
           <div className="detail-status">
             <button
@@ -2330,7 +2343,9 @@ function SettingsPanel({
             )}
           </div>
           {session && (
-            <CalendarSettings googleConfigured={google} onError={onError} />
+            <React.Suspense fallback={null}>
+              <CalendarSettings googleConfigured={google} onError={onError} />
+            </React.Suspense>
           )}
           <div className="settings-card">
             <h3>Google Sheets</h3>
@@ -2823,6 +2838,14 @@ if (!native && "serviceWorker" in navigator && import.meta.env.PROD) {
     });
   });
 }
+// Warm the lazy chunks once the first screen is up.
+const warm = () => {
+  void import("./notes");
+  void import("./calendar");
+};
+if ("requestIdleCallback" in window)
+  requestIdleCallback(warm, { timeout: 4000 });
+else setTimeout(warm, 2000);
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
