@@ -16,6 +16,7 @@ import { SheetsProjection, seal } from "./sheets";
 import { oauthRouter } from "./oauth";
 import { agentTools, callAgent } from "./agents";
 import { attachmentRoutes } from "./attachments";
+import { CalendarService, CALENDAR_SCOPES } from "./calendar";
 const data = resolve(process.env.DATA_DIR || "data");
 mkdirSync(data, { recursive: true, mode: 0o700 });
 const secretPath = resolve(data, "secret");
@@ -35,6 +36,7 @@ const password =
 const salt = createHash("sha256").update(secret).digest();
 const passwordHash = scryptSync(password, salt, 64);
 const projection = new SheetsProjection(store, secret);
+const calendar = new CalendarService(store, secret, () => projection.token());
 const base = (process.env.APP_BASE || "").replace(/\/$/, "");
 const origin = process.env.PUBLIC_ORIGIN || "http://localhost:4318";
 const lanOrigins = (process.env.LAN_HTTP_ORIGINS || "")
@@ -192,7 +194,11 @@ router.get("/auth/google", (req, res) => {
     client_id: process.env.GOOGLE_CLIENT_ID,
     redirect_uri: origin + base + "/auth/google/callback",
     response_type: "code",
-    scope: "openid email https://www.googleapis.com/auth/drive.file",
+    scope: [
+      "openid email https://www.googleapis.com/auth/drive.file",
+      ...CALENDAR_SCOPES,
+    ].join(" "),
+    include_granted_scopes: "true",
     state,
     access_type: "offline",
     prompt: "consent",
@@ -241,6 +247,7 @@ router.get("/auth/google/callback", async (req, res) => {
       throw new Error("This Google account is not the workspace owner");
     if (tokens.refresh_token)
       store.set("google_refresh", seal(tokens.refresh_token, secret));
+    if (tokens.scope) store.set("google_scopes", String(tokens.scope));
     session(req, res);
     res.redirect(base + "/");
   } catch (e) {
@@ -479,6 +486,68 @@ router.post("/api/sheets/create", admin, async (_req, res) => {
     });
   }
 });
+router.get("/api/calendar/sources", admin, async (_req, res) => {
+  let calendars: Awaited<ReturnType<CalendarService["googleCalendars"]>> = [];
+  let error: string | null = null;
+  try {
+    calendars = await calendar.googleCalendars();
+  } catch (e) {
+    error = e instanceof Error ? e.message : String(e);
+  }
+  res.json({
+    feeds: calendar.feeds().map(({ id, name, color }) => ({ id, name, color })),
+    google: {
+      connected: !!store.setting("google_refresh"),
+      ready: calendar.googleReady(),
+      calendars,
+      push: calendar.google().push,
+      pushError: store.setting("calendar_push_error") || null,
+      error,
+    },
+  });
+});
+router.post("/api/calendar/feeds", admin, async (req, res) => {
+  try {
+    res.json(
+      await calendar.addFeed(
+        String(req.body?.name || ""),
+        String(req.body?.url || ""),
+      ),
+    );
+  } catch (e) {
+    res.status(400).json({
+      error: e instanceof Error ? e.message : "Could not add that calendar",
+    });
+  }
+});
+router.delete("/api/calendar/feeds/:id", admin, (req, res) => {
+  calendar.removeFeed(String(req.params.id));
+  res.json({ ok: true });
+});
+router.put("/api/calendar/google", admin, (req, res) => {
+  const patch: { selected?: string[]; push?: string | null } = {};
+  if (Array.isArray(req.body?.selected))
+    patch.selected = req.body.selected.map(String).slice(0, 100);
+  if (req.body && "push" in req.body)
+    patch.push = req.body.push ? String(req.body.push) : null;
+  const next = calendar.setGoogle(patch);
+  void calendar.pushTasks(() => store.entities());
+  res.json(next);
+});
+router.get("/api/calendar/events", admin, async (req, res) => {
+  const from = new Date(String(req.query.from));
+  const to = new Date(String(req.query.to));
+  if (
+    isNaN(+from) ||
+    isNaN(+to) ||
+    to <= from ||
+    +to - +from > 120 * 86400000
+  ) {
+    res.status(400).json({ error: "Invalid range" });
+    return;
+  }
+  res.json(await calendar.events(from, to));
+});
 router.post("/api/sheets/rebuild", admin, async (_req, res) => {
   projection.nextTry = 0;
   await projection.sync(true);
@@ -674,7 +743,10 @@ const server = app.listen(
       `ListFlow listening on ${process.env.HOST || "127.0.0.1"}:${process.env.PORT || 4318}${base}`,
     ),
 );
-const timer = setInterval(() => void projection.sync(), 30000);
+const timer = setInterval(() => {
+  void projection.sync();
+  void calendar.pushTasks(() => store.entities());
+}, 30000);
 process.on("SIGTERM", () => {
   clearInterval(timer);
   server.close(() => {

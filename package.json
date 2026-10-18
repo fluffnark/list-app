@@ -24,6 +24,7 @@
     "express-rate-limit": "^8.1.0",
     "fflate": "^0.8.3",
     "helmet": "^8.1.0",
+    "ical.js": "^2.2.1",
     "lucide-react": "^0.468.0",
     "luxon": "^3.7.0",
     "react": "^19.2.0",

@@ -48,6 +48,7 @@ import {
   SkipForward,
   FolderPlus,
   House,
+  CalendarDays,
 } from "lucide-react";
 import {
   db,
@@ -82,6 +83,7 @@ import {
   type Category,
 } from "../shared/model";
 import { native } from "./native";
+import { CalendarView, CalendarSettings } from "./calendar";
 import "./style.css";
 import { ThemePicker } from "./themes";
 import { NoteEditor, CategoryIcon, CategoryIconPicker } from "./notes";
@@ -357,9 +359,7 @@ function App() {
     await act(async () => {
       await mutate(item.id, "complete");
       notify(
-        item.recurrence?.active
-          ? "Done. Next repeat scheduled"
-          : "Completed",
+        item.recurrence?.active ? "Done. Next repeat scheduled" : "Completed",
         () => mutate(item.id, "reopen"),
       );
     });
@@ -368,9 +368,7 @@ function App() {
     await act(async () => {
       await mutate(item.id, "delete");
       setSelected(null);
-      notify("Moved to trash", () =>
-        mutate(item.id, "restore"),
-      );
+      notify("Moved to trash", () => mutate(item.id, "restore"));
     });
   }
   const today = DateTime.local().toISODate()!;
@@ -443,15 +441,17 @@ function App() {
       ? "Home"
       : view === "today"
         ? "Today"
-        : view === "lists"
-          ? "Lists"
-          : view === "notes"
-            ? "Notes"
-            : view === "routines"
-              ? "Routines"
-              : view === "trash"
-                ? "Trash"
-                : list?.name || "Inbox";
+        : view === "calendar"
+          ? "Calendar"
+          : view === "lists"
+            ? "Lists"
+            : view === "notes"
+              ? "Notes"
+              : view === "routines"
+                ? "Routines"
+                : view === "trash"
+                  ? "Trash"
+                  : list?.name || "Inbox";
   const chosen = items.find((x) => x.id === selected);
   function count(id: string) {
     return active.filter((x) => x.list_id === id).length;
@@ -593,12 +593,8 @@ function App() {
           <kbd>⌘ K</kbd>
         </button>
         <nav className="main-nav">
-          {navButton(
-            "today",
-            "Today",
-            Sun,
-            todayCount,
-          )}
+          {navButton("today", "Today", Sun, todayCount)}
+          {navButton("calendar", "Calendar", CalendarDays)}
           {navButton(INBOX, "Inbox", Inbox, count(INBOX))}
           {navButton("notes", "Notes", FileText)}
           {navButton("routines", "Routines", Repeat)}
@@ -778,9 +774,7 @@ function App() {
                 <span className="home-write-icon">
                   <Plus size={24} />
                 </span>
-                <span>
-                  Write a note
-                </span>
+                <span>Write a note</span>
                 <FileText size={23} />
               </button>
               <nav
@@ -860,7 +854,9 @@ function App() {
                         <strong>{note.title}</strong>
                         <ChevronRight size={18} />
                       </span>
-                      {note.body_md && <p>{markdownExcerpt(note.body_md, 180)}</p>}
+                      {note.body_md && (
+                        <p>{markdownExcerpt(note.body_md, 180)}</p>
+                      )}
                       <small>
                         {DateTime.fromISO(note.updated_at).toRelative()}
                       </small>
@@ -884,6 +880,12 @@ function App() {
                 )}
               </div>
             </section>
+          ) : view === "calendar" && !search ? (
+            <CalendarView
+              items={items}
+              signedIn={!!session.data}
+              onOpen={setSelected}
+            />
           ) : view === "lists" && !search ? (
             <ListGallery
               lists={lists}
@@ -2326,6 +2328,9 @@ function SettingsPanel({
               </p>
             )}
           </div>
+          {session && (
+            <CalendarSettings googleConfigured={google} onError={onError} />
+          )}
           <div className="settings-card">
             <h3>Google Sheets</h3>
             <p>

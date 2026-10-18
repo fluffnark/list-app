@@ -183,9 +183,7 @@ test("mobile opens navigation and recent notes with large controls; desktop keep
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Your space." }),
-  ).toBeVisible();
+  await expect(page.locator(".current-crumb")).toHaveText("Home");
   await page.getByRole("button", { name: "Write a note", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Note title" })

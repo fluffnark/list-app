@@ -23,6 +23,9 @@ export class Store {
     this.db.exec(
       "CREATE TABLE IF NOT EXISTS attachments(id TEXT PRIMARY KEY,value TEXT NOT NULL)",
     );
+    this.db.exec(
+      "CREATE TABLE IF NOT EXISTS calendar_links(item_id TEXT PRIMARY KEY,calendar_id TEXT NOT NULL,event_id TEXT NOT NULL,hash TEXT NOT NULL)",
+    );
     if (!this.entities().length)
       for (const e of initialEntities())
         this.db
