@@ -191,6 +191,13 @@ test("Settings guides Google setup, protects credentials, and starts OAuth", asy
   expect(lanStart.status()).toBe(302);
   expect(lanStart.headers().location).toBe(config.authorizationUrl);
   expect(lanStart.headers()["set-cookie"]).toBeUndefined();
+  const tasksStart = await context.request.get("/auth/google?tasks=1", {
+    headers: { Host: "harmony.local:4443" },
+    maxRedirects: 0,
+  });
+  expect(tasksStart.headers().location).toBe(
+    config.authorizationUrl + "?tasks=1",
+  );
   expect(authorization.status()).toBe(302);
   const url = new URL(authorization.headers().location);
   expect(url.hostname).toBe("accounts.google.com");

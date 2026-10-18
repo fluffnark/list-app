@@ -3,6 +3,7 @@
 The application works locally and can sync using its owner password without Google. Google is needed only for Google sign-in, the optional Sheets projection, and Google Calendar. Calendar links (ICS) work without it.
 
 1. Choose an existing Google Cloud project or create a free project. Enable the Google Sheets API and the Google Calendar API.
+   For Google Home task capture, also enable the Google Tasks API. Add `https://www.googleapis.com/auth/tasks.readonly` to the consent screen's data access; ListFlow requests it only through **Allow Google Tasks access** in Settings.
 2. Configure Google Auth Platform branding and audience. For testing, add the owner's exact Google account to Test users.
 3. Add `openid`, `email`, `https://www.googleapis.com/auth/drive.file`, `https://www.googleapis.com/auth/calendar.calendarlist.readonly`, and `https://www.googleapis.com/auth/calendar.events` to Data Access.
 4. Create a **Web application** OAuth client. Add the authorized redirect URI exactly:

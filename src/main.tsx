@@ -93,6 +93,9 @@ const CalendarView = React.lazy(() =>
 const CalendarSettings = React.lazy(() =>
   import("./calendar").then((m) => ({ default: m.CalendarSettings })),
 );
+const GoogleTasksSettings = React.lazy(() =>
+  import("./google-tasks").then((m) => ({ default: m.GoogleTasksSettings })),
+);
 import { VERSION } from "../shared/version";
 import "./style.css";
 import { ThemePicker } from "./themes";
@@ -2296,7 +2299,15 @@ function SettingsPanel({
               onConfigured={() => setGoogle(true)}
               onError={onError}
             />
+            {session && (
+              <GoogleTasksSettings
+                signedIn={!!session}
+                googleConfigured={google}
+                onError={onError}
+              />
+            )}
           </React.Suspense>
+
           <div className="settings-card">
             <h3>Google Sheets</h3>
             <p>

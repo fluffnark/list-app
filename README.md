@@ -64,6 +64,14 @@ Sign in to the workspace, enter the web client ID, client secret, and full owner
 
 Sheets is a read-only materialized copy. Edit through ListFlow or its APIs. External row changes stop projection and show an actionable error. Export manual edits before explicitly rebuilding. Full operation history stays in transactional SQLite. Live Google-account authorization is not claimed tested without credentials.
 
+## Google Home task capture
+
+Settings & connections → Google Home task capture imports open tasks from a selected Google Tasks list into ListFlow's Inbox. Say “Hey Google, remind me to…” to the Mini; enable Voice Match and Personal results on the speaker if prompted. The speaker and phone should use Palantir, not the isolated guest network.
+
+Enable the Google Tasks API in the same Cloud project used for ListFlow's Google OAuth client, then choose **Allow Google Tasks access**. This adds the read-only `https://www.googleapis.com/auth/tasks.readonly` scope only when requested. Select the list receiving your voice tasks and enable capture; existing open tasks in that list are imported too. The server checks about once a minute, with **Import now** for a manual check. Capture is off by default.
+
+This is a one-way capture integration: each task imports once. Subsequent edits, completions and deletions stay in the app where they were made. Removing a task in ListFlow does not cause it to reappear. Google exposes due dates but not reminder times, so timed alerts remain in Google Tasks. Imported items travel through ListFlow's normal operation ledger and cross-device sync. Without a configured OAuth client, owner consent and a live voice-task round trip, only the implementation is verified—not the account connection.
+
 ## Assistant API and chat clients
 
 Settings can issue scoped 90-day assistant tokens. Use a **read-only** token unless writing is needed.

@@ -22,6 +22,7 @@ import { oauthRouter } from "./oauth";
 import { agentTools, callAgent } from "./agents";
 import { attachmentRoutes } from "./attachments";
 import { CalendarService, CALENDAR_SCOPES } from "./calendar";
+import { GoogleTasksService, TASKS_READ_SCOPE } from "./google-tasks";
 import { VERSION } from "../shared/version";
 const data = resolve(process.env.DATA_DIR || "data");
 mkdirSync(data, { recursive: true, mode: 0o700 });
@@ -43,6 +44,7 @@ const salt = createHash("sha256").update(secret).digest();
 const passwordHash = scryptSync(password, salt, 64);
 const projection = new SheetsProjection(store, secret);
 const calendar = new CalendarService(store, secret, () => projection.token());
+const googleTasks = new GoogleTasksService(store, () => projection.token());
 const base = (process.env.APP_BASE || "").replace(/\/$/, "");
 const origin = process.env.PUBLIC_ORIGIN || "http://localhost:4318";
 const lanOrigins = (process.env.LAN_HTTP_ORIGINS || "")
@@ -190,7 +192,12 @@ router.get("/auth/google", (req, res) => {
   }
   // Start on the callback's origin so its state cookie survives LAN → HTTPS.
   if (`${req.protocol}://${req.get("host")}` !== origin) {
-    res.redirect(origin + base + "/auth/google");
+    res.redirect(
+      origin +
+        base +
+        "/auth/google" +
+        (req.query.tasks === "1" ? "?tasks=1" : ""),
+    );
     return;
   }
   const state = randomBytes(32).toString("base64url");
@@ -215,6 +222,7 @@ router.get("/auth/google", (req, res) => {
     scope: [
       "openid email https://www.googleapis.com/auth/drive.file",
       ...CALENDAR_SCOPES,
+      ...(req.query.tasks === "1" ? [TASKS_READ_SCOPE] : []),
     ].join(" "),
     include_granted_scopes: "true",
     state,
@@ -268,6 +276,7 @@ router.get("/auth/google/callback", async (req, res) => {
     if (tokens.refresh_token)
       store.set("google_refresh", seal(tokens.refresh_token, secret));
     if (tokens.scope) store.set("google_scopes", String(tokens.scope));
+    store.set("google_account", identity.email.toLowerCase());
     session(req, res);
     res.redirect(base + "/?google=connected");
   } catch {
@@ -357,14 +366,10 @@ router.put("/api/google/config", admin, (req, res) => {
     saveGoogleCredentials(store, secret, req.body);
     res.json({ ok: true });
   } catch (e) {
-    res
-      .status(400)
-      .json({
-        error:
-          e instanceof Error
-            ? e.message
-            : "Could not save Google configuration",
-      });
+    res.status(400).json({
+      error:
+        e instanceof Error ? e.message : "Could not save Google configuration",
+    });
   }
 });
 router.get("/api/session", (req, res) =>
@@ -523,6 +528,50 @@ router.post("/api/sheets/create", admin, async (_req, res) => {
   } catch {
     res.status(502).json({
       error: "Could not create Sheets projection; check Google authorization",
+    });
+  }
+});
+router.get("/api/google-tasks", admin, async (_req, res) => {
+  try {
+    res.json({ ...googleTasks.status(), lists: await googleTasks.lists() });
+  } catch (error) {
+    res.json({
+      ...googleTasks.status(),
+      lists: [],
+      error:
+        error instanceof Error
+          ? error.message
+          : "Could not load Google Tasks lists",
+    });
+  }
+});
+router.put("/api/google-tasks", admin, (req, res) => {
+  try {
+    googleTasks.configure(req.body);
+    res.json(googleTasks.status());
+  } catch (error) {
+    res.status(400).json({
+      error:
+        error instanceof Error
+          ? error.message
+          : "Invalid Google Tasks configuration",
+    });
+  }
+});
+router.post("/api/google-tasks/sync", admin, async (_req, res) => {
+  try {
+    if (!googleTasks.ready() || !googleTasks.config().enabled) {
+      res
+        .status(409)
+        .json({ error: "Connect Google Tasks and enable a list first" });
+      return;
+    }
+    const result = await googleTasks.sync(true);
+    res.json({ ...googleTasks.status(), result });
+  } catch (error) {
+    res.status(502).json({
+      error:
+        error instanceof Error ? error.message : "Google Tasks import failed",
     });
   }
 });
@@ -786,6 +835,7 @@ const server = app.listen(
 const timer = setInterval(() => {
   void projection.sync();
   void calendar.pushTasks(() => store.entities());
+  void googleTasks.sync().catch(() => {});
 }, 30000);
 process.on("SIGTERM", () => {
   clearInterval(timer);
