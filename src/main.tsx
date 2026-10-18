@@ -442,9 +442,6 @@ function App() {
   const todayCount = active.filter(
     (x) => x.type === "task" && calendarDate(x.scheduled_for) === today,
   ).length;
-  const completedToday = items.filter(
-    (x) => !x.deleted_at && calendarDate(x.completed_at) === today,
-  ).length;
   const heading = search
     ? "Search results"
     : view === "home"
@@ -750,30 +747,6 @@ function App() {
               <ArrowUpRight size={15} />
             </button>
           )}
-          {view === "today" && !search && (
-            <div className="focus-summary">
-              <div className="sun-disc">
-                <Sun size={24} />
-              </div>
-              <strong>
-                {active.length === 0
-                  ? "All clear"
-                  : `${Math.min(next.length + scheduled.length, 8)} to focus on`}
-              </strong>
-              <div className="daily-progress">
-                <span>
-                  <strong>{completedToday}</strong> done today
-                </span>
-                <div className="progress-track">
-                  <div
-                    style={{
-                      width: `${Math.min(100, (completedToday / Math.max(1, completedToday + next.length + scheduled.length)) * 100)}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
           {view === "home" && !search ? (
             <section className="mobile-home" aria-label="Notes and navigation">
               <button
@@ -979,7 +952,7 @@ function App() {
                   </button>
                 )}
               </div>
-              {view === "today" && !search && (
+              {view === "today" && !search && scheduled.length > 0 && (
                 <>
                   <div className="section-heading scheduled-heading">
                     <div>
@@ -987,40 +960,9 @@ function App() {
                       <h2>Scheduled</h2>
                       <span className="section-count">{scheduled.length}</span>
                     </div>
-                    <span className="muted tiny">Today</span>
                   </div>
                   <div className="task-list">
-                    {scheduled.length ? (
-                      scheduled.map((x) => row(x))
-                    ) : (
-                      <div className="scheduled-empty">
-                        <span>
-                          No fixed plans. A little flexibility is a good thing.
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="quick-destinations">
-                    <button onClick={() => navigate(SHOPPING)}>
-                      <span className="destination-icon mint">
-                        <ShoppingCart size={20} />
-                      </span>
-                      <span>
-                        <strong>Shopping</strong>
-                        <small>{count(SHOPPING)} items to pick up</small>
-                      </span>
-                      <ArrowUpRight size={16} />
-                    </button>
-                    <button onClick={() => navigate("notes")}>
-                      <span className="destination-icon peach">
-                        <FileText size={20} />
-                      </span>
-                      <span>
-                        <strong>A quick thought</strong>
-                        <small>Your notes, always close</small>
-                      </span>
-                      <ArrowUpRight size={16} />
-                    </button>
+                    {scheduled.map((x) => row(x))}
                   </div>
                 </>
               )}
@@ -1408,6 +1350,7 @@ function App() {
     </div>
   );
 }
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 function ListGallery({
   lists,
   categories,
@@ -1421,6 +1364,13 @@ function ListGallery({
   onNavigate: (id: string) => void;
   onError: (s: string) => void;
 }) {
+  const [manageOpen, setManageOpen] = useState(() => {
+    try {
+      return !!localStorage.getItem("listflow-manage-lists");
+    } catch {
+      return false;
+    }
+  });
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -1467,12 +1417,12 @@ function ListGallery({
             </span>
             <h3>{l.name}</h3>
             <p>
-              {
+              {plural(
                 items.filter(
                   (x) => x.list_id === l.id && isActive(x) && !x.parent_item_id,
-                ).length
-              }{" "}
-              active items
+                ).length,
+                "item",
+              )}
               {l.category_id
                 ? " · " + categories.find((x) => x.id === l.category_id)?.name
                 : ""}
@@ -1510,103 +1460,116 @@ function ListGallery({
           </button>
         </form>
       </div>
-      <div className="settings-card">
-        <h3>Organize lists</h3>
-        {lists.map((l) => (
-          <div className="list-management-row" key={l.id}>
-            <input
-              aria-label={`Rename ${l.name}`}
-              defaultValue={l.name}
-              maxLength={100}
-              onBlur={(e) => {
-                if (e.target.value.trim() && e.target.value !== l.name)
+      <details
+        className="manage-lists"
+        open={manageOpen}
+        onToggle={(e) => {
+          const open = e.currentTarget.open;
+          setManageOpen(open);
+          try {
+            localStorage.setItem("listflow-manage-lists", open ? "1" : "");
+          } catch {}
+        }}
+      >
+        <summary>Organize lists & categories</summary>
+        <div className="settings-card">
+          <h3>Organize lists</h3>
+          {lists.map((l) => (
+            <div className="list-management-row" key={l.id}>
+              <input
+                aria-label={`Rename ${l.name}`}
+                defaultValue={l.name}
+                maxLength={100}
+                onBlur={(e) => {
+                  if (e.target.value.trim() && e.target.value !== l.name)
+                    void mutate(l.id, "patch", {
+                      name: e.target.value.trim(),
+                    }).catch((e) => onError(String(e)));
+                }}
+              />
+              <select
+                aria-label={`Category for ${l.name}`}
+                value={l.category_id || ""}
+                onChange={(e) =>
                   void mutate(l.id, "patch", {
-                    name: e.target.value.trim(),
-                  }).catch((e) => onError(String(e)));
-              }}
+                    category_id: e.target.value || null,
+                  }).catch((e) => onError(String(e)))
+                }
+              >
+                <option value="">No category</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                className={`icon-button ${l.pinned ? "pinned" : ""}`}
+                aria-label={`${l.pinned ? "Unpin" : "Pin"} ${l.name}`}
+                aria-pressed={l.pinned}
+                onClick={() =>
+                  void mutate(l.id, "patch", { pinned: !l.pinned }).catch((e) =>
+                    onError(String(e)),
+                  )
+                }
+              >
+                <Pin size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="settings-card">
+          <h3>Create a category</h3>
+          <form
+            className="inline-form"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await create({
+                  id: uuid(),
+                  workspace_id: WORKSPACE,
+                  kind: "category",
+                  name: categoryName,
+                  icon: categoryIcon.trim() || null,
+                  sort_key: Date.now(),
+                  archived_at: null,
+                  version: 0,
+                  updated_at: new Date().toISOString(),
+                });
+                setCategoryName("");
+                setCategoryIcon("");
+              } catch (e) {
+                onError(String(e));
+              }
+            }}
+          >
+            <input
+              aria-label="Category name"
+              placeholder="Work, Home, Personal…"
+              required
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
             />
-            <select
-              aria-label={`Category for ${l.name}`}
-              value={l.category_id || ""}
-              onChange={(e) =>
-                void mutate(l.id, "patch", {
-                  category_id: e.target.value || null,
-                }).catch((e) => onError(String(e)))
-              }
-            >
-              <option value="">No category</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <button
-              className={`icon-button ${l.pinned ? "pinned" : ""}`}
-              aria-label={`${l.pinned ? "Unpin" : "Pin"} ${l.name}`}
-              aria-pressed={l.pinned}
-              onClick={() =>
-                void mutate(l.id, "patch", { pinned: !l.pinned }).catch((e) =>
-                  onError(String(e)),
-                )
-              }
-            >
-              <Pin size={16} />
+            <input
+              aria-label="New category icon"
+              placeholder="Emoji icon"
+              maxLength={16}
+              value={categoryIcon}
+              onChange={(e) => setCategoryIcon(e.target.value)}
+            />
+            <button className="secondary-button" type="submit">
+              <FolderPlus size={15} />
+              Create category
             </button>
-          </div>
-        ))}
-      </div>
-      <div className="settings-card">
-        <h3>Create a category</h3>
-        <form
-          className="inline-form"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            try {
-              await create({
-                id: uuid(),
-                workspace_id: WORKSPACE,
-                kind: "category",
-                name: categoryName,
-                icon: categoryIcon.trim() || null,
-                sort_key: Date.now(),
-                archived_at: null,
-                version: 0,
-                updated_at: new Date().toISOString(),
-              });
-              setCategoryName("");
-              setCategoryIcon("");
-            } catch (e) {
-              onError(String(e));
-            }
-          }}
-        >
-          <input
-            aria-label="Category name"
-            placeholder="Work, Home, Personal…"
-            required
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-          />
-          <input
-            aria-label="New category icon"
-            placeholder="Emoji icon"
-            maxLength={16}
-            value={categoryIcon}
-            onChange={(e) => setCategoryIcon(e.target.value)}
-          />
-          <button className="secondary-button" type="submit">
-            <FolderPlus size={15} />
-            Create category
-          </button>
-        </form>
-        {categories.map((c) => (
-          <div className="category-management" key={c.id}>
-            <strong>{c.name}</strong>
-            <CategoryIconPicker category={c} onError={onError} />
-          </div>
-        ))}
-      </div>
+          </form>
+          {categories.map((c) => (
+            <div className="category-management" key={c.id}>
+              <strong>{c.name}</strong>
+              <CategoryIconPicker category={c} onError={onError} />
+            </div>
+          ))}
+        </div>
+      </details>
     </>
   );
 }
@@ -2252,7 +2215,7 @@ function SettingsPanel({
           <div className="settings-card">
             <h3>Android app</h3>
             <a
-              className="primary-button"
+              className="primary-button android-download"
               href={apiRoot() + `/downloads/listflow-v${VERSION}.apk`}
               download={`listflow-v${VERSION}.apk`}
             >
@@ -2262,11 +2225,9 @@ function SettingsPanel({
           </div>
           <div className="settings-card">
             <h3>Your workspace</h3>
-            <p>
-              {session
-                ? "Signed in to your private workspace."
-                : "Everything you add is saved on this device. Sign in to sync across devices."}
-            </p>
+            {!session && (
+              <p>Saved on this device. Sign in to sync across devices.</p>
+            )}
             {!session ? (
               <form
                 className="inline-form"

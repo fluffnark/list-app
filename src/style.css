@@ -1661,8 +1661,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background: color-mix(in srgb, var(--surface, #19191d) 93.73%, transparent);
-    backdrop-filter: blur(15px);
+    background: var(--surface, #19191d);
     border-top: 1px solid var(--line, #333039);
     z-index: 40;
     height: calc(68px + env(safe-area-inset-bottom));
@@ -3110,4 +3109,57 @@ h1 {
     font-size: 16px;
     min-height: 48px;
   }
+}
+
+/* Smoothness: no grey tap flash, no double-tap zoom delay, GPU drawer. */
+button,
+a,
+summary,
+label {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+@media (max-width: 760px) {
+  .sidebar {
+    will-change: transform;
+  }
+  .nav-scrim {
+    animation: scrim-in 0.2s ease-out;
+  }
+}
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+.manage-lists {
+  margin-top: 8px;
+}
+.manage-lists > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 0;
+  color: var(--accent-text, #b3a9ed);
+  font-size: 12px;
+}
+.manage-lists > summary::-webkit-details-marker {
+  display: none;
+}
+.manage-lists > summary::before {
+  content: "▸ ";
+}
+.manage-lists[open] > summary::before {
+  content: "▾ ";
+}
+@media (max-width: 760px) {
+  .manage-lists > summary {
+    font-size: 16px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+}
+.android-download {
+  margin-top: 12px;
+  width: fit-content;
 }

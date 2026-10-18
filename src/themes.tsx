@@ -128,6 +128,7 @@ export function ThemePicker() {
   const [selected, setSelected] = useState(savedTheme);
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState("all");
+  const [browsing, setBrowsing] = useState(false);
   useEffect(() => {
     const update = () => setSelected(savedTheme());
     window.addEventListener("listflow-theme-change", update);
@@ -142,7 +143,7 @@ export function ThemePicker() {
     <section className="settings-card appearance-card" aria-label="Appearance">
       <h3>Appearance</h3>
       <p>
-        Theme: <strong>{selected.name}</strong> · Saved on this device
+        Theme: <strong>{selected.name}</strong>
       </p>
       <div className="theme-controls">
         <input
@@ -161,88 +162,103 @@ export function ThemePicker() {
           <option value="light">Light</option>
         </select>
       </div>
-      <div className="theme-grid" role="radiogroup" aria-label="App theme">
-        {visible.map((theme, index) => (
-          <button
-            key={theme.id}
-            role="radio"
-            aria-checked={selected.id === theme.id}
-            aria-label={theme.name}
-            className="theme-option"
-            tabIndex={
-              selected.id === theme.id ||
-              (!visible.some((t) => t.id === selected.id) && index === 0)
-                ? 0
-                : -1
-            }
-            onKeyDown={(e) => {
-              const delta = ["ArrowRight", "ArrowDown"].includes(e.key)
-                ? 1
-                : ["ArrowLeft", "ArrowUp"].includes(e.key)
-                  ? -1
-                  : 0;
-              if (!delta && e.key !== "Home" && e.key !== "End") return;
-              e.preventDefault();
-              const next =
-                e.key === "Home"
-                  ? 0
-                  : e.key === "End"
-                    ? visible.length - 1
-                    : (index + delta + visible.length) % visible.length;
-              const button =
-                e.currentTarget.parentElement!.querySelectorAll<HTMLButtonElement>(
-                  '[role="radio"]',
-                )[next];
-              button.focus();
-              button.click();
-            }}
-            onClick={() => {
-              try {
-                localStorage.setItem(key, theme.id);
-              } catch {
-                /* The current session can still preview the theme. */
-              }
-              applyTheme(theme);
-              setSelected(theme);
-            }}
-          >
-            <span
-              className="theme-swatches"
-              aria-hidden="true"
-              style={{ background: theme.colors.background }}
+      {/* The full grid only shows while browsing or searching. */}
+      <button
+        className="text-button"
+        aria-expanded={browsing || !!query}
+        onClick={() => setBrowsing(!browsing)}
+      >
+        {browsing ? "Hide themes" : `Browse ${themes.length} themes`}
+      </button>
+      {(browsing || query) && (
+        <>
+          <div className="theme-grid" role="radiogroup" aria-label="App theme">
+            {visible.map((theme, index) => (
+              <button
+                key={theme.id}
+                role="radio"
+                aria-checked={selected.id === theme.id}
+                aria-label={theme.name}
+                className="theme-option"
+                tabIndex={
+                  selected.id === theme.id ||
+                  (!visible.some((t) => t.id === selected.id) && index === 0)
+                    ? 0
+                    : -1
+                }
+                onKeyDown={(e) => {
+                  const delta = ["ArrowRight", "ArrowDown"].includes(e.key)
+                    ? 1
+                    : ["ArrowLeft", "ArrowUp"].includes(e.key)
+                      ? -1
+                      : 0;
+                  if (!delta && e.key !== "Home" && e.key !== "End") return;
+                  e.preventDefault();
+                  const next =
+                    e.key === "Home"
+                      ? 0
+                      : e.key === "End"
+                        ? visible.length - 1
+                        : (index + delta + visible.length) % visible.length;
+                  const button =
+                    e.currentTarget.parentElement!.querySelectorAll<HTMLButtonElement>(
+                      '[role="radio"]',
+                    )[next];
+                  button.focus();
+                  button.click();
+                }}
+                onClick={() => {
+                  try {
+                    localStorage.setItem(key, theme.id);
+                  } catch {
+                    /* The current session can still preview the theme. */
+                  }
+                  applyTheme(theme);
+                  setSelected(theme);
+                }}
+              >
+                <span
+                  className="theme-swatches"
+                  aria-hidden="true"
+                  style={{ background: theme.colors.background }}
+                >
+                  {[
+                    theme.colors.foreground,
+                    theme.colors.accent,
+                    theme.colors.green || theme.colors.accent,
+                    theme.colors.red || theme.colors.foreground,
+                  ].map((color, i) => (
+                    <i key={i} style={{ background: color }} />
+                  ))}
+                </span>
+                <span className="theme-option-name">{theme.name}</span>
+                <small>
+                  {theme.group} · {theme.mode}
+                </small>
+              </button>
+            ))}
+          </div>
+          {!visible.length && <p role="status">No themes match your search.</p>}
+          <div className="theme-attribution">
+            {selected.source && (
+              <a
+                href={selected.source}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Theme source ↗
+              </a>
+            )}
+            <a
+              href="https://omarchy.org/themes/"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {[
-                theme.colors.foreground,
-                theme.colors.accent,
-                theme.colors.green || theme.colors.accent,
-                theme.colors.red || theme.colors.foreground,
-              ].map((color, i) => (
-                <i key={i} style={{ background: color }} />
-              ))}
-            </span>
-            <span className="theme-option-name">{theme.name}</span>
-            <small>
-              {theme.group} · {theme.mode}
-            </small>
-          </button>
-        ))}
-      </div>
-      {!visible.length && <p role="status">No themes match your search.</p>}
-      <div className="theme-attribution">
-        <span>{themes.length} bundled themes</span>
-        {selected.source && (
-          <a href={selected.source} target="_blank" rel="noopener noreferrer">
-            Theme source ↗
-          </a>
-        )}
-        <a
-          href="https://omarchy.org/themes/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Omarchy community ↗
-        </a>
-      </div>
+              Omarchy community ↗
+            </a>
+          </div>
+        </>
+      )}
     </section>
   );
 }

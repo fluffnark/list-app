@@ -2,8 +2,9 @@ import { test, expect } from "@playwright/test";
 import { createHash, randomBytes } from "node:crypto";
 test("OAuth discovery, explicit consent, PKCE, one-time codes and refresh revocation", async ({
   request,
+  baseURL,
 }) => {
-  const issuer = "http://localhost:4318";
+  const issuer = baseURL!;
   const challengeVerifier = randomBytes(32).toString("base64url");
   const challenge = createHash("sha256")
     .update(challengeVerifier)
@@ -113,8 +114,9 @@ test("OAuth discovery, explicit consent, PKCE, one-time codes and refresh revoca
 
 test("browser consent submits an allowed origin and finishes password authorization", async ({
   page,
+  baseURL,
 }) => {
-  const issuer = "http://localhost:4318";
+  const issuer = baseURL!;
   const registration = await page.request.post("/oauth/register", {
     data: {
       client_name: "Browser consent test",

@@ -108,9 +108,7 @@ test("signed-in queued item propagates to a second independent device", async ({
       .getByRole("textbox", { name: "Workspace password" })
       .fill("listflow-test-password");
     await p.getByRole("button", { name: "Sign in", exact: true }).click();
-    await expect(
-      p.getByText("Signed in to your private workspace."),
-    ).toBeVisible();
+    await expect(p.getByRole("button", { name: "Sync now" })).toBeVisible();
     await p.getByRole("button", { name: "Close settings" }).click();
   }
   const title = "Cross-device " + Date.now();
@@ -313,6 +311,7 @@ test("mobile rich notes preserve Markdown, images and drawings offline; categori
     .locator(".bottom-nav")
     .getByRole("button", { name: "Lists", exact: true })
     .click();
+  await page.getByText("Organize lists & categories").click();
   await page.getByLabel("Category name", { exact: true }).fill("Sketches");
   await page.getByLabel("New category icon").fill("🎨");
   await page
@@ -356,6 +355,7 @@ test("themes apply across the app, persist offline and support light mode and ke
   });
   await page.reload();
   await page.getByRole("button", { name: "Open account settings" }).click();
+  await page.getByRole("button", { name: /^Browse \d+ themes$/ }).click();
   await expect(
     page.getByRole("radio", { name: "Catppuccin Mocha", exact: true }),
   ).toBeVisible();

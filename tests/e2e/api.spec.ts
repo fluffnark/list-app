@@ -273,6 +273,7 @@ test("image attachments require authentication, retry safely and cannot be overw
 
 test("standard MCP SDK completes discovery, ping and a recoverable tool error", async ({
   request,
+  baseURL,
 }) => {
   const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
   const { StreamableHTTPClientTransport } =
@@ -282,7 +283,7 @@ test("standard MCP SDK completes discovery, ping and a recoverable tool error", 
   });
   const cookie = login.headers()["set-cookie"].split(";")[0];
   const transport = new StreamableHTTPClientTransport(
-    new URL("http://localhost:4318/mcp"),
+    new URL(baseURL + "/mcp"),
     { requestInit: { headers: { Cookie: cookie } } },
   );
   const client = new Client({ name: "listflow-test-client", version: "1.0.0" });
