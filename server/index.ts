@@ -191,13 +191,12 @@ router.get("/auth/google", (req, res) => {
     return;
   }
   // Start on the callback's origin so its state cookie survives LAN → HTTPS.
-  if (`${req.protocol}://${req.get("host")}` !== origin) {
-    res.redirect(
-      origin +
-        base +
-        "/auth/google" +
-        (req.query.tasks === "1" ? "?tasks=1" : ""),
-    );
+  // req.host honours X-Forwarded-Host from the trusted local proxy; the
+  // one-shot "canonical" flag stops a redirect loop if a proxy rewrites Host.
+  if (`${req.protocol}://${req.host}` !== origin && !req.query.canonical) {
+    const q = new URLSearchParams({ canonical: "1" });
+    if (req.query.tasks === "1") q.set("tasks", "1");
+    res.redirect(origin + base + "/auth/google?" + q);
     return;
   }
   const state = randomBytes(32).toString("base64url");

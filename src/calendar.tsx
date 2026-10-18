@@ -34,6 +34,14 @@ function readCache(key: string): EventsResponse | undefined {
     return undefined;
   }
 }
+// All-day ends are exclusive; show the inclusive last day for multi-day events.
+function allDayRange(start: string, end: string) {
+  const first = DateTime.fromISO(start);
+  const last = DateTime.fromISO(end).minus({ days: 1 });
+  return last > first
+    ? `${first.toFormat("d LLL")} – ${last.toFormat("d LLL yyyy")} · All day`
+    : `${first.toFormat("d LLL yyyy")} · All day`;
+}
 
 export function CalendarView({
   items,
@@ -365,7 +373,7 @@ export function CalendarView({
             </div>
             <p>
               {selectedEvent.allDay
-                ? `${DateTime.fromISO(selectedEvent.start).toFormat("d LLL yyyy")} · All day`
+                ? allDayRange(selectedEvent.start, selectedEvent.end)
                 : `${DateTime.fromISO(selectedEvent.start).toFormat("ccc, d LLL yyyy · t")} – ${DateTime.fromISO(selectedEvent.end).toFormat("ccc, d LLL yyyy · t")}`}
             </p>
             <p>{selectedEvent.sourceName}</p>
@@ -484,9 +492,19 @@ export function CalendarSettings({
         </p>
       )}
       {!signedIn ? (
-        <p className="calendar-note">
-          Sign in to your workspace above to set up Google Calendar.
-        </p>
+        googleConfigured ? (
+          <a
+            className="secondary-button google-button"
+            href={apiRoot() + "/auth/google"}
+          >
+            <LogIn size={15} />
+            Sign in with Google
+          </a>
+        ) : (
+          <p className="calendar-note">
+            Sign in to your workspace above to set up Google Calendar.
+          </p>
+        )
       ) : (
         <>
           {config.isPending && (

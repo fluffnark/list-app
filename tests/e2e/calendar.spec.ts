@@ -189,14 +189,24 @@ test("Settings guides Google setup, protects credentials, and starts OAuth", asy
     maxRedirects: 0,
   });
   expect(lanStart.status()).toBe(302);
-  expect(lanStart.headers().location).toBe(config.authorizationUrl);
+  expect(lanStart.headers().location).toBe(
+    config.authorizationUrl + "?canonical=1",
+  );
   expect(lanStart.headers()["set-cookie"]).toBeUndefined();
   const tasksStart = await context.request.get("/auth/google?tasks=1", {
     headers: { Host: "harmony.local:4443" },
     maxRedirects: 0,
   });
   expect(tasksStart.headers().location).toBe(
-    config.authorizationUrl + "?tasks=1",
+    config.authorizationUrl + "?canonical=1&tasks=1",
+  );
+  // A proxy that rewrites Host must not cause a redirect loop.
+  const rewritten = await context.request.get("/auth/google?canonical=1", {
+    headers: { Host: "127.0.0.1:4318" },
+    maxRedirects: 0,
+  });
+  expect(new URL(rewritten.headers().location).hostname).toBe(
+    "accounts.google.com",
   );
   expect(authorization.status()).toBe(302);
   const url = new URL(authorization.headers().location);
@@ -207,4 +217,19 @@ test("Settings guides Google setup, protects credentials, and starts OAuth", asy
   await page
     .locator(".calendar-settings")
     .screenshot({ path: "/tmp/listflow-google-settings.png" });
+  // Signed out on a configured server: offer Google sign-in directly.
+  const browser = context.browser()!;
+  const fresh = await browser.newContext();
+  const out = await fresh.newPage();
+  await out.goto(page.url());
+  await out.getByRole("button", { name: "Open account settings" }).click();
+  await expect(
+    out
+      .locator(".calendar-settings")
+      .getByRole("link", { name: "Sign in with Google", exact: true }),
+  ).toBeVisible();
+  await expect(
+    out.getByText("Sign in to your workspace above to set up Google Calendar."),
+  ).toHaveCount(0);
+  await fresh.close();
 });
