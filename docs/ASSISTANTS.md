@@ -24,7 +24,7 @@ References: [MCP authorization](https://modelcontextprotocol.io/specification/20
 
 ## ChatGPT live notes connection
 
-Use the existing ListFlow MCP service through [OpenAI Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). This preserves private hosting and sends authorized tool traffic through OpenAI. The transport is running; account-side ChatGPT installation and a tool-call round trip are still pending. No free-price guarantee is claimed.
+Use the existing ListFlow MCP service through [OpenAI Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). This preserves private hosting and sends authorized tool traffic through OpenAI. The transport is running and the ChatGPT account installation is verified for reads (see "Account verification" below); a write round trip is still pending. No free-price guarantee is claimed.
 
 1. In [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels), create or select a tunnel associated with the intended ChatGPT workspace. Obtain a restricted runtime key with Tunnels Read + Use; do not paste the key into chat.
 2. On Harmony, install the ARM64 client from the download offered in Platform or the [latest official release](https://github.com/openai/tunnel-client/releases/latest). Run `tunnel-client help quickstart` and use its current HTTP configuration commands, with profile `listflow`, the actual tunnel ID, and MCP URL `https://harmony.great-kettle.ts.net:4443/listflow/mcp`. Use a protected key-file reference (the deployed profile uses `file:/home/harmony/.config/tunnel-client/listflow-runtime-key`) or a protected service environment. Keep the admin UI on loopback and raw HTTP logging disabled.
@@ -49,7 +49,12 @@ The official ARM64 client v0.0.16 is installed on Harmony, with its SHA-256 veri
 
 The owner reported a free-tier account and asked to continue setup. No billing configuration, plan upgrade, credit purchase, or model inference API request was performed. Public docs do not establish a guaranteed zero price for tunnel transport; account tier alone is not proof of pricing. Do not add paid services as a workaround.
 
-Remaining account step: add the associated tunnel as a custom MCP server in ChatGPT, choose OAuth, complete owner consent and install it in a conversation. A successful read/create/edit note call in ChatGPT remains required before claiming end-to-end access. No ListFlow tools are currently exposed in this coding session.
+### Account verification
+
+- **Read: verified 2026-10-18.** The installed ListFlow plugin in the owner's ChatGPT account ran "Check ListFlow access" from Try in chat: two ListFlow integration calls, returning the Inbox, Shopping and Home Tasks lists with 0 open tasks. No write requests or calls were made. Evidence: browser screenshot kept on zincmind (`/tmp/nest-chatgpt-browser/screenshot-2026-10-18_16-45-17.png`), not in this repo.
+- **Write: pending.** A create/edit note round trip from ChatGPT (with `listflow.write` granted) is still required before claiming end-to-end read/write access.
+
+No ListFlow tools are exposed in this coding session.
 
 ### Hidden runtime-key entry
 
