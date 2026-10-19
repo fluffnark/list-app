@@ -1,0 +1,18 @@
+{
+  "source_commit": "21a253842dd1939c56f263be312502ae8e752bf7",
+  "version_name": "0.5.1",
+  "version_code": 7,
+  "signing_certificate_sha256": "345039a3e44d7ba4d6493f4e381c26ccdd4dd0287b3115d597bf8116121ef357",
+  "validation": [
+    "TypeScript and Vite build",
+    "Capacitor sync",
+    "assembleRelease and bundleRelease",
+    "APK certificate and manifest verified",
+    "adb install -r: Pixel7a success, existing data preserved",
+    "Pixel personal device authentication, workspace sync, Google events and day/week/month views verified"
+  ],
+  "sha256": {
+    "listflow-v0.5.1.apk": "116ff1b3513791dc4f3a3df94a43cfa1cc6d4c54bb86dafbe36becf143e94478",
+    "listflow-v0.5.1.aab": "366c5de9f3f6cd1637b6b80cbc0852e2fcf14e799a5eb6a57b57749886d3b04f"
+  }
+}

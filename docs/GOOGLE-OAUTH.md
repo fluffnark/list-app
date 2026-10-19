@@ -22,3 +22,7 @@ Sources: [Google web-server OAuth](https://developers.google.com/identity/protoc
 ## Calendar
 
 Settings → Calendars shows events from the Google calendars you tick and from any number of ICS links (Outlook: Settings → Calendar → Shared calendars → Publish a calendar). "Put dated tasks on" mirrors open tasks with a plan or due date as all-day events in one Google calendar; completing or deleting a task removes its event. ICS links are stored encrypted under `data/secret`, like the Google refresh token.
+
+## Owner connection verified 2026-10-18
+
+Project `listflow-calendar` and client `ListFlow Harmony` completed live owner consent and Calendar API reads. Client credentials are saved encrypted on Harmony through Settings. The project remains External/Testing; [Google expires testing refresh tokens after seven days](https://developers.google.com/identity/protocols/oauth2/#expiration). Reconnect in Settings when required. Production publishing is currently disabled until Google Auth branding is completed; no public privacy-policy URL was invented as part of the account connection. Sheets and Google Tasks remain optional and were not enabled by this calendar consent.
