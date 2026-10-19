@@ -3203,7 +3203,6 @@ label {
   gap: 7px;
 }
 .calendar-timeline-scroll {
-  max-height: 68vh;
   min-height: 320px;
   overflow: auto;
   border: 1px solid var(--line);
@@ -3290,7 +3289,7 @@ label {
 }
 .calendar-hours {
   display: grid;
-  grid-template-rows: repeat(24, 60px);
+  grid-template-rows: repeat(24, var(--calendar-hour, 60px));
   color: var(--muted);
   font-size: 10px;
   text-align: center;
@@ -3300,14 +3299,14 @@ label {
 }
 .calendar-time-column {
   position: relative;
-  height: 1440px;
+  height: calc(var(--calendar-hour, 60px) * 24);
   border-left: 1px solid var(--line);
   background: repeating-linear-gradient(
     to bottom,
     var(--line) 0,
     var(--line) 1px,
     transparent 1px,
-    transparent 60px
+    transparent var(--calendar-hour, 60px)
   );
 }
 .calendar-timed-event {
@@ -3420,9 +3419,6 @@ label {
     flex-basis: 100%;
     min-height: 36px;
   }
-  .calendar-timeline-scroll {
-    max-height: 65vh;
-  }
   .calendar-month-day {
     min-height: 100px;
     padding: 2px;
@@ -3479,13 +3475,91 @@ label {
     min-height: 44px;
   }
   .calendar-timeline-scroll {
-    max-height: min(65vh, 600px);
-    margin-bottom: 36px;
+    margin-bottom: 16px;
   }
 }
 
 @media (max-width: 760px) {
   .calendar-week {
     min-width: 840px;
+  }
+}
+
+.calendar-time-column.can-create {
+  cursor: cell;
+}
+.calendar-new {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.calendar-event-form {
+  display: grid;
+  gap: 12px;
+}
+.calendar-event-form input,
+.calendar-event-form textarea,
+.calendar-event-form select {
+  width: 100%;
+}
+.calendar-event-form .calendar-check input {
+  width: auto;
+}
+.calendar-event-times {
+  display: grid;
+  gap: 10px;
+}
+.calendar-event-times label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.calendar-event-times label > span {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 8px;
+}
+.calendar-event-times label > span > :only-child {
+  grid-column: 1 / -1;
+}
+.calendar-event-notes {
+  white-space: pre-wrap;
+  max-height: 30vh;
+  overflow-y: auto;
+  color: var(--muted);
+}
+.calendar-event-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+.calendar-event-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+@media (max-width: 760px) {
+  .calendar-event-dialog {
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+  }
+}
+.calendar-hours,
+.calendar-zone,
+.calendar-allday-label {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--bg);
+}
+@media (max-width: 760px) {
+  .calendar-toolbar .calendar-connect {
+    flex-basis: auto;
+    margin-left: auto;
+  }
+  .calendar-connect span {
+    display: none;
   }
 }

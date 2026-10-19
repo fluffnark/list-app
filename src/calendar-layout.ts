@@ -10,7 +10,23 @@ export type CalendarEvent = {
   end: string;
   allDay: boolean;
   location?: string;
+  description?: string;
+  calendarId?: string;
+  eventId?: string;
+  writable?: boolean;
 };
+
+// Hours shown without scrolling: the waking day, widened to fit events.
+export function visibleHours(events: CalendarEvent[], days: DateTime[]) {
+  let first = 7;
+  let last = 23;
+  for (const day of days)
+    for (const { top, bottom } of timedLayout(events, day)) {
+      first = Math.min(first, Math.floor(top / 60));
+      last = Math.max(last, Math.ceil(bottom / 60));
+    }
+  return { first, last };
+}
 
 export function calendarRange(anchor: DateTime, mode: CalendarMode) {
   const first = anchor.startOf(

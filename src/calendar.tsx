@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Circle,
   LogIn,
+  Pencil,
   Plus,
   Trash2,
   X,
@@ -18,6 +19,7 @@ import {
   calendarRange,
   eventTouchesDay,
   timedLayout,
+  visibleHours,
   type CalendarEvent,
   type CalendarMode,
 } from "./calendar-layout";
@@ -34,6 +36,53 @@ function readCache(key: string): EventsResponse | undefined {
     return undefined;
   }
 }
+type Draft = {
+  calendarId: string;
+  eventId?: string;
+  title: string;
+  allDay: boolean;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  location: string;
+  description: string;
+};
+function draftFrom(event: CalendarEvent): Draft {
+  const start = DateTime.fromISO(event.start);
+  const end = DateTime.fromISO(event.end);
+  const last = event.allDay ? end.minus({ days: 1 }) : end;
+  return {
+    calendarId: event.calendarId!,
+    eventId: event.eventId,
+    title: event.title === "(No title)" ? "" : event.title,
+    allDay: event.allDay,
+    startDate: start.toISODate()!,
+    startTime: event.allDay ? "09:00" : start.toFormat("HH:mm"),
+    endDate: (last < start ? start : last).toISODate()!,
+    endTime: event.allDay ? "10:00" : end.toFormat("HH:mm"),
+    location: event.location || "",
+    description: event.description || "",
+  };
+}
+function draftBody(d: Draft) {
+  const at = (date: string, time: string) =>
+    DateTime.fromISO(`${date}T${time}`).toISO({ suppressMilliseconds: true });
+  return {
+    title: d.title,
+    allDay: d.allDay,
+    start: d.allDay ? d.startDate : at(d.startDate, d.startTime),
+    end: d.allDay
+      ? DateTime.fromISO(d.endDate).plus({ days: 1 }).toISODate()
+      : at(d.endDate, d.endTime),
+    location: d.location,
+    description: d.description,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+}
+const focusable =
+  "button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea, a[href]";
+
 // All-day ends are exclusive; show the inclusive last day for multi-day events.
 function allDayRange(start: string, end: string) {
   const first = DateTime.fromISO(start);
@@ -64,31 +113,114 @@ export function CalendarView({
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
-  const eventClose = useRef<HTMLButtonElement>(null);
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [eventError, setEventError] = useState("");
+  const client = useQueryClient();
+  const dialog = useRef<HTMLDivElement>(null);
   const eventTrigger = useRef<HTMLElement | null>(null);
+  const open = !!(selectedEvent || draft);
   const showEvent = (event: CalendarEvent) => {
     eventTrigger.current = document.activeElement as HTMLElement;
     setSelectedEvent(event);
   };
   const closeEvent = () => {
     setSelectedEvent(null);
+    setDraft(null);
+    setConfirmDelete(false);
+    setEventError("");
     eventTrigger.current?.focus();
   };
   useEffect(() => {
-    if (!selectedEvent) return;
-    eventClose.current?.focus();
+    if (!open) return;
+    dialog.current
+      ?.querySelector<HTMLElement>(draft ? "input" : focusable)
+      ?.focus();
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopImmediatePropagation();
         closeEvent();
-      } else if (e.key === "Tab") {
+      } else if (e.key === "Tab" && dialog.current) {
+        const all = [
+          ...dialog.current.querySelectorAll<HTMLElement>(focusable),
+        ];
+        const i = all.indexOf(document.activeElement as HTMLElement);
+        const next = e.shiftKey
+          ? i <= 0
+            ? all.length - 1
+            : i - 1
+          : (i + 1) % all.length;
         e.preventDefault();
-        eventClose.current?.focus();
+        all[next]?.focus();
       }
     };
     window.addEventListener("keydown", key, true);
     return () => window.removeEventListener("keydown", key, true);
-  }, [selectedEvent]);
+  }, [open, !!draft]);
+  const sources = useQuery<{
+    google: {
+      ready: boolean;
+      calendars: {
+        id: string;
+        name: string;
+        primary?: boolean;
+        writable: boolean;
+        selected: boolean;
+      }[];
+    };
+  }>({
+    queryKey: ["calendar-sources"],
+    queryFn: () => api("/api/calendar/sources"),
+    enabled: signedIn,
+    staleTime: 300000,
+  });
+  const writable = (
+    sources.data?.google.ready ? sources.data.google.calendars : []
+  )
+    .filter((c) => c.writable)
+    .sort(
+      (a, b) =>
+        Number(!!b.primary) - Number(!!a.primary) ||
+        Number(b.selected) - Number(a.selected),
+    );
+  const newEvent = (day: DateTime, minutes = 9 * 60) => {
+    if (!writable.length) return;
+    eventTrigger.current = document.activeElement as HTMLElement;
+    const start = day.startOf("day").plus({ minutes });
+    const end = start.plus({ hours: 1 });
+    setSelectedEvent(null);
+    setDraft({
+      calendarId: writable[0].id,
+      title: "",
+      allDay: false,
+      startDate: start.toISODate()!,
+      startTime: start.toFormat("HH:mm"),
+      endDate: end.toISODate()!,
+      endTime: end.toFormat("HH:mm"),
+      location: "",
+      description: "",
+    });
+  };
+  const mutate = async (method: "POST" | "PATCH" | "DELETE", d: Draft) => {
+    setSaving(true);
+    setEventError("");
+    try {
+      const path =
+        `/api/calendar/google/${encodeURIComponent(d.calendarId)}/events` +
+        (d.eventId ? "/" + encodeURIComponent(d.eventId) : "");
+      await api(path, {
+        method,
+        ...(method === "DELETE" ? {} : { body: JSON.stringify(draftBody(d)) }),
+      });
+      await client.invalidateQueries({ queryKey: ["calendar-events"] });
+      closeEvent();
+    } catch (e) {
+      setEventError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
   const today = DateTime.local().startOf("day");
   const { from, to, days } = calendarRange(anchor, mode);
   const cacheKey = `listflow-calendar:${from.toISODate()}:${to.toISODate()}`;
@@ -146,16 +278,52 @@ export function CalendarView({
         ? anchor.toFormat("LLLL yyyy")
         : `${from.toFormat("d LLL")} – ${to.minus({ days: 1 }).toFormat("d LLL yyyy")}`;
   const scroll = useRef<HTMLDivElement>(null);
+  const range = visibleHours(mode === "month" ? [] : remote, days);
+  const [hour, setHour] = useState(48);
+  // Size the timeline to the window and its hours so the whole day fits.
   useEffect(() => {
-    if (scroll.current) {
-      scroll.current.scrollTop = 7 * 60;
-      if (mode === "week") {
-        const index = days.findIndex((day) => day.hasSame(anchor, "day"));
-        scroll.current.scrollLeft =
-          (Math.max(0, index) * (scroll.current.scrollWidth - 54)) / 7;
-      }
+    const el = scroll.current;
+    if (!el) return;
+    const fit = () => {
+      const nav = document.querySelector<HTMLElement>(".bottom-nav");
+      const below =
+        (nav && getComputedStyle(nav).display !== "none"
+          ? nav.offsetHeight
+          : 0) +
+        parseFloat(getComputedStyle(el).marginBottom) +
+        12;
+      const height = Math.max(
+        360,
+        innerHeight - el.getBoundingClientRect().top - scrollY - below,
+      );
+      el.style.height = height + "px";
+      const header =
+        el.querySelector<HTMLElement>(".calendar-timeline-header")
+          ?.offsetHeight || 0;
+      const next = Math.max(
+        26,
+        Math.floor((height - header - 2) / (range.last - range.first)),
+      );
+      setHour(next);
+      el.scrollTop = range.first * next;
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(document.documentElement);
+    const header = el.querySelector(".calendar-timeline-header");
+    if (header) observer.observe(header);
+    return () => observer.disconnect();
+  }, [mode, range.first, range.last]);
+  useEffect(() => {
+    const el = scroll.current;
+    if (el && mode === "week") {
+      const index = days.findIndex((day) => day.hasSame(anchor, "day"));
+      el.scrollLeft = (Math.max(0, index) * (el.scrollWidth - 54)) / 7;
     }
   }, [mode, from.toISODate()]);
+  useEffect(() => {
+    if (scroll.current) scroll.current.scrollTop = range.first * hour;
+  }, [from.toISODate()]);
   const taskChip = (task: Item) => (
     <button
       key={task.id}
@@ -217,8 +385,30 @@ export function CalendarView({
             </button>
           ))}
         </div>
-        <button className="text-button calendar-connect" onClick={onSettings}>
-          <LogIn size={15} /> Calendars & connections
+        {writable.length > 0 && (
+          <button
+            className="secondary-button calendar-new"
+            onClick={() =>
+              newEvent(
+                mode === "month" || !days.some((d) => d.hasSame(today, "day"))
+                  ? days[
+                      mode === "month" ? days.findIndex((d) => d.day === 1) : 0
+                    ]
+                  : today,
+                Math.min(22, DateTime.local().hour + 1) * 60,
+              )
+            }
+          >
+            <Plus size={15} /> Event
+          </button>
+        )}
+        <button
+          className="text-button calendar-connect"
+          onClick={onSettings}
+          aria-label="Calendars & connections"
+        >
+          <LogIn size={15} />
+          <span>Calendars & connections</span>
         </button>
       </div>
       {!signedIn && (
@@ -284,7 +474,12 @@ export function CalendarView({
         <div className="calendar-timeline-scroll" ref={scroll}>
           <div
             className={`calendar-timeline calendar-${mode}`}
-            style={{ "--calendar-days": days.length } as React.CSSProperties}
+            style={
+              {
+                "--calendar-days": days.length,
+                "--calendar-hour": hour + "px",
+              } as React.CSSProperties
+            }
           >
             <div className="calendar-timeline-header">
               <span className="calendar-zone">{today.toFormat("ZZZZ")}</span>
@@ -318,8 +513,16 @@ export function CalendarView({
               {sections.map((s) => (
                 <div
                   key={s.day.toISODate()}
-                  className="calendar-time-column"
+                  className={`calendar-time-column ${writable.length ? "can-create" : ""}`}
                   aria-label={s.day.toFormat("cccc, d LLLL yyyy")}
+                  onClick={(e) => {
+                    if (e.target !== e.currentTarget) return;
+                    const minutes = (e.nativeEvent.offsetY / hour) * 60;
+                    newEvent(
+                      s.day,
+                      Math.min(23 * 60, Math.floor(minutes / 30) * 30),
+                    );
+                  }}
                 >
                   {timedLayout(s.events, s.day).map(
                     ({ event, top, bottom, column, columns }) => (
@@ -328,8 +531,8 @@ export function CalendarView({
                         className="calendar-timed-event"
                         onClick={() => showEvent(event)}
                         style={{
-                          top,
-                          height: bottom - top,
+                          top: (top * hour) / 60,
+                          height: ((bottom - top) * hour) / 60,
                           left: `calc(${(column * 100) / columns}% + 2px)`,
                           width: `calc(${100 / columns}% - 4px)`,
                           borderLeftColor: event.color,
@@ -351,9 +554,10 @@ export function CalendarView({
           </div>
         </div>
       )}
-      {selectedEvent && (
+      {open && (
         <div className="modal-backdrop" onClick={closeEvent}>
           <div
+            ref={dialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby="calendar-event-title"
@@ -361,9 +565,14 @@ export function CalendarView({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-heading">
-              <h3 id="calendar-event-title">{selectedEvent.title}</h3>
+              <h3 id="calendar-event-title">
+                {draft
+                  ? draft.eventId
+                    ? "Edit event"
+                    : "New event"
+                  : selectedEvent!.title}
+              </h3>
               <button
-                ref={eventClose}
                 className="icon-button"
                 aria-label="Close event"
                 onClick={closeEvent}
@@ -371,13 +580,209 @@ export function CalendarView({
                 <X size={20} />
               </button>
             </div>
-            <p>
-              {selectedEvent.allDay
-                ? allDayRange(selectedEvent.start, selectedEvent.end)
-                : `${DateTime.fromISO(selectedEvent.start).toFormat("ccc, d LLL yyyy · t")} – ${DateTime.fromISO(selectedEvent.end).toFormat("ccc, d LLL yyyy · t")}`}
-            </p>
-            <p>{selectedEvent.sourceName}</p>
-            {selectedEvent.location && <p>{selectedEvent.location}</p>}
+            {draft ? (
+              <form
+                className="calendar-event-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void mutate(draft.eventId ? "PATCH" : "POST", draft);
+                }}
+              >
+                <input
+                  aria-label="Event title"
+                  placeholder="Title"
+                  value={draft.title}
+                  onChange={(e) =>
+                    setDraft({ ...draft, title: e.target.value })
+                  }
+                />
+                <label className="calendar-check">
+                  <input
+                    type="checkbox"
+                    checked={draft.allDay}
+                    onChange={(e) =>
+                      setDraft({ ...draft, allDay: e.target.checked })
+                    }
+                  />
+                  All day
+                </label>
+                <div className="calendar-event-times">
+                  <label>
+                    Starts
+                    <span>
+                      <input
+                        type="date"
+                        aria-label="Start date"
+                        value={draft.startDate}
+                        required
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          if (!v) return;
+                          // Keep the duration when moving the start.
+                          const shift = DateTime.fromISO(v).diff(
+                            DateTime.fromISO(draft.startDate),
+                            "days",
+                          ).days;
+                          setDraft({
+                            ...draft,
+                            startDate: v,
+                            endDate: DateTime.fromISO(draft.endDate)
+                              .plus({ days: shift })
+                              .toISODate()!,
+                          });
+                        }}
+                      />
+                      {!draft.allDay && (
+                        <input
+                          type="time"
+                          aria-label="Start time"
+                          value={draft.startTime}
+                          required
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            if (!v) return;
+                            const at = (d: string, t: string) =>
+                              DateTime.fromISO(`${d}T${t}`);
+                            const length = at(
+                              draft.endDate,
+                              draft.endTime,
+                            ).diff(at(draft.startDate, draft.startTime));
+                            const end = at(draft.startDate, v).plus(length);
+                            setDraft({
+                              ...draft,
+                              startTime: v,
+                              endDate: end.toISODate()!,
+                              endTime: end.toFormat("HH:mm"),
+                            });
+                          }}
+                        />
+                      )}
+                    </span>
+                  </label>
+                  <label>
+                    Ends
+                    <span>
+                      <input
+                        type="date"
+                        aria-label="End date"
+                        value={draft.endDate}
+                        min={draft.startDate}
+                        required
+                        onChange={(e) =>
+                          setDraft({ ...draft, endDate: e.target.value })
+                        }
+                      />
+                      {!draft.allDay && (
+                        <input
+                          type="time"
+                          aria-label="End time"
+                          value={draft.endTime}
+                          required
+                          onChange={(e) =>
+                            setDraft({ ...draft, endTime: e.target.value })
+                          }
+                        />
+                      )}
+                    </span>
+                  </label>
+                </div>
+                <input
+                  aria-label="Event location"
+                  placeholder="Location"
+                  value={draft.location}
+                  onChange={(e) =>
+                    setDraft({ ...draft, location: e.target.value })
+                  }
+                />
+                <textarea
+                  aria-label="Event notes"
+                  placeholder="Notes"
+                  rows={3}
+                  value={draft.description}
+                  onChange={(e) =>
+                    setDraft({ ...draft, description: e.target.value })
+                  }
+                />
+                {!draft.eventId && writable.length > 1 && (
+                  <select
+                    aria-label="Calendar"
+                    value={draft.calendarId}
+                    onChange={(e) =>
+                      setDraft({ ...draft, calendarId: e.target.value })
+                    }
+                  >
+                    {writable.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {eventError && (
+                  <p role="alert" className="warning-text">
+                    {eventError}
+                  </p>
+                )}
+                <div className="calendar-event-actions">
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() =>
+                      selectedEvent ? setDraft(null) : closeEvent()
+                    }
+                  >
+                    Cancel
+                  </button>
+                  <button className="primary-button" disabled={saving}>
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <p>
+                  {selectedEvent!.allDay
+                    ? allDayRange(selectedEvent!.start, selectedEvent!.end)
+                    : `${DateTime.fromISO(selectedEvent!.start).toFormat("ccc, d LLL yyyy · t")} – ${DateTime.fromISO(selectedEvent!.end).toFormat("ccc, d LLL yyyy · t")}`}
+                </p>
+                <p>{selectedEvent!.sourceName}</p>
+                {selectedEvent!.location && <p>{selectedEvent!.location}</p>}
+                {selectedEvent!.description && (
+                  <p className="calendar-event-notes">
+                    {selectedEvent!.description}
+                  </p>
+                )}
+                {eventError && (
+                  <p role="alert" className="warning-text">
+                    {eventError}
+                  </p>
+                )}
+                {selectedEvent!.writable && selectedEvent!.calendarId && (
+                  <div className="calendar-event-actions">
+                    <button
+                      className={
+                        confirmDelete ? "text-button danger" : "text-button"
+                      }
+                      disabled={saving}
+                      onClick={() =>
+                        confirmDelete
+                          ? void mutate("DELETE", draftFrom(selectedEvent!))
+                          : setConfirmDelete(true)
+                      }
+                    >
+                      <Trash2 size={15} />
+                      {confirmDelete ? "Delete event?" : "Delete"}
+                    </button>
+                    <button
+                      className="secondary-button"
+                      onClick={() => setDraft(draftFrom(selectedEvent!))}
+                    >
+                      <Pencil size={15} /> Edit
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

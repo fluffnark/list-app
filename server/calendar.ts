@@ -20,6 +20,21 @@ export type CalendarEvent = {
   end: string;
   allDay: boolean;
   location?: string;
+  description?: string;
+  // Present on events the owner can edit in Google.
+  calendarId?: string;
+  eventId?: string;
+  writable?: boolean;
+};
+// Fields the owner can change on a Google event. Times as in CalendarEvent.
+export type EventInput = {
+  title: string;
+  start: string;
+  end: string;
+  allDay: boolean;
+  location?: string;
+  description?: string;
+  timeZone?: string;
 };
 export type Feed = { id: string; name: string; url: string; color: string };
 type GoogleSettings = { selected: string[] | null; push: string | null };
@@ -106,6 +121,37 @@ export function desiredTaskEvents(entities: Entity[], zone?: string) {
     if (date) out.set(x.id, { title: x.title, date });
   }
   return out;
+}
+
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+export function googleEventBody(input: EventInput) {
+  const title = String(input.title || "")
+    .trim()
+    .slice(0, 500);
+  const allDay = !!input.allDay;
+  const valid = (v: unknown) =>
+    typeof v === "string" &&
+    (allDay ? DATE.test(v) : !DATE.test(v) && !isNaN(Date.parse(v)));
+  if (!valid(input.start) || !valid(input.end))
+    throw new Error("Invalid start or end");
+  if (
+    allDay
+      ? input.end <= input.start
+      : Date.parse(input.end) < Date.parse(input.start)
+  )
+    throw new Error("The event must end after it starts");
+  const zone = input.timeZone ? String(input.timeZone).slice(0, 64) : undefined;
+  const time = (v: string) =>
+    allDay
+      ? { date: v, dateTime: null }
+      : { dateTime: v, date: null, timeZone: zone };
+  return {
+    summary: title || "(No title)",
+    start: time(input.start),
+    end: time(input.end),
+    location: String(input.location || "").slice(0, 1000),
+    description: String(input.description || "").slice(0, 8000),
+  };
 }
 
 export function normalizeFeedUrl(raw: string) {
@@ -295,6 +341,10 @@ export class CalendarService {
                     end: allDay ? e.end.date : e.end.dateTime,
                     allDay,
                     location: e.location || undefined,
+                    description: e.description || undefined,
+                    calendarId: c.id,
+                    eventId: e.id,
+                    writable: c.writable && !e.locked,
                   });
                 }
               } catch (e) {
@@ -310,6 +360,48 @@ export class CalendarService {
     await Promise.all(jobs);
     events.sort((a, b) => a.start.localeCompare(b.start));
     return { events, errors };
+  }
+
+  private async writableCalendar(calendarId: string) {
+    if (!this.googleReady()) throw new Error("Google Calendar isn't connected");
+    const c = (await this.googleCalendars()).find((x) => x.id === calendarId);
+    if (!c?.writable) throw new Error("That calendar can't be edited");
+  }
+  private eventPath(calendarId: string, eventId?: string) {
+    return (
+      `/calendars/${encodeURIComponent(calendarId)}/events` +
+      (eventId ? "/" + encodeURIComponent(eventId) : "")
+    );
+  }
+  // Drop cached event lists (not the calendar list) after a change.
+  private dropEvents() {
+    for (const key of this.cache.keys())
+      if (key.startsWith("gcal:") && key !== "gcal:list")
+        this.cache.delete(key);
+  }
+  async createEvent(calendarId: string, input: EventInput) {
+    await this.writableCalendar(calendarId);
+    const event = await this.gapi(this.eventPath(calendarId), {
+      method: "POST",
+      body: JSON.stringify(googleEventBody(input)),
+    });
+    this.dropEvents();
+    return { id: event?.id as string };
+  }
+  async updateEvent(calendarId: string, eventId: string, input: EventInput) {
+    await this.writableCalendar(calendarId);
+    const event = await this.gapi(this.eventPath(calendarId, eventId), {
+      method: "PATCH",
+      body: JSON.stringify(googleEventBody(input)),
+    });
+    this.dropEvents();
+    if (!event) throw new Error("That event no longer exists");
+    return { id: event.id as string };
+  }
+  async deleteEvent(calendarId: string, eventId: string) {
+    await this.writableCalendar(calendarId);
+    await this.gapi(this.eventPath(calendarId, eventId), { method: "DELETE" });
+    this.dropEvents();
   }
 
   // Mirror dated tasks into the chosen Google calendar. Bounded per run.

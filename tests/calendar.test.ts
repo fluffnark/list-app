@@ -2,6 +2,7 @@ import { expect, it } from "vitest";
 import {
   desiredTaskEvents,
   expandIcs,
+  googleEventBody,
   normalizeFeedUrl,
 } from "../server/calendar";
 import { newItem } from "../shared/model";
@@ -136,6 +137,94 @@ it("mirrors dated tasks into the chosen Google calendar", async () => {
     await cal.pushTasks(() => entities);
     expect(calls.at(-1)).toBe("DELETE /calendars/work@group/events/ev2");
     expect(store.setting("calendar_push_error")).toBe("");
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+it("builds Google event bodies and rejects bad times", () => {
+  expect(
+    googleEventBody({
+      title: " Lunch ",
+      allDay: false,
+      start: "2026-10-20T12:00:00-06:00",
+      end: "2026-10-20T13:00:00-06:00",
+      timeZone: "America/Denver",
+    }),
+  ).toMatchObject({
+    summary: "Lunch",
+    start: { dateTime: "2026-10-20T12:00:00-06:00", date: null },
+    end: { timeZone: "America/Denver" },
+  });
+  expect(
+    googleEventBody({
+      title: "",
+      allDay: true,
+      start: "2026-10-20",
+      end: "2026-10-21",
+    }),
+  ).toMatchObject({
+    summary: "(No title)",
+    start: { date: "2026-10-20", dateTime: null },
+  });
+  const bad = { title: "x", allDay: true };
+  expect(() =>
+    googleEventBody({ ...bad, start: "2026-10-21", end: "2026-10-21" }),
+  ).toThrow();
+  expect(() =>
+    googleEventBody({ ...bad, start: "2026-10-20T10:00", end: "2026-10-21" }),
+  ).toThrow();
+});
+
+it("edits and deletes events only on writable Google calendars", async () => {
+  const { Store } = await import("../server/store");
+  const { CalendarService, CALENDAR_SCOPES } =
+    await import("../server/calendar");
+  const store = new Store(":memory:");
+  store.set("google_refresh", "sealed");
+  store.set("google_scopes", CALENDAR_SCOPES.join(" "));
+  const calls: string[] = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async (url: string, init: RequestInit = {}) => {
+    const method = init.method || "GET";
+    const path = decodeURIComponent(String(url).split("/v3")[1]);
+    if (path.startsWith("/users/me/calendarList"))
+      return new Response(
+        JSON.stringify({
+          items: [
+            { id: "primary@x", summary: "Me", accessRole: "owner" },
+            { id: "holidays", summary: "Holidays", accessRole: "reader" },
+          ],
+        }),
+      );
+    calls.push(`${method} ${path}`);
+    if (method === "DELETE") return new Response(null, { status: 204 });
+    if (path.endsWith("/gone")) return new Response("{}", { status: 404 });
+    return new Response(JSON.stringify({ id: "e1" }));
+  }) as typeof fetch;
+  try {
+    const cal = new CalendarService(store, "s", async () => "token");
+    const input = {
+      title: "Call",
+      allDay: false,
+      start: "2026-10-20T09:00:00Z",
+      end: "2026-10-20T10:00:00Z",
+    };
+    expect(await cal.createEvent("primary@x", input)).toEqual({ id: "e1" });
+    await cal.updateEvent("primary@x", "e1", input);
+    await cal.deleteEvent("primary@x", "e1");
+    expect(calls).toEqual([
+      "POST /calendars/primary@x/events",
+      "PATCH /calendars/primary@x/events/e1",
+      "DELETE /calendars/primary@x/events/e1",
+    ]);
+    await expect(cal.deleteEvent("holidays", "h1")).rejects.toThrow(
+      "can't be edited",
+    );
+    await expect(cal.updateEvent("primary@x", "gone", input)).rejects.toThrow(
+      "no longer exists",
+    );
+    expect(calls).toHaveLength(4);
   } finally {
     globalThis.fetch = realFetch;
   }

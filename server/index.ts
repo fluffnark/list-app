@@ -636,6 +636,58 @@ router.get("/api/calendar/events", admin, async (req, res) => {
   }
   res.json(await calendar.events(from, to));
 });
+const calendarFail = (res: express.Response, e: unknown) =>
+  res.status(400).json({
+    error: e instanceof Error ? e.message : "Google Calendar request failed",
+  });
+router.post(
+  "/api/calendar/google/:calendarId/events",
+  admin,
+  async (req, res) => {
+    try {
+      res.json(
+        await calendar.createEvent(
+          String(req.params.calendarId),
+          req.body || {},
+        ),
+      );
+    } catch (e) {
+      calendarFail(res, e);
+    }
+  },
+);
+router.patch(
+  "/api/calendar/google/:calendarId/events/:eventId",
+  admin,
+  async (req, res) => {
+    try {
+      res.json(
+        await calendar.updateEvent(
+          String(req.params.calendarId),
+          String(req.params.eventId),
+          req.body || {},
+        ),
+      );
+    } catch (e) {
+      calendarFail(res, e);
+    }
+  },
+);
+router.delete(
+  "/api/calendar/google/:calendarId/events/:eventId",
+  admin,
+  async (req, res) => {
+    try {
+      await calendar.deleteEvent(
+        String(req.params.calendarId),
+        String(req.params.eventId),
+      );
+      res.json({ ok: true });
+    } catch (e) {
+      calendarFail(res, e);
+    }
+  },
+);
 router.post("/api/sheets/rebuild", admin, async (_req, res) => {
   projection.nextTry = 0;
   await projection.sync(true);

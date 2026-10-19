@@ -233,3 +233,149 @@ test("Settings guides Google setup, protects credentials, and starts OAuth", asy
   ).toHaveCount(0);
   await fresh.close();
 });
+
+test("edits, deletes and creates Google events; the waking day fits the week view", async ({
+  page,
+  context,
+}) => {
+  await page.clock.install({ time: new Date("2026-10-20T16:00:00Z") });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await context.request.post("/auth/login", {
+    data: { password: "listflow-test-password" },
+  });
+  await page.route("**/api/calendar/sources", (route) =>
+    route.fulfill({
+      json: {
+        feeds: [],
+        google: {
+          connected: true,
+          ready: true,
+          calendars: [
+            {
+              id: "me@gmail.com",
+              name: "Me",
+              color: "#7c9cf5",
+              primary: true,
+              writable: true,
+              selected: true,
+            },
+          ],
+          push: null,
+          pushError: null,
+          error: null,
+        },
+      },
+    }),
+  );
+  let events = [
+    {
+      id: "g:me@gmail.com:e1",
+      title: "Dentist",
+      start: "2026-10-20T09:00:00-06:00",
+      end: "2026-10-20T10:00:00-06:00",
+      allDay: false,
+      color: "#7c9cf5",
+      sourceName: "Me",
+      calendarId: "me@gmail.com",
+      eventId: "e1",
+      writable: true,
+    },
+  ];
+  await page.route("**/api/calendar/events?*", (route) =>
+    route.fulfill({ json: { events, errors: [] } }),
+  );
+  const writes: { method: string; url: string; body: any }[] = [];
+  await page.route("**/api/calendar/google/**", (route) => {
+    const r = route.request();
+    writes.push({
+      method: r.method(),
+      url: decodeURIComponent(new URL(r.url()).pathname),
+      body: r.postDataJSON(),
+    });
+    if (r.method() === "DELETE") events = [];
+    return route.fulfill({ json: { id: "e2" } });
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Calendar", exact: true }).click();
+  const calendar = page.getByRole("region", { name: "Calendar", exact: true });
+  await calendar.getByRole("button", { name: "Week", exact: true }).click();
+  // 7am through 10pm visible without scrolling.
+  const fits = await page.evaluate(() => {
+    const scroll = document.querySelector(".calendar-timeline-scroll")!;
+    const box = scroll.getBoundingClientRect();
+    const column = document
+      .querySelector(".calendar-time-column")!
+      .getBoundingClientRect();
+    const hour = column.height / 24;
+    return {
+      inWindow: box.bottom <= innerHeight,
+      seven: column.top + 7 * hour >= box.top + 40,
+      ten: column.top + 22 * hour <= box.bottom + 1,
+    };
+  });
+  expect(fits).toEqual({ inWindow: true, seven: true, ten: true });
+
+  await calendar.getByRole("button", { name: /Dentist/ }).click();
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByLabel("Event title").fill("Dentist (moved)");
+  await page.getByLabel("Start time").fill("11:00");
+  await expect(page.getByLabel("End time")).toHaveValue("12:00");
+  await page
+    .getByRole("dialog")
+    .screenshot({ path: "/tmp/listflow-calendar-edit.png" });
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(writes[0].method).toBe("PATCH");
+  expect(writes[0].url).toMatch(
+    /\/api\/calendar\/google\/me@gmail.com\/events\/e1$/,
+  );
+  expect(writes[0].body).toMatchObject({
+    title: "Dentist (moved)",
+    allDay: false,
+    timeZone: "America/Denver",
+  });
+  expect(writes[0].body.start).toBe("2026-10-20T11:00:00-06:00");
+  expect(writes[0].body.end).toBe("2026-10-20T12:00:00-06:00");
+
+  await calendar.getByRole("button", { name: /Dentist/ }).click();
+  await page.getByRole("button", { name: "Delete" }).click();
+  await page.getByRole("button", { name: "Delete event?" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(writes[1].method).toBe("DELETE");
+  await expect(calendar.getByRole("button", { name: /Dentist/ })).toHaveCount(
+    0,
+  );
+
+  await calendar.getByRole("button", { name: "Event", exact: true }).click();
+  await page.getByLabel("Event title").fill("Lunch");
+  await page.getByLabel("All day").check();
+  await page.getByRole("button", { name: "Save" }).click();
+  expect(writes[2]).toMatchObject({
+    method: "POST",
+    body: {
+      title: "Lunch",
+      allDay: true,
+      start: "2026-10-20",
+      end: "2026-10-21",
+    },
+  });
+  await page.screenshot({ path: "/tmp/listflow-calendar-fit.png" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  await page
+    .locator(".sidebar")
+    .getByRole("button", { name: "Calendar", exact: true })
+    .click();
+  await expect(page.locator(".calendar-time-column")).toHaveCount(7);
+  await page.waitForTimeout(400);
+  expect(
+    await page.evaluate(
+      () =>
+        document
+          .querySelector(".calendar-timeline-scroll")!
+          .getBoundingClientRect().bottom <= innerHeight,
+    ),
+  ).toBe(true);
+  await page.screenshot({ path: "/tmp/listflow-calendar-fit-phone.png" });
+});
