@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { z } from "zod";
 import type { Store } from "./store";
 import {
@@ -8,6 +9,26 @@ import {
   type Item,
   type Operation,
 } from "../shared/model";
+const IDEMPOTENCY_KEY = {
+  type: "string",
+  description:
+    "Unique ID for this change, ideally a UUID. Reuse the same value when retrying so the change is applied once.",
+};
+const DATE = {
+  type: "string",
+  description: "ISO date (YYYY-MM-DD) or date-time",
+};
+// Any key works; non-UUIDs map to a stable UUID per token holder so retries dedupe.
+export function operationId(key: unknown, actor: string) {
+  const raw = z.string().trim().min(1).max(200).parse(key);
+  if (z.string().uuid().safeParse(raw).success) return raw.toLowerCase();
+  const h = createHash("sha256").update(`${actor}\n${raw}`).digest("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-5${h.slice(13, 16)}-${((parseInt(h[16], 16) & 3) | 8).toString(16)}${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
+const isoDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}(T.+)?$/, "Use YYYY-MM-DD")
+  .refine((v) => !isNaN(Date.parse(v)), "Invalid date");
 export const agentTools = [
   [
     "get_attachment",
@@ -54,7 +75,12 @@ export const agentTools = [
         type: { type: "string", enum: ["task", "shopping", "note"] },
         body_md: { type: "string" },
         list_id: { type: "string" },
-        idempotency_key: { type: "string" },
+        scheduled_for: {
+          ...DATE,
+          description: "Planned day. " + DATE.description,
+        },
+        due_at: { ...DATE, description: "Deadline. " + DATE.description },
+        idempotency_key: IDEMPOTENCY_KEY,
       },
       required: ["title", "idempotency_key"],
     },
@@ -68,7 +94,7 @@ export const agentTools = [
         id: { type: "string" },
         base_version: { type: "integer" },
         patch: { type: "object" },
-        idempotency_key: { type: "string" },
+        idempotency_key: IDEMPOTENCY_KEY,
       },
       required: ["id", "base_version", "patch", "idempotency_key"],
     },
@@ -81,7 +107,7 @@ export const agentTools = [
       properties: {
         id: { type: "string" },
         base_version: { type: "integer" },
-        idempotency_key: { type: "string" },
+        idempotency_key: IDEMPOTENCY_KEY,
       },
       required: ["id", "base_version", "idempotency_key"],
     },
@@ -94,7 +120,7 @@ export const agentTools = [
       properties: {
         parent_id: { type: "string" },
         title: { type: "string" },
-        idempotency_key: { type: "string" },
+        idempotency_key: IDEMPOTENCY_KEY,
       },
       required: ["parent_id", "title", "idempotency_key"],
     },
@@ -108,7 +134,7 @@ export const agentTools = [
         id: { type: "string" },
         base_version: { type: "integer" },
         rule: { type: "object" },
-        idempotency_key: { type: "string" },
+        idempotency_key: IDEMPOTENCY_KEY,
       },
       required: ["id", "base_version", "rule", "idempotency_key"],
     },
@@ -260,7 +286,7 @@ export function callAgent(
     return JSON.parse(p.value);
   }
   let operation: Operation;
-  const id = z.string().uuid().parse(args.idempotency_key);
+  const id = operationId(args.idempotency_key, actor);
   const base = {
     id,
     actor_id: actor,
@@ -279,6 +305,9 @@ export function callAgent(
       if (args.list_id) patch.list_id = args.list_id;
       if (args.body_md !== undefined)
         patch.body_md = z.string().parse(args.body_md);
+      if (args.scheduled_for)
+        patch.scheduled_for = isoDate.parse(args.scheduled_for);
+      if (args.due_at) patch.due_at = isoDate.parse(args.due_at);
     }
     const item = newItem(z.string().min(1).parse(args.title), patch);
     operation = {

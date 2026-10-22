@@ -15,12 +15,11 @@ For clients that support custom bearer headers, create a scoped token in the web
 
 For clients supporting remote MCP OAuth, add the MCP URL and follow their connection flow. ListFlow displays the requested access, exact redirect address, and the client name; the owner must enter the workspace password to approve. Client names are self-declared, so check the redirect address before authorizing.
 
-The `query_items` tool supports `query`, `type`, `list_id`, `status`, `offset`, and `limit`. Writes require UUID idempotency keys, and updates require `base_version` from the latest item. The server attributes all mutations to the verified token holder. Bulk/destructive proposals remain pending until reviewed by the owner in Settings.
+The `query_items` tool supports `query`, `type`, `list_id`, `status`, `offset`, and `limit`. Writes take an `idempotency_key` (a UUID is best; any other string is mapped to a stable UUID per token holder, so retries with the same key still apply once), and updates require `base_version` from the latest item. `create_item` also accepts `scheduled_for` and `due_at` dates. The server attributes all mutations to the verified token holder. Bulk/destructive proposals remain pending until reviewed by the owner in Settings.
 
 Neither a deployed MCP endpoint nor its tested OAuth flow means a connector has been installed into this particular ChatGPT/Codex session. That requires the account's client settings and authorization.
 
 References: [MCP authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization), [OAuth resource metadata](https://www.rfc-editor.org/rfc/rfc9728.html).
-
 
 ## ChatGPT live notes connection
 
@@ -52,7 +51,7 @@ The owner reported a free-tier account and asked to continue setup. No billing c
 ### Account verification
 
 - **Read: verified 2026-10-18.** The installed ListFlow plugin in the owner's ChatGPT account ran "Check ListFlow access" from Try in chat: two ListFlow integration calls, returning the Inbox, Shopping and Home Tasks lists with 0 open tasks. No write requests or calls were made. Evidence: browser screenshot kept on zincmind (`/tmp/nest-chatgpt-browser/screenshot-2026-10-18_16-45-17.png`), not in this repo.
-- **Write: pending.** A create/edit note round trip from ChatGPT (with `listflow.write` granted) is still required before claiming end-to-end read/write access.
+- **Write: create verified 2026-10-22.** ChatGPT created a task in the Megan's Wedding list (the owner relayed ChatGPT's report). Its first attempt sent a non-UUID `idempotency_key` and was rejected; such keys are now accepted. An edit round trip is still unverified.
 
 No ListFlow tools are exposed in this coding session.
 
@@ -68,13 +67,11 @@ Paste the key at the hidden prompt. It saves `~/.config/tunnel-client/listflow-r
 
 The current operator diagnostic is `tunnel-client doctor --profile listflow --explain`. The key-file reference is already configured in the profile; no secret environment variable is needed. Do not enable billing, top up credits, change plans, or invoke model APIs as a workaround for missing access. Platform/API tier is separate from the ChatGPT account’s ability to install a custom MCP connection.
 
-
 ### Tunnel OAuth audience compatibility
 
 ChatGPT uses a tunnel resource identifier in its authorization request. Configure that exact identifier in `OAUTH_RESOURCE_ALIASES` on Harmony; the default Tailscale MCP resource remains accepted. Unknown resource identifiers are rejected. The approved resource is retained in the code and refresh grant, and an explicitly different token-exchange resource is rejected. Do not automatically trust arbitrary resource values supplied by a browser.
 
 The consent form posts to a relative same-origin path. HTTPS retains a Secure nonce cookie; the explicitly allowlisted LAN HTTP origin uses a non-Secure nonce cookie, matching the owner-enabled LAN login behavior. The password and nonce checks remain mandatory.
-
 
 ### Browser consent response policies
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Store } from "../server/store";
 import { seal, unseal } from "../server/sheets";
-import { callAgent } from "../server/agents";
+import { callAgent, operationId } from "../server/agents";
 import { newItem, uuid, type Operation } from "../shared/model";
 const make = (title = "Task"): Operation => {
   const e = newItem(title);
@@ -83,6 +83,43 @@ describe("assistant boundaries", () => {
     ) as any;
     expect(result.status).toBe("pending");
     expect(s.entities()).toHaveLength(2);
+    s.db.close();
+  });
+  it("assistant writes accept text idempotency keys and dates", () => {
+    const s = new Store(":memory:");
+    const args = {
+      title: "Gift basket",
+      idempotency_key: "megan-gift-basket",
+      scheduled_for: "2026-10-22",
+    };
+    const a = callAgent(s, "create_item", args, "agent", true) as any;
+    expect(callAgent(s, "create_item", args, "agent", true)).toEqual(a);
+    const item = s
+      .entities()
+      .find((e: any) => e.title === "Gift basket") as any;
+    expect(item.scheduled_for).toBe("2026-10-22");
+    expect(operationId("megan-gift-basket", "agent")).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+    expect(operationId("k", "a")).not.toBe(operationId("k", "b"));
+    expect(() =>
+      callAgent(
+        s,
+        "create_item",
+        { ...args, idempotency_key: "" },
+        "agent",
+        true,
+      ),
+    ).toThrow();
+    expect(() =>
+      callAgent(
+        s,
+        "create_item",
+        { ...args, idempotency_key: "x2", due_at: "Oct 22" },
+        "agent",
+        true,
+      ),
+    ).toThrow();
     s.db.close();
   });
   it("assistant create retries are idempotent", () => {
